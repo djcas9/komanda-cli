@@ -1,0 +1,23 @@
+{
+	"ImportPath": "github.com/mephux/komanda-cli",
+	"GoVersion": "go1.5",
+	"Packages": [
+		"./..."
+	],
+	"Deps": [
+		{
+			"ImportPath": "github.com/jroimartin/gocui",
+			"Comment": "v0.1.0-59-ge5bf60e",
+			"Rev": "e5bf60e36b67610cf66ef779ad2b83c317b5ec49"
+		},
+		{
+			"ImportPath": "github.com/mattn/go-runewidth",
+			"Comment": "travisish-44-ge882a96",
+			"Rev": "e882a96ec18dd43fa283187b66af74497c9101c0"
+		},
+		{
+			"ImportPath": "github.com/nsf/termbox-go",
+			"Rev": "9554a56625563e80bffd06e41fb525b363b01943"
+		}
+	]
+}
