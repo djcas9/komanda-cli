@@ -2,6 +2,7 @@ package ui
 
 import (
 	"fmt"
+	"time"
 
 	"github.com/jroimartin/gocui"
 	"github.com/mephux/komanda-cli/client"
@@ -92,7 +93,8 @@ func StatusView(channel *client.Channel, view *gocui.View) error {
 
 		channel.Server.Exec(ircChan,
 			func(v *gocui.View, s *client.Server) error {
-				fmt.Fprintln(v, event.Raw)
+				timestamp := time.Now().Format("3:04PM")
+				fmt.Fprintf(v, "%s > %s: %s\n", timestamp, event.Nick, event.Message())
 
 				return nil
 			})

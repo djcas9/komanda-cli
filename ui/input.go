@@ -16,6 +16,7 @@ func InputView(g *gocui.Gui, maxX, maxY int) error {
 		v.Autoscroll = true
 		v.Editable = true
 		v.Wrap = false
+
 	}
 
 	return nil

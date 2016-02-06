@@ -1,18 +1,33 @@
 package client
 
-import "github.com/thoj/go-ircevent"
+import (
+	ircClient "github.com/fluffle/goirc/client"
+	"github.com/thoj/go-ircevent"
+)
 
 func New(server *Server) *irc.Connection {
-	irccon := irc.IRC(server.Nick, server.User)
-	irccon.VerboseCallbackHandler = false
-	irccon.Debug = false
+	// irccon := irc.IRC(server.Nick, server.User)
+	// irccon.VerboseCallbackHandler = false
+	// irccon.Debug = false
 
-	//Set options
-	// ircobj.UseTLS = false //default is false
-	//ircobj.TLSOptions //set ssl options
-	// ircobj.Password = ""
+	// //Set options
+	// // ircobj.UseTLS = false //default is false
+	// //ircobj.TLSOptions //set ssl options
+	// // ircobj.Password = ""
 
-	server.Client = irccon
+	// server.Client = irccon
 
-	return irccon
+	// return irccon
+
+	// other client
+	cfg := ircClient.NewConfig(server.Nick)
+	cfg.SSL = false
+	// cfg.Server = fmt.Sprintf("%s:%s", )
+	cfg.NewNick = func(n string) string { return n + "^" }
+
+	c := ircClient.Client(cfg)
+
+	server.Client = c
+
+	return c
 }

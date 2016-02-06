@@ -32058,3 +32058,91 @@ logsutil.go:26: LINE hey
 logsutil.go:26: LINE WTF
 logsutil.go:26: LINE /part
 logsutil.go:26: LINE /exit
+logscommand.go:40: XXX IN REGISTER 0xc82001a240 0xc82001a240
+logskomanda.go:56: BEFORE REGISTER 0xc8200a2280 0xc8200a2280
+logskomanda.go:108: BEFORE REGISTER 0xc8200a2280 0xc8200a2280
+logslayout.go:34: LAYOUT 0xc8200a2280 0xc8200a2280
+logsutil.go:26: LINE /connect
+logsutil.go:26: LINE /join #cooltestword
+logsutil.go:26: LINE lkasjdf
+logsutil.go:26: LINE asldfk
+logsutil.go:26: LINE asdfkljlk
+logsutil.go:26: LINE /exit
+logscommand.go:40: XXX IN REGISTER 0xc82001a1b0 0xc82001a1b0
+logskomanda.go:56: BEFORE REGISTER 0xc8200a2280 0xc8200a2280
+logskomanda.go:108: BEFORE REGISTER 0xc8200a2280 0xc8200a2280
+logslayout.go:34: LAYOUT 0xc8200a2280 0xc8200a2280
+logsutil.go:27: LINE /connect
+logsutil.go:27: LINE /join #cooltestword
+logsutil.go:27: LINE hey
+logsutil.go:27: LINE                  
+logsutil.go:27: LINE /exit
+logscommand.go:40: XXX IN REGISTER 0xc82001a1b0 0xc82001a1b0
+logskomanda.go:56: BEFORE REGISTER 0xc8200a2280 0xc8200a2280
+logskomanda.go:108: BEFORE REGISTER 0xc8200a2280 0xc8200a2280
+logslayout.go:34: LAYOUT 0xc8200a2280 0xc8200a2280
+logsutil.go:27: LINE /connect
+logsutil.go:27: LINE /join #cooltestword
+logsutil.go:27: LINE klklasdf
+logsutil.go:27: LINE asdf
+logsutil.go:27: LINE asdf
+logsutil.go:27: LINE asdf
+logsstatus.go:92: MSG #cooltestword mephux unaffiliated/mephux [#cooltestword ello]
+logsutil.go:27: LINE word
+logsutil.go:27: LINE /exit
+logscommand.go:40: XXX IN REGISTER 0xc82001a240 0xc82001a240
+logskomanda.go:58: BEFORE REGISTER 0xc8200a2280 0xc8200a2280
+logskomanda.go:110: BEFORE REGISTER 0xc8200a2280 0xc8200a2280
+logslayout.go:34: LAYOUT 0xc8200a2280 0xc8200a2280
+logsutil.go:52: LINE /connect
+logsutil.go:52: LINE /join #cooltestword
+logsutil.go:52: LINE asdf
+logsutil.go:52: LINE asdf
+logsutil.go:52: LINE asd
+logsutil.go:52: LINE fasd
+logsutil.go:52: LINE f
+logsutil.go:52: LINE ok
+logsstatus.go:92: MSG #cooltestword mephux unaffiliated/mephux [#cooltestword asd]
+logsstatus.go:92: MSG #cooltestword mephux unaffiliated/mephux [#cooltestword asd]
+logsutil.go:52: LINE /part
+logsutil.go:52: LINE /exit
+logscommand.go:40: XXX IN REGISTER 0xc82001a240 0xc82001a240
+logskomanda.go:58: BEFORE REGISTER 0xc8200a2280 0xc8200a2280
+logskomanda.go:110: BEFORE REGISTER 0xc8200a2280 0xc8200a2280
+logslayout.go:34: LAYOUT 0xc8200a2280 0xc8200a2280
+logsutil.go:52: LINE /connect
+logsutil.go:52: LINE 
+logsutil.go:52: LINE /join #cooltestword
+logsutil.go:52: LINE dasjlfhksdf
+logsutil.go:52: LINE /exit
+logscommand.go:40: XXX IN REGISTER 0xc82001a240 0xc82001a240
+logskomanda.go:58: BEFORE REGISTER 0xc8200a2280 0xc8200a2280
+logskomanda.go:110: BEFORE REGISTER 0xc8200a2280 0xc8200a2280
+logslayout.go:34: LAYOUT 0xc8200a2280 0xc8200a2280
+logsutil.go:52: LINE 
+logsutil.go:52: LINE /connect
+logsutil.go:52: LINE /exit
+logscommand.go:40: XXX IN REGISTER 0xc82001a240 0xc82001a240
+logskomanda.go:58: BEFORE REGISTER 0xc8200a2280 0xc8200a2280
+logskomanda.go:110: BEFORE REGISTER 0xc8200a2280 0xc8200a2280
+logslayout.go:34: LAYOUT 0xc8200a2280 0xc8200a2280
+logsutil.go:52: LINE /connect
+logsutil.go:52: LINE /exit
+logscommand.go:40: XXX IN REGISTER 0xc82001a240 0xc82001a240
+logskomanda.go:58: BEFORE REGISTER 0xc8200a2280 0xc8200a2280
+logskomanda.go:110: BEFORE REGISTER 0xc8200a2280 0xc8200a2280
+logslayout.go:34: LAYOUT 0xc8200a2280 0xc8200a2280
+logsutil.go:52: LINE /exit
+logscommand.go:40: XXX IN REGISTER 0xc82001a1b0 0xc82001a1b0
+logskomanda.go:58: BEFORE REGISTER 0xc8200a2280 0xc8200a2280
+logskomanda.go:110: BEFORE REGISTER 0xc8200a2280 0xc8200a2280
+logslayout.go:34: LAYOUT 0xc8200a2280 0xc8200a2280
+logsutil.go:52: LINE /connect
+logsutil.go:52: LINE /join #cooltestword
+logsutil.go:52: LINE [komanda-status] hello
+logsutil.go:52: LINE /exit
+logscommand.go:40: XXX IN REGISTER 0xc82001a1b0 0xc82001a1b0
+logskomanda.go:58: BEFORE REGISTER 0xc8200a2280 0xc8200a2280
+logskomanda.go:110: BEFORE REGISTER 0xc8200a2280 0xc8200a2280
+logslayout.go:34: LAYOUT 0xc8200a2280 0xc8200a2280
+logsutil.go:52: LINE /exit

@@ -34,6 +34,8 @@ func Run() {
 
 	defer g.Close()
 
+	g.Editor = gocui.EditorFunc(simpleEditor)
+
 	server := &client.Server{
 		Gui:     g,
 		Address: "irc.freenode.net",

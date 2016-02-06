@@ -3,6 +3,7 @@ package komanda
 import (
 	"fmt"
 	"strings"
+	"time"
 
 	"github.com/jroimartin/gocui"
 	"github.com/mephux/komanda-cli/client"
@@ -13,6 +14,31 @@ import (
 var (
 	curView = 0
 )
+
+func simpleEditor(v *gocui.View, key gocui.Key, ch rune, mod gocui.Modifier) {
+	switch {
+	case ch != 0 && mod == 0:
+		v.EditWrite(ch)
+	case key == gocui.KeySpace:
+		v.EditWrite(' ')
+	case key == gocui.KeyBackspace || key == gocui.KeyBackspace2:
+		v.EditDelete(true)
+	case key == gocui.KeyDelete:
+		v.EditDelete(false)
+	case key == gocui.KeyInsert:
+		v.Overwrite = !v.Overwrite
+	case key == gocui.KeyEnter:
+		v.EditNewLine()
+	case key == gocui.KeyArrowDown:
+		v.MoveCursor(0, 1, false)
+	case key == gocui.KeyArrowUp:
+		v.MoveCursor(0, -1, false)
+	case key == gocui.KeyArrowLeft:
+		v.MoveCursor(-1, 0, false)
+	case key == gocui.KeyArrowRight:
+		v.MoveCursor(1, 0, false)
+	}
+}
 
 func GetLine(g *gocui.Gui, v *gocui.View) error {
 	var line string
@@ -38,7 +64,10 @@ func GetLine(g *gocui.Gui, v *gocui.View) error {
 			if mainView, err := g.View(command.CurrentChannel); err != nil {
 				return err
 			} else {
-				fmt.Fprintln(mainView, line)
+				if mainView.Name() != client.StatusChannel {
+					timestamp := time.Now().Format("3:04PM")
+					fmt.Fprintf(mainView, "%s > %s: %s\n", timestamp, Server.Nick, line)
+				}
 			}
 		}
 		// send text
@@ -53,6 +82,7 @@ func GetLine(g *gocui.Gui, v *gocui.View) error {
 			command.Run(split[0], []string{"", command.CurrentChannel})
 
 			v.Clear()
+			fmt.Fprintf(v, "[%s] ", command.CurrentChannel)
 			v.SetCursor(0, 0)
 
 			return nil
@@ -64,6 +94,15 @@ func GetLine(g *gocui.Gui, v *gocui.View) error {
 	}
 
 	v.Clear()
+
+	// idleInputText := fmt.Sprintf("[%s] ", client.StatusChannel)
+
+	// if len(command.CurrentChannel) > 0 {
+	// idleInputText = fmt.Sprintf("[%s] ", command.CurrentChannel)
+	// }
+
+	// fmt.Fprint(v, idleInputText)
+	// v.SetCursor(len(idleInputText), 0)
 	v.SetCursor(0, 0)
 
 	// fmt.Println(l)
