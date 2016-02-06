@@ -1,6 +1,11 @@
 package command
 
-import "fmt"
+import (
+	"fmt"
+
+	"github.com/jroimartin/gocui"
+	"github.com/mephux/komanda-cli/client"
+)
 
 type JoinCmd struct {
 	*MetadataTmpl
@@ -11,13 +16,19 @@ func (e *JoinCmd) Metadata() CommandMetadata {
 }
 
 func (e *JoinCmd) Exec(args []string) error {
-	mainView, _ := Gui.View("status")
-	fmt.Fprintln(mainView, "Join Args", args)
+	Server.Exec(client.StatusChannel, func(v *gocui.View, s *client.Server) error {
 
-	if len(args) >= 2 {
-		Irc.Join(args[1])
-		CurrentChannel = args[1]
-	}
+		fmt.Fprintln(v, "Join Args", args)
+
+		if len(args) >= 2 {
+			s.Client.Join(args[1])
+			CurrentChannel = args[1]
+
+			return s.NewChannel(args[1])
+		}
+
+		return nil
+	})
 
 	return nil
 }

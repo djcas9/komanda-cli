@@ -3,6 +3,9 @@ package command
 import (
 	"fmt"
 	"log"
+
+	"github.com/jroimartin/gocui"
+	"github.com/mephux/komanda-cli/client"
 )
 
 type ConnectCmd struct {
@@ -14,12 +17,21 @@ func (e *ConnectCmd) Metadata() CommandMetadata {
 }
 
 func (e *ConnectCmd) Exec(args []string) error {
-	mainView, _ := Gui.View("status")
-	fmt.Fprintln(mainView, "Got Connect Command", args)
 
-	Irc.Log = log.New(mainView, "", 0)
-	Irc.Connect("irc.freenode.net:6667")
-	// ...
+	Server.Exec(client.StatusChannel, func(v *gocui.View, s *client.Server) error {
+
+		fmt.Fprintln(v, "Got Connect Command", args)
+
+		s.Client.Log = log.New(v, "", 0)
+
+		if err := s.Client.Connect(fmt.Sprintf("%s:%s",
+			s.Address, s.Port)); err != nil {
+			panic(err)
+		}
+
+		return nil
+	})
+
 	return nil
 }
 

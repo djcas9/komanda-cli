@@ -1,14 +1,11 @@
 package ui
 
-import (
-	"github.com/jroimartin/gocui"
-	"github.com/mephux/komanda-cli/command"
-)
+import "github.com/jroimartin/gocui"
 
 func InputView(g *gocui.Gui, maxX, maxY int) error {
 
 	if v, err := g.SetView("input", -1, maxY-3, maxX, maxY); err != nil {
-		if err != gocui.ErrorUnkView {
+		if err != gocui.ErrUnknownView {
 			return err
 		}
 
@@ -16,11 +13,9 @@ func InputView(g *gocui.Gui, maxX, maxY int) error {
 			return err
 		}
 
-		v.Autoscroll = false
+		v.Autoscroll = true
 		v.Editable = true
 		v.Wrap = false
-
-		command.Register(g, Irc)
 	}
 
 	return nil

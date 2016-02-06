@@ -2,13 +2,14 @@ package ui
 
 import (
 	"github.com/jroimartin/gocui"
-	"github.com/thoj/go-ircevent"
+	"github.com/mephux/komanda-cli/client"
+	"github.com/mephux/komanda-cli/logger"
 )
 
 var (
 	Logo        = ""
 	VersionLine = ""
-	Irc         *irc.Connection
+	Server      *client.Server
 )
 
 func Layout(g *gocui.Gui) error {
@@ -20,8 +21,21 @@ func Layout(g *gocui.Gui) error {
 	// }
 	// }
 
-	if err := StatusView(g, maxX, maxY); err != nil {
-		return err
+	if _, _, ok := Server.HasChannel(client.StatusChannel); !ok {
+		status := client.Channel{
+			Name:          client.StatusChannel,
+			MaxX:          maxX,
+			MaxY:          maxY,
+			RenderHandler: StatusView,
+		}
+
+		Server.AddChannel(&status)
+
+		logger.Logger.Printf("LAYOUT %p %p\n", g, Server.Gui)
+
+		if err := status.Render(); err != nil {
+			return err
+		}
 	}
 
 	if err := InputView(g, maxX, maxY); err != nil {

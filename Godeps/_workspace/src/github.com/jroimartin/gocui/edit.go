@@ -6,12 +6,7 @@ package gocui
 
 const maxInt = int(^uint(0) >> 1)
 
-// Edit allows to define the editor that manages the edition mode,
-// including keybindings or cursor behaviour. DefaultEditor is used by
-// default.
-var Edit = EditorFunc(DefaultEditor)
-
-// Objects implementing the Editor interface can be used as gocui editors.
+// Editor interface must be satisfied by gocui editors.
 type Editor interface {
 	Edit(v *View, key Key, ch rune, mod Modifier)
 }
@@ -26,8 +21,11 @@ func (f EditorFunc) Edit(v *View, key Key, ch rune, mod Modifier) {
 	f(v, key, ch, mod)
 }
 
-// DefaultEditor is used as the default gocui editor.
-func DefaultEditor(v *View, key Key, ch rune, mod Modifier) {
+// DefaultEditor is the default editor.
+var DefaultEditor Editor = EditorFunc(simpleEditor)
+
+// simpleEditor is used as the default gocui editor.
+func simpleEditor(v *View, key Key, ch rune, mod Modifier) {
 	switch {
 	case ch != 0 && mod == 0:
 		v.EditWrite(ch)
@@ -159,7 +157,7 @@ func (v *View) MoveCursor(dx, dy int, writeMode bool) {
 				v.ox = 0
 			}
 			v.cx = 0
-			cy += 1
+			cy++
 		} else { // vertical movement
 			if curLineWidth > 0 { // move cursor to the EOL
 				if v.Wrap {
@@ -185,7 +183,7 @@ func (v *View) MoveCursor(dx, dy int, writeMode bool) {
 		}
 	} else if cx < 0 {
 		if !v.Wrap && v.ox > 0 { // move origin to the left
-			v.ox -= 1
+			v.ox--
 		} else { // move to previous line
 			if prevLineWidth > 0 {
 				if !v.Wrap { // set origin so the EOL is visible
@@ -203,14 +201,14 @@ func (v *View) MoveCursor(dx, dy int, writeMode bool) {
 				}
 				v.cx = 0
 			}
-			cy -= 1
+			cy--
 		}
 	} else { // stay on the same line
 		if v.Wrap {
 			v.cx = cx
 		} else {
 			if cx >= maxX {
-				v.ox += 1
+				v.ox++
 			} else {
 				v.cx = cx
 			}
@@ -219,10 +217,10 @@ func (v *View) MoveCursor(dx, dy int, writeMode bool) {
 
 	// adjust cursor's y position and view's y origin
 	if cy >= maxY {
-		v.oy += 1
+		v.oy++
 	} else if cy < 0 {
 		if v.oy > 0 {
-			v.oy -= 1
+			v.oy--
 		}
 	} else {
 		v.cy = cy

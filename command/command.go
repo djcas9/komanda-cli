@@ -1,14 +1,13 @@
 package command
 
 import (
-	"github.com/jroimartin/gocui"
-	"github.com/thoj/go-ircevent"
+	"github.com/mephux/komanda-cli/client"
+	"github.com/mephux/komanda-cli/logger"
 )
 
 var (
 	Commands       []Command
-	Gui            *gocui.Gui
-	Irc            *irc.Connection
+	Server         *client.Server
 	CurrentChannel = ""
 )
 
@@ -35,16 +34,17 @@ type Command interface {
 	Exec(args []string) error
 }
 
-func Register(g *gocui.Gui, irc *irc.Connection) {
-	Gui = g
-	Irc = irc
+func Register(server *client.Server) {
+	Server = server
 
+	logger.Logger.Printf("XXX IN REGISTER %p %p\n", Server, server)
 	Commands = []Command{
 		exitCmd(),
 		connectCmd(),
 		testCmd(),
 		joinCmd(),
 		partCmd(),
+		clearCmd(),
 	}
 }
 

@@ -11,7 +11,7 @@ func (e *ExitCmd) Metadata() CommandMetadata {
 }
 
 func (e *ExitCmd) Exec(args []string) error {
-	Gui.Close()
+	Server.Gui.Close()
 	os.Exit(1)
 	return nil
 }
