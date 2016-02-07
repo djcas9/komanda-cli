@@ -6,9 +6,29 @@
 	],
 	"Deps": [
 		{
+			"ImportPath": "github.com/davecgh/go-spew/spew",
+			"Rev": "5215b55f46b2b919f50a1df0eaa5886afe4e3b3d"
+		},
+		{
+			"ImportPath": "github.com/fluffle/goirc/client",
+			"Rev": "5cf08f7e9c65b43b612a06b02e7c5c818ea0a84c"
+		},
+		{
+			"ImportPath": "github.com/fluffle/goirc/logging",
+			"Rev": "5cf08f7e9c65b43b612a06b02e7c5c818ea0a84c"
+		},
+		{
+			"ImportPath": "github.com/fluffle/goirc/state",
+			"Rev": "5cf08f7e9c65b43b612a06b02e7c5c818ea0a84c"
+		},
+		{
+			"ImportPath": "github.com/golang/mock/gomock",
+			"Rev": "58a501f87109a45c68afc54e6b1368398678d386"
+		},
+		{
 			"ImportPath": "github.com/jroimartin/gocui",
-			"Comment": "v0.2.0",
-			"Rev": "c5595daed41f25b6073e8dd2b1bf10533722aace"
+			"Comment": "v0.2.0-1-g2defea8",
+			"Rev": "2defea8aed70d401b46e7738879a3ed8e81d83e3"
 		},
 		{
 			"ImportPath": "github.com/mattn/go-runewidth",
@@ -17,7 +37,11 @@
 		},
 		{
 			"ImportPath": "github.com/nsf/termbox-go",
-			"Rev": "9554a56625563e80bffd06e41fb525b363b01943"
+			"Rev": "362329b0aa6447eadd52edd8d660ec1dff470295"
+		},
+		{
+			"ImportPath": "golang.org/x/net/proxy",
+			"Rev": "0cb26f788dd4625d1956c6fd97ffc4c90669d129"
 		}
 	]
 }

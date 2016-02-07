@@ -101,9 +101,23 @@ func Run(build string) {
 		log.Panicln(err)
 	}
 
+	if err := g.SetKeybinding("", gocui.KeyArrowLeft, gocui.ModAlt,
+		func(g *gocui.Gui, v *gocui.View) error {
+			return prevView(g, v)
+		}); err != nil {
+		log.Panicln(err)
+	}
+
 	if err := g.SetKeybinding("", gocui.KeyCtrlRsqBracket, gocui.ModNone,
 		func(g *gocui.Gui, v *gocui.View) error {
 			return nextView(g, v)
+		}); err != nil {
+		log.Panicln(err)
+	}
+
+	if err := g.SetKeybinding("", gocui.KeyTab, gocui.ModNone,
+		func(g *gocui.Gui, v *gocui.View) error {
+			return tabComplete(g, v)
 		}); err != nil {
 		log.Panicln(err)
 	}

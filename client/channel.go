@@ -10,6 +10,7 @@ type Channel struct {
 	MaxX          int
 	MaxY          int
 	RenderHandler RenderHandlerFunc
+	Names         []string
 }
 
 func (channel *Channel) View() (*gocui.View, error) {
@@ -35,6 +36,7 @@ func (channel *Channel) Render() error {
 
 	if channel.Name != StatusChannel {
 		view.FgColor = gocui.ColorMagenta
+		view.Autoscroll = true
 		// view.Highlight = true
 		view.Frame = false
 	}

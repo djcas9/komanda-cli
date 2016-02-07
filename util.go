@@ -9,14 +9,126 @@ import (
 	"github.com/mephux/komanda-cli/client"
 	"github.com/mephux/komanda-cli/command"
 	"github.com/mephux/komanda-cli/logger"
+	"github.com/mephux/komanda-cli/share/history"
+	"github.com/mephux/komanda-cli/share/trie"
 )
 
 var (
-	curView = 0
+	curView         = 0
+	inCacheTab      = false
+	cacheTabIndex   = 0
+	cacheTabSearch  = ""
+	cacheTabResults = []string{}
+	InputHistory    = history.New()
 )
 
+func tabUpdateInput(input *gocui.View) (string, bool) {
+	search := strings.TrimSpace(input.Buffer())
+	searchSplit := strings.Split(search, " ")
+	search = searchSplit[len(searchSplit)-1]
+
+	if inCacheTab {
+		cacheTabIndex++
+
+		if cacheTabIndex > len(cacheTabResults)-1 {
+			cacheTabIndex = 0
+		}
+
+		searchSplit[len(searchSplit)-1] = cacheTabResults[cacheTabIndex]
+
+		newInputData := strings.Join(searchSplit, " ")
+		input.Clear()
+		fmt.Fprint(input, newInputData)
+		input.SetCursor(len(input.Buffer()), 0)
+
+		logger.Logger.Printf("WORD %s -- %s -- %s\n", search, cacheTabSearch, cacheTabResults[cacheTabIndex])
+		return "", true
+	}
+
+	return search, false
+}
+
+func tabComplete(g *gocui.Gui, v *gocui.View) error {
+
+	if input, err := g.View("input"); err != nil {
+		return err
+	} else {
+
+		search, cache := tabUpdateInput(input)
+
+		if cache {
+			return nil
+		}
+
+		t := trie.New()
+
+		// Add Commands
+		for i, c := range command.Commands {
+			md := c.Metadata()
+			d := md.Name()
+			// var chars = ""
+
+			t.Add(fmt.Sprintf("/%s", d), i)
+
+			for ai, a := range md.Aliases() {
+				t.Add(fmt.Sprintf("/%s", a), ai+i)
+			}
+		}
+
+		// Add Channels
+		for channelIndex, channelName := range Server.Channels {
+			if channelName.Name != client.StatusChannel {
+				t.Add(channelName.Name, fmt.Sprintf("channel-%d", channelIndex))
+			}
+		}
+
+		// Add Current Chan Users
+		if c, _, hasCurrentChannel :=
+			Server.HasChannel(Server.CurrentChannel); hasCurrentChannel {
+
+			for userIndex, user := range c.Names {
+				if user != Server.Nick {
+					t.Add(user, fmt.Sprintf("user-%d", userIndex))
+				}
+			}
+		}
+
+		if len(search) <= 0 {
+			return nil
+		}
+
+		results := t.FuzzySearch(search)
+
+		if len(results) <= 0 {
+			inCacheTab = false
+			cacheTabSearch = ""
+			cacheTabResults = []string{}
+			return nil
+		}
+
+		inCacheTab = true
+		cacheTabSearch = search
+		cacheTabResults = results
+
+		search, cache = tabUpdateInput(input)
+
+		if cache {
+			return nil
+		}
+
+		logger.Logger.Printf("RESULTS %s -- %s\n", search, results)
+	}
+
+	return nil
+}
+
 func simpleEditor(v *gocui.View, key gocui.Key, ch rune, mod gocui.Modifier) {
+	var tab = false
+	var inHistroy = false
+
 	switch {
+	case key == gocui.KeyTab:
+		tab = true
 	case ch != 0 && mod == 0:
 		v.EditWrite(ch)
 	case key == gocui.KeySpace:
@@ -28,17 +140,46 @@ func simpleEditor(v *gocui.View, key gocui.Key, ch rune, mod gocui.Modifier) {
 	case key == gocui.KeyInsert:
 		v.Overwrite = !v.Overwrite
 	case key == gocui.KeyEnter:
-		v.EditNewLine()
+		// v.EditNewLine()
+		// GetLine(Server.Gui, v)
 	case key == gocui.KeyArrowDown:
-		v.MoveCursor(0, 1, false)
+		inHistroy = true
+		if line := InputHistory.Next(); len(line) > 0 {
+			v.Clear()
+			fmt.Fprint(v, line)
+			v.SetCursor(len(v.Buffer()), 0)
+		}
 	case key == gocui.KeyArrowUp:
-		v.MoveCursor(0, -1, false)
+		inHistroy = true
+		if line := InputHistory.Prev(); len(line) > 0 {
+			v.Clear()
+			fmt.Fprint(v, line)
+			v.SetCursor(len(v.Buffer()), 0)
+		}
 	case key == gocui.KeyArrowLeft:
 		v.MoveCursor(-1, 0, false)
 	case key == gocui.KeyArrowRight:
 		v.MoveCursor(1, 0, false)
+	case key == gocui.KeyCtrlA:
+		v.SetCursor(0, 0)
+	case key == gocui.KeyCtrlK:
+		v.Clear()
+		v.SetCursor(0, 0)
+	case key == gocui.KeyCtrlE:
+		v.SetCursor(len(v.Buffer())-1, 0)
 	}
 
+	if !inHistroy {
+		// InputHistory.Current()
+	}
+
+	if !tab {
+		logger.Logger.Print("CALL\n")
+
+		inCacheTab = false
+		cacheTabSearch = ""
+		cacheTabResults = []string{}
+	}
 }
 
 func GetLine(g *gocui.Gui, v *gocui.View) error {
@@ -46,7 +187,7 @@ func GetLine(g *gocui.Gui, v *gocui.View) error {
 	var err error
 
 	// _, cy := v.Cursor()
-	if line, err = v.Line(-1); err != nil {
+	if line, err = v.Line(0); err != nil {
 		line = ""
 	}
 
@@ -58,6 +199,8 @@ func GetLine(g *gocui.Gui, v *gocui.View) error {
 		v.SetCursor(0, 0)
 		return nil
 	}
+
+	InputHistory.Add(line)
 
 	if strings.HasPrefix(line, "//") || !strings.HasPrefix(line, "/") {
 		if len(Server.CurrentChannel) > 0 {
@@ -97,8 +240,6 @@ func GetLine(g *gocui.Gui, v *gocui.View) error {
 		if err := command.Run(split[0], split); err != nil {
 			client.StatusMessage(v, err.Error())
 		}
-
-		// got command
 	}
 
 	// idleInputText := fmt.Sprintf("[%s] ", client.StatusChannel)
@@ -109,21 +250,27 @@ func GetLine(g *gocui.Gui, v *gocui.View) error {
 
 	// fmt.Fprint(v, idleInputText)
 	// v.SetCursor(len(idleInputText), 0)
-	FocusAndResetAll(g, v)
 
-	// fmt.Println(l)
+	v.Clear()
+	v.SetCursor(0, 0)
+
+	inCacheTab = false
+	cacheTabSearch = ""
+	cacheTabResults = []string{}
+
+	FocusAndResetAll(g, v)
 
 	return nil
 }
 
 func ScrollUp(g *gocui.Gui, cv *gocui.View) error {
-	v, _ := g.View(client.StatusChannel)
+	v, _ := g.View(Server.CurrentChannel)
 	ScrollView(v, -1)
 	return nil
 }
 
 func ScrollDown(g *gocui.Gui, cv *gocui.View) error {
-	v, _ := g.View(client.StatusChannel)
+	v, _ := g.View(Server.CurrentChannel)
 	ScrollView(v, 1)
 	return nil
 }
@@ -153,7 +300,7 @@ func FocusStatusView(g *gocui.Gui, v *gocui.View) error {
 
 func FocusInputView(g *gocui.Gui, v *gocui.View) error {
 
-	v.SetCursor(0, 0)
+	v.SetCursor(len(v.Buffer())-1, 0)
 
 	if err := g.SetCurrentView("input"); err != nil {
 		return err
@@ -177,18 +324,45 @@ func nextView(g *gocui.Gui, v *gocui.View) error {
 		next = 0
 	}
 
+	logger.Logger.Printf("INDEX %d\n", next)
+
 	if newView, err := g.View(Server.Channels[next].Name); err != nil {
 		return err
 	} else {
-		moveView(g, v, -9999999, 0)
-		moveView(g, newView, 0, 0)
+		newView.Autoscroll = true
+		g.SetViewOnTop(newView.Name())
+		Server.CurrentChannel = newView.Name()
 	}
 
 	if err := g.SetCurrentView(Server.Channels[next].Name); err != nil {
 		return err
 	}
 
-	logger.Logger.Printf("SET CHANNEL %s\n", Server.Channels[next].Name)
+	FocusInputView(g, v)
+
+	curView = next
+	return nil
+}
+
+func prevView(g *gocui.Gui, v *gocui.View) error {
+	next := curView - 1
+	if next < 0 {
+		next = len(Server.Channels)
+	}
+
+	logger.Logger.Printf("INDEX %d\n", next)
+
+	if newView, err := g.View(Server.Channels[next].Name); err != nil {
+		return err
+	} else {
+		newView.Autoscroll = true
+		g.SetViewOnTop(newView.Name())
+		Server.CurrentChannel = newView.Name()
+	}
+
+	if err := g.SetCurrentView(Server.Channels[next].Name); err != nil {
+		return err
+	}
 
 	FocusInputView(g, v)
 

@@ -41,6 +41,7 @@ func BindHandlers() {
 	Server.Client.HandleFunc("332", func(conn *irc.Conn, line *irc.Line) {
 		Server.Exec(line.Args[1], func(v *gocui.View, s *client.Server) error {
 			fmt.Fprintf(v, "// TOPIC: %s\n", line.Args[2])
+			fmt.Fprint(v, "\n// Nick List:\n")
 			return nil
 		})
 	})
@@ -51,8 +52,6 @@ func BindHandlers() {
 
 		Server.Exec(line.Args[2], func(v *gocui.View, s *client.Server) error {
 			nicks := strings.Split(line.Args[len(line.Args)-1], " ")
-
-			fmt.Fprint(v, "\n// Nick List:\n")
 
 			for _, nick := range nicks {
 				// UnrealIRCd's coders are lazy and leave a trailing space
@@ -85,8 +84,19 @@ func BindHandlers() {
 					}
 
 				}
+
+				if c, _, has := s.HasChannel(line.Args[2]); has {
+					c.Names = append(c.Names, nick)
+				}
 			}
 
+			return nil
+		})
+	})
+
+	Server.Client.HandleFunc("315", func(conn *irc.Conn, line *irc.Line) {
+
+		Server.Exec(line.Args[1], func(v *gocui.View, s *client.Server) error {
 			fmt.Fprint(v, "\n\n")
 			return nil
 		})
