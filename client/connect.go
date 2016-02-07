@@ -1,6 +1,7 @@
 package client
 
 import (
+	"crypto/tls"
 	"fmt"
 
 	ircClient "github.com/fluffle/goirc/client"
@@ -23,15 +24,16 @@ func New(server *Server) *ircClient.Conn {
 	// return irccon
 
 	// other client
-	cfg := ircClient.NewConfig(server.Nick)
-	// cfg.SSL = true
-	// cfg.SSLConfig = &tls.Config{
-	// InsecureSkipVerify: true,
-	// }
+	cfg := ircClient.NewConfig(server.Nick, server.User, server.Version)
+	cfg.SSL = server.SSL
+	cfg.SSLConfig = &tls.Config{
+		InsecureSkipVerify: server.InsecureSkipVerify,
+	}
 
 	cfg.Server = fmt.Sprintf("%s:%s", server.Address, server.Port)
 	cfg.NewNick = func(n string) string { return n + "^" }
 	cfg.Version = server.Version
+	cfg.QuitMessage = server.Version
 	cfg.SplitLen = 2000
 
 	c := ircClient.Client(cfg)

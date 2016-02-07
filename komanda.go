@@ -17,11 +17,12 @@ func quit(g *gocui.Gui, v *gocui.View) error {
 	return gocui.ErrQuit
 }
 
-func Run(build string) {
+func Run(build string, server *client.Server) {
 	var err error
 
 	logger.Start()
 
+	ui.Name = Name
 	ui.Logo = KomandaLogo
 	ui.VersionLine = fmt.Sprintf("  Version: %s%s  Source Code: %s\n",
 		Version, build, Website)
@@ -34,18 +35,9 @@ func Run(build string) {
 
 	defer g.Close()
 
-	g.Editor = gocui.EditorFunc(simpleEditor)
+	server.Gui = g
 
-	server := &client.Server{
-		Gui:     g,
-		Address: "irc.freenode.net",
-		// Address: "komanda.io",
-		Port:           "6667",
-		Nick:           "mephux",
-		User:           "mephux",
-		Version:        fmt.Sprintf("%s %s%s", Name, Version, build),
-		CurrentChannel: client.StatusChannel,
-	}
+	g.Editor = gocui.EditorFunc(simpleEditor)
 
 	client.New(server)
 

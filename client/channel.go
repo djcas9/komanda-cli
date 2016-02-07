@@ -1,6 +1,10 @@
 package client
 
-import "github.com/jroimartin/gocui"
+import (
+	"fmt"
+
+	"github.com/jroimartin/gocui"
+)
 
 type RenderHandlerFunc func(*Channel, *gocui.View) error
 
@@ -10,6 +14,8 @@ type Channel struct {
 	MaxX          int
 	MaxY          int
 	RenderHandler RenderHandlerFunc
+	Topic         string
+	TopicSetBy    string
 	Names         []string
 }
 
@@ -21,14 +27,14 @@ func (channel *Channel) Update() (*gocui.View, error) {
 	channel.MaxX, channel.MaxY = channel.Server.Gui.Size()
 
 	return channel.Server.Gui.SetView(channel.Name,
-		-1, -1, channel.MaxX, channel.MaxY-2)
+		-1, -1, channel.MaxX, channel.MaxY-4)
 
 }
 
 func (channel *Channel) Render() error {
 
 	view, err := channel.Server.Gui.SetView(channel.Name,
-		-1, -1, channel.MaxX, channel.MaxY-2)
+		-1, -1, channel.MaxX, channel.MaxY-4)
 
 	if err != gocui.ErrUnknownView {
 		return err
@@ -39,6 +45,8 @@ func (channel *Channel) Render() error {
 		view.Autoscroll = true
 		// view.Highlight = true
 		view.Frame = false
+
+		fmt.Fprint(view, "Loading...")
 	}
 
 	view.Wrap = true

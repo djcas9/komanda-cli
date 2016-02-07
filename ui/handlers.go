@@ -21,9 +21,6 @@ func BindHandlers() {
 
 	for _, code := range client.IrcCodes {
 		Server.Client.HandleFunc(code, func(conn *irc.Conn, line *irc.Line) {
-
-			logger.Logger.Printf("LINE %s\n", spew.Sdump(line))
-
 			Server.Exec(client.StatusChannel, func(v *gocui.View, s *client.Server) error {
 				client.StatusMessage(v, line.Text())
 				return nil
@@ -39,18 +36,17 @@ func BindHandlers() {
 	// })
 
 	Server.Client.HandleFunc("332", func(conn *irc.Conn, line *irc.Line) {
-		Server.Exec(line.Args[1], func(v *gocui.View, s *client.Server) error {
-			fmt.Fprintf(v, "// TOPIC: %s\n", line.Args[2])
-			fmt.Fprint(v, "\n// Nick List:\n")
-			return nil
-		})
+		if c, _, has := Server.HasChannel(line.Args[1]); has {
+			c.Topic = line.Args[2]
+		}
 	})
 
 	// nick list
 	Server.Client.HandleFunc("353", func(conn *irc.Conn, line *irc.Line) {
 		logger.Logger.Printf("LINE %s\n", spew.Sdump(line))
 
-		Server.Exec(line.Args[2], func(v *gocui.View, s *client.Server) error {
+		if c, _, has := Server.HasChannel(line.Args[2]); has {
+
 			nicks := strings.Split(line.Args[len(line.Args)-1], " ")
 
 			for _, nick := range nicks {
@@ -70,46 +66,64 @@ func BindHandlers() {
 						// conn.st.ChannelModes(ch.Name, "+a", nick)
 					case '@':
 						// conn.st.ChannelModes(ch.Name, "+o", nick)
-						fmt.Fprintf(v, "@%s ", nick)
+						// fmt.Fprintf(v, "@%s ", nick)
 					case '%':
 						// conn.st.ChannelModes(ch.Name, "+h", nick)
 					case '+':
 						// conn.st.ChannelModes(ch.Name, "+v", nick)
-						fmt.Fprintf(v, "+%s ", nick)
+						// fmt.Fprintf(v, "+%s ", nick)
 					default:
 						{
 
-							fmt.Fprintf(v, "+%s ", nick)
+							// fmt.Fprintf(v, "+%s ", nick)
 						}
 					}
 
 				}
 
-				if c, _, has := s.HasChannel(line.Args[2]); has {
-					c.Names = append(c.Names, nick)
-				}
+				logger.Logger.Printf("ADD NICK %s\n", spew.Sdump(nick))
+				c.Names = append(c.Names, nick)
 			}
+		}
 
-			return nil
-		})
 	})
 
-	Server.Client.HandleFunc("315", func(conn *irc.Conn, line *irc.Line) {
+	// Server.Client.HandleFunc("315", func(conn *irc.Conn, line *irc.Line) {
+	// Server.Exec(line.Args[1], func(v *gocui.View, s *client.Server) error {
+	// return nil
+	// })
+	// })
+
+	// 328
+	// 331 -- no topic
+
+	// 333 -- topic set by
+	Server.Client.HandleFunc("333", func(conn *irc.Conn, line *irc.Line) {
+		logger.Logger.Printf("TOPIC SET BY %s\n", spew.Sdump(line))
 
 		Server.Exec(line.Args[1], func(v *gocui.View, s *client.Server) error {
-			fmt.Fprint(v, "\n\n")
+			// fmt.Fprint(v, "\n\n")
 			return nil
 		})
 	})
 
+	// names list done
 	Server.Client.HandleFunc("366", func(conn *irc.Conn, line *irc.Line) {
-
 		Server.Exec(line.Args[1], func(v *gocui.View, s *client.Server) error {
 
-			// ircchan := conn.StateTracker().GetChannel(line.Args[1])
-			channels := conn.Me().Channels
-			logger.Logger.Printf("NICK LIST TEST %s\n", spew.Sdump(channels))
+			v.Clear()
+			v.SetCursor(0, 0)
 
+			if c, _, has := s.HasChannel(line.Args[1]); has {
+				fmt.Fprintf(v, "⣿ BUFFER: %s\n", c.Name)
+				fmt.Fprintf(v, "⣿  TOPIC: %s\n", c.Topic)
+				fmt.Fprint(v, "⣿  Names:\n  ")
+				for _, u := range c.Names {
+					fmt.Fprintf(v, "%s ", u)
+				}
+
+				fmt.Fprint(v, "\n\n")
+			}
 			return nil
 		})
 	})
@@ -120,14 +134,15 @@ func BindHandlers() {
 
 		logger.Logger.Printf("MSG %s %s %s %s\n", ircChan, line.Nick, line.Host, line.Args)
 
-		Server.Exec(ircChan,
-			func(v *gocui.View, s *client.Server) error {
-				timestamp := time.Now().Format("03:04")
-				fmt.Fprintf(v, "%s <- %s: %s\n", timestamp, line.Nick, line.Text())
+		if _, _, has := Server.HasChannel(ircChan); has {
+			Server.Exec(ircChan,
+				func(v *gocui.View, s *client.Server) error {
+					timestamp := time.Now().Format("03:04")
+					fmt.Fprintf(v, "%s <- %s: %s\n", timestamp, line.Nick, line.Text())
 
-				return nil
-			})
-
+					return nil
+				})
+		}
 	})
 
 	Server.Client.HandleFunc("464", func(conn *irc.Conn, line *irc.Line) {

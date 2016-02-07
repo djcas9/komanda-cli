@@ -12,6 +12,7 @@ var (
 	Logo        = ""
 	VersionLine = ""
 	Server      *client.Server
+	Name        = ""
 )
 
 func Layout(g *gocui.Gui) error {
@@ -31,10 +32,14 @@ func Layout(g *gocui.Gui) error {
 			RenderHandler: func(channel *client.Channel, view *gocui.View) error {
 				view.Autoscroll = true
 				view.Wrap = true
+				view.Frame = false
 
 				view.FgColor = gocui.ColorCyan
 				fmt.Fprintln(view, Logo)
 				fmt.Fprintln(view, VersionLine)
+
+				client.StatusMessage(view, fmt.Sprintf("Welcome to the %s IRC client.", Name))
+				client.StatusMessage(view, "Type /help for a list of commands.\n")
 
 				return nil
 			},
@@ -54,6 +59,10 @@ func Layout(g *gocui.Gui) error {
 		for _, c := range Server.Channels {
 			c.Update()
 		}
+	}
+
+	if err := MenuView(g, maxX, maxY); err != nil {
+		return err
 	}
 
 	if err := InputView(g, maxX, maxY); err != nil {

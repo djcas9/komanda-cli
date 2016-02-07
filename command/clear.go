@@ -1,8 +1,11 @@
 package command
 
 import (
+	"fmt"
+
 	"github.com/jroimartin/gocui"
 	"github.com/mephux/komanda-cli/client"
+	"github.com/mephux/komanda-cli/ui"
 )
 
 type ClearCmd struct {
@@ -15,9 +18,15 @@ func (e *ClearCmd) Metadata() CommandMetadata {
 
 func (e *ClearCmd) Exec(args []string) error {
 
-	Server.Exec(CurrentChannel, func(v *gocui.View, s *client.Server) error {
+	Server.Exec(Server.CurrentChannel, func(v *gocui.View, s *client.Server) error {
+		v.Autoscroll = true
 		v.Clear()
 		v.SetCursor(0, 0)
+
+		if Server.CurrentChannel == client.StatusChannel {
+			fmt.Fprintln(v, ui.Logo)
+			fmt.Fprintln(v, ui.VersionLine)
+		}
 
 		return nil
 	})

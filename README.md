@@ -6,14 +6,31 @@ I thought it would be fun so I did it.
 Would love some help to get it 1:1 with irssi. 
 Maybe embed lua,mruby or something else for the script lang.
 
-[![asciicast](https://asciinema.org/a/4qgm0618khtbyw3mobb79rk8x.png)](https://asciinema.org/a/4qgm0618khtbyw3mobb79rk8x)
+[![asciicast](https://asciinema.org/a/44kx7ff9y5qe3tdarese5110k.png)](https://asciinema.org/a/44kx7ff9y5qe3tdarese5110k)
+
+## Usage
+
+  ```bash
+usage: komanda [<flags>]
+
+Flags:
+      --help                     Show context-sensitive help (also try --help-long and
+                                 --help-man).
+  -d, --debug                    Enable debug logging
+  -v, --version                  Komanda Version
+      --ssl                      IRC SSL Connection
+      --ssl-skip-verify          Insecure skip verify. (self-signed certs)
+  -h, --host="irc.freenode.net"  hostname
+  -p, --port="6667"              port
+  -n, --nick="komanda"           nick
+  -u, --user="komanda"           user
+  ```
 
 ## Features
 
   * tab complete
   * new window per channel
   * history
-
 
 ## TODO
 

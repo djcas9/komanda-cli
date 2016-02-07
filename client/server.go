@@ -28,6 +28,8 @@ type Server struct {
 	Version string
 
 	CurrentChannel string
+
+	InsecureSkipVerify bool
 }
 
 type Handler func(*gocui.View, *Server) error

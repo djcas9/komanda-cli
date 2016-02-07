@@ -33,6 +33,12 @@ func (e *PartCmd) Exec(args []string) error {
 
 			if len(s.Channels) == 1 {
 				CurrentChannel = client.StatusChannel
+				Server.CurrentChannel = client.StatusChannel
+				Server.Gui.SetViewOnTop(client.StatusChannel)
+			} else {
+				// this needs work
+				Server.CurrentChannel = Server.Gui.CurrentView().Name()
+				Server.Gui.SetViewOnTop(Server.CurrentChannel)
 			}
 
 			return err

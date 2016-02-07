@@ -11,6 +11,7 @@ import (
 	"github.com/mephux/komanda-cli/logger"
 	"github.com/mephux/komanda-cli/share/history"
 	"github.com/mephux/komanda-cli/share/trie"
+	"github.com/mephux/komanda-cli/ui"
 )
 
 var (
@@ -331,13 +332,16 @@ func nextView(g *gocui.Gui, v *gocui.View) error {
 	} else {
 		newView.Autoscroll = true
 		g.SetViewOnTop(newView.Name())
-		Server.CurrentChannel = newView.Name()
 	}
 
 	if err := g.SetCurrentView(Server.Channels[next].Name); err != nil {
 		return err
 	}
 
+	logger.Logger.Printf("Set Current View %d\n", Server.Channels[next].Name)
+	Server.CurrentChannel = Server.Channels[next].Name
+
+	ui.UpdateMenuView()
 	FocusInputView(g, v)
 
 	curView = next
@@ -357,13 +361,16 @@ func prevView(g *gocui.Gui, v *gocui.View) error {
 	} else {
 		newView.Autoscroll = true
 		g.SetViewOnTop(newView.Name())
-		Server.CurrentChannel = newView.Name()
 	}
 
 	if err := g.SetCurrentView(Server.Channels[next].Name); err != nil {
 		return err
 	}
 
+	logger.Logger.Printf("Set Current View %d\n", Server.Channels[next].Name)
+	Server.CurrentChannel = Server.Channels[next].Name
+
+	ui.UpdateMenuView()
 	FocusInputView(g, v)
 
 	curView = next
