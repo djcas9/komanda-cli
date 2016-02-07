@@ -60,16 +60,16 @@ func GetLine(g *gocui.Gui, v *gocui.View) error {
 	}
 
 	if strings.HasPrefix(line, "//") || !strings.HasPrefix(line, "/") {
-		if len(command.CurrentChannel) > 0 {
+		if len(Server.CurrentChannel) > 0 {
 
-			Server.Exec(command.CurrentChannel, func(v *gocui.View, s *client.Server) error {
+			Server.Exec(Server.CurrentChannel, func(v *gocui.View, s *client.Server) error {
 				if Server.Client.Connected() {
-					Server.Client.Privmsg(command.CurrentChannel, line)
+					Server.Client.Privmsg(Server.CurrentChannel, line)
 				}
 				return nil
 			})
 
-			if mainView, err := g.View(command.CurrentChannel); err != nil {
+			if mainView, err := g.View(Server.CurrentChannel); err != nil {
 				return err
 			} else {
 				if mainView.Name() != client.StatusChannel {
@@ -87,7 +87,7 @@ func GetLine(g *gocui.Gui, v *gocui.View) error {
 
 		if len(split) <= 1 {
 			if split[0] == "p" || split[0] == "part" {
-				command.Run(split[0], []string{"", command.CurrentChannel})
+				command.Run(split[0], []string{"", Server.CurrentChannel})
 				v.Clear()
 				v.SetCursor(0, 0)
 				return nil

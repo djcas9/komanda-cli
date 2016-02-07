@@ -40,10 +40,11 @@ func Run(build string) {
 		Gui:     g,
 		Address: "irc.freenode.net",
 		// Address: "komanda.io",
-		Port:    "6667",
-		Nick:    "mephux",
-		User:    "mephux",
-		Version: fmt.Sprintf("%s %s%s", Name, Version, build),
+		Port:           "6667",
+		Nick:           "mephux",
+		User:           "mephux",
+		Version:        fmt.Sprintf("%s %s%s", Name, Version, build),
+		CurrentChannel: client.StatusChannel,
 	}
 
 	client.New(server)

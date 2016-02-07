@@ -36,7 +36,7 @@ func (channel *Channel) Render() error {
 	if channel.Name != StatusChannel {
 		view.FgColor = gocui.ColorMagenta
 		// view.Highlight = true
-		view.Frame = true
+		view.Frame = false
 	}
 
 	view.Wrap = true

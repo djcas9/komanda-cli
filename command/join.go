@@ -24,6 +24,7 @@ func (e *JoinCmd) Exec(args []string) error {
 		if len(args) >= 2 && len(args[1]) > 0 {
 			s.Client.Join(args[1])
 			CurrentChannel = args[1]
+			s.CurrentChannel = args[1]
 
 			return s.NewChannel(args[1])
 		}
