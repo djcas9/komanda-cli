@@ -26,6 +26,13 @@ Flags:
   -u, --user="komanda"           user
   ```
 
+## Keyboard
+
+  * `ctrl+]` change window
+  * `ctrl+p` scroll up
+  * `ctrl+n` scroll down
+  * `/help` for everything else
+
 ## Features
 
   * tab complete
