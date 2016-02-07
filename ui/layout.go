@@ -1,6 +1,8 @@
 package ui
 
 import (
+	"fmt"
+
 	"github.com/jroimartin/gocui"
 	"github.com/mephux/komanda-cli/client"
 	"github.com/mephux/komanda-cli/logger"
@@ -23,10 +25,19 @@ func Layout(g *gocui.Gui) error {
 
 	if _, _, ok := Server.HasChannel(client.StatusChannel); !ok {
 		status := client.Channel{
-			Name:          client.StatusChannel,
-			MaxX:          maxX,
-			MaxY:          maxY,
-			RenderHandler: StatusView,
+			Name: client.StatusChannel,
+			MaxX: maxX,
+			MaxY: maxY,
+			RenderHandler: func(channel *client.Channel, view *gocui.View) error {
+				view.Autoscroll = true
+				view.Wrap = true
+
+				view.FgColor = gocui.ColorCyan
+				fmt.Fprintln(view, Logo)
+				fmt.Fprintln(view, VersionLine)
+
+				return nil
+			},
 		}
 
 		Server.AddChannel(&status)
@@ -35,6 +46,13 @@ func Layout(g *gocui.Gui) error {
 
 		if err := status.Render(); err != nil {
 			return err
+		}
+
+		BindHandlers()
+
+	} else {
+		for _, c := range Server.Channels {
+			c.Update()
 		}
 	}
 

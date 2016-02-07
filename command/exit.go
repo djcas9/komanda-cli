@@ -19,7 +19,11 @@ func (e *ExitCmd) Exec(args []string) error {
 func exitCmd() Command {
 	return &ExitCmd{
 		MetadataTmpl: &MetadataTmpl{
-			name:        "exit",
+			name: "exit",
+			aliases: []string{
+				"q",
+				"quit",
+			},
 			description: "exit komanda-cli",
 		},
 	}

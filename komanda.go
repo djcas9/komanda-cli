@@ -39,9 +39,11 @@ func Run(build string) {
 	server := &client.Server{
 		Gui:     g,
 		Address: "irc.freenode.net",
+		// Address: "komanda.io",
 		Port:    "6667",
-		Nick:    "mephuxtestconnect",
+		Nick:    "mephux",
 		User:    "mephux",
+		Version: fmt.Sprintf("%s %s%s", Name, Version, build),
 	}
 
 	client.New(server)
@@ -55,11 +57,8 @@ func Run(build string) {
 
 	command.Register(server)
 
-	logger.Logger.Printf("BEFORE REGISTER %p %p\n", g, server.Gui)
-
 	g.Cursor = true
 	g.Mouse = true
-	// g.ShowCursor = true
 
 	if err := g.SetKeybinding("", gocui.KeyCtrlC,
 		gocui.ModNone, quit); err != nil {
@@ -81,10 +80,11 @@ func Run(build string) {
 	// log.Panicln(err)
 	// }
 
-	if err := g.SetKeybinding(client.StatusChannel, gocui.MouseLeft,
-		gocui.ModNone, FocusAndResetAll); err != nil {
-		log.Panicln(err)
-	}
+	// if err := g.SetKeybinding(client.StatusChannel,
+	// gocui.MouseLeft,
+	// gocui.ModNone, FocusAndResetAll); err != nil {
+	// log.Panicln(err)
+	// }
 
 	if err := g.SetKeybinding("input", gocui.MouseLeft,
 		gocui.ModNone, FocusInputView); err != nil {
@@ -100,14 +100,12 @@ func Run(build string) {
 		log.Panicln(err)
 	}
 
-	if err := g.SetKeybinding("", gocui.KeyTab, gocui.ModNone,
+	if err := g.SetKeybinding("", gocui.KeyCtrlRsqBracket, gocui.ModNone,
 		func(g *gocui.Gui, v *gocui.View) error {
 			return nextView(g, v)
 		}); err != nil {
 		log.Panicln(err)
 	}
-
-	logger.Logger.Printf("BEFORE REGISTER %p %p\n", g, server.Gui)
 
 	err = g.MainLoop()
 

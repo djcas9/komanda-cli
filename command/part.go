@@ -47,7 +47,10 @@ func (e *PartCmd) Exec(args []string) error {
 func partCmd() Command {
 	return &PartCmd{
 		MetadataTmpl: &MetadataTmpl{
-			name:        "part",
+			name: "part",
+			aliases: []string{
+				"p",
+			},
 			description: "part irc channel",
 		},
 	}

@@ -24,6 +24,8 @@ type Server struct {
 
 	Nick    string
 	AltNick string
+
+	Version string
 }
 
 type Handler func(*gocui.View, *Server) error
@@ -33,7 +35,7 @@ func (server *Server) Exec(channel string, h Handler) {
 		v, err := g.View(channel)
 
 		if err != nil {
-			panic(err)
+			// panic(err)
 			// return err
 		}
 

@@ -3,17 +3,18 @@ package command
 import (
 	"github.com/jroimartin/gocui"
 	"github.com/mephux/komanda-cli/client"
+	"github.com/mephux/komanda-cli/logger"
 )
 
-type JoinCmd struct {
+type PassCmd struct {
 	*MetadataTmpl
 }
 
-func (e *JoinCmd) Metadata() CommandMetadata {
+func (e *PassCmd) Metadata() CommandMetadata {
 	return e
 }
 
-func (e *JoinCmd) Exec(args []string) error {
+func (e *PassCmd) Exec(args []string) error {
 	Server.Exec(client.StatusChannel, func(v *gocui.View, s *client.Server) error {
 
 		if !s.Client.Connected() {
@@ -21,11 +22,10 @@ func (e *JoinCmd) Exec(args []string) error {
 			return nil
 		}
 
-		if len(args) >= 2 && len(args[1]) > 0 {
-			s.Client.Join(args[1])
-			CurrentChannel = args[1]
+		logger.Logger.Printf("pass %s \n", args)
 
-			return s.NewChannel(args[1])
+		if len(args) == 2 && len(args[1]) > 0 {
+			s.Client.Pass(args[1])
 		}
 
 		return nil
@@ -34,14 +34,15 @@ func (e *JoinCmd) Exec(args []string) error {
 	return nil
 }
 
-func joinCmd() Command {
-	return &JoinCmd{
+func passCmd() Command {
+	return &PassCmd{
 		MetadataTmpl: &MetadataTmpl{
-			name: "join",
+			name: "pass",
 			aliases: []string{
-				"j",
+				"password",
+				"server-password",
 			},
-			description: "join irc channel",
+			description: "pass irc channel",
 		},
 	}
 }

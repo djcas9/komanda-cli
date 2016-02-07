@@ -27,7 +27,10 @@ func (e *VersionCmd) Exec(args []string) error {
 func versionCmd() Command {
 	return &VersionCmd{
 		MetadataTmpl: &MetadataTmpl{
-			name:        "version",
+			name: "version",
+			aliases: []string{
+				"v",
+			},
 			description: "version command",
 		},
 	}

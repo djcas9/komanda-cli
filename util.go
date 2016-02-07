@@ -38,6 +38,7 @@ func simpleEditor(v *gocui.View, key gocui.Key, ch rune, mod gocui.Modifier) {
 	case key == gocui.KeyArrowRight:
 		v.MoveCursor(1, 0, false)
 	}
+
 }
 
 func GetLine(g *gocui.Gui, v *gocui.View) error {
@@ -45,7 +46,7 @@ func GetLine(g *gocui.Gui, v *gocui.View) error {
 	var err error
 
 	// _, cy := v.Cursor()
-	if line, err = v.Line(0); err != nil {
+	if line, err = v.Line(-1); err != nil {
 		line = ""
 	}
 
@@ -60,13 +61,20 @@ func GetLine(g *gocui.Gui, v *gocui.View) error {
 
 	if strings.HasPrefix(line, "//") || !strings.HasPrefix(line, "/") {
 		if len(command.CurrentChannel) > 0 {
-			Server.Client.Privmsg(command.CurrentChannel, line)
+
+			Server.Exec(command.CurrentChannel, func(v *gocui.View, s *client.Server) error {
+				if Server.Client.Connected() {
+					Server.Client.Privmsg(command.CurrentChannel, line)
+				}
+				return nil
+			})
+
 			if mainView, err := g.View(command.CurrentChannel); err != nil {
 				return err
 			} else {
 				if mainView.Name() != client.StatusChannel {
-					timestamp := time.Now().Format("3:04PM")
-					fmt.Fprintf(mainView, "%s > %s: %s\n", timestamp, Server.Nick, line)
+					timestamp := time.Now().Format("03:04")
+					fmt.Fprintf(mainView, "%s -> %s: %s\n", timestamp, Server.Client.Me().Nick, line)
 				}
 			}
 		}
@@ -77,23 +85,21 @@ func GetLine(g *gocui.Gui, v *gocui.View) error {
 		// mainView, _ := g.View(client.StatusChannel)
 		// fmt.Fprintln(mainView, "$ COMMAND = ", split[0], len(split))
 
-		// if len(split) <= 1 &&
-		// split[0] == "part" {
-		// command.Run(split[0], []string{"", command.CurrentChannel})
+		if len(split) <= 1 {
+			if split[0] == "p" || split[0] == "part" {
+				command.Run(split[0], []string{"", command.CurrentChannel})
+				v.Clear()
+				v.SetCursor(0, 0)
+				return nil
+			}
+		}
 
-		// v.Clear()
-		// fmt.Fprintf(v, "[%s] ", command.CurrentChannel)
-		// v.SetCursor(0, 0)
-
-		// return nil
-		// }
-
-		command.Run(split[0], split)
+		if err := command.Run(split[0], split); err != nil {
+			client.StatusMessage(v, err.Error())
+		}
 
 		// got command
 	}
-
-	v.Clear()
 
 	// idleInputText := fmt.Sprintf("[%s] ", client.StatusChannel)
 
@@ -103,7 +109,7 @@ func GetLine(g *gocui.Gui, v *gocui.View) error {
 
 	// fmt.Fprint(v, idleInputText)
 	// v.SetCursor(len(idleInputText), 0)
-	v.SetCursor(0, 0)
+	FocusAndResetAll(g, v)
 
 	// fmt.Println(l)
 
@@ -157,8 +163,11 @@ func FocusInputView(g *gocui.Gui, v *gocui.View) error {
 }
 
 func FocusAndResetAll(g *gocui.Gui, v *gocui.View) error {
-	FocusStatusView(g, v)
-	FocusInputView(g, v)
+	status, _ := g.View(client.StatusChannel)
+	input, _ := g.View("input")
+
+	FocusStatusView(g, status)
+	FocusInputView(g, input)
 	return nil
 }
 
@@ -197,8 +206,9 @@ func moveView(g *gocui.Gui, v *gocui.View, dx, dy int) error {
 
 	logger.Logger.Printf("RESIZE %d %d %d %d\n", x0+dx, y0+dy, x1+dx, y1+dy)
 
-	if _, err := g.SetView(name, x0+dx, y0+dy, x1+dx, y1+dy); err != nil {
+	if _, err := g.SetView(name, 0, 0, 0, 0); err != nil {
 		return err
 	}
+
 	return nil
 }

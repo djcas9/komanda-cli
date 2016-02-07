@@ -38,7 +38,11 @@ func (e *HelpCmd) Exec(args []string) error {
 func helpCmd() Command {
 	return &HelpCmd{
 		MetadataTmpl: &MetadataTmpl{
-			name:        "help",
+			name: "help",
+			aliases: []string{
+				"docs",
+				"?",
+			},
 			description: "help command",
 		},
 	}

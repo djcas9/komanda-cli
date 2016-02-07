@@ -11,6 +11,7 @@ var (
 type MetadataTmpl struct {
 	name        string
 	description string
+	aliases     []string
 }
 
 func (c *MetadataTmpl) Name() string {
@@ -21,9 +22,14 @@ func (c *MetadataTmpl) Description() string {
 	return c.description
 }
 
+func (c *MetadataTmpl) Aliases() []string {
+	return c.aliases
+}
+
 type CommandMetadata interface {
 	Name() string
 	Description() string
+	Aliases() []string
 }
 
 type Command interface {
@@ -44,6 +50,9 @@ func Register(server *client.Server) {
 		clearCmd(),
 		logoCmd(),
 		versionCmd(),
+		nickCmd(),
+		passCmd(),
+		rawCmd(),
 	}
 }
 
@@ -54,6 +63,12 @@ func Get(cmd string) Command {
 
 		if metadata.Name() == cmd {
 			return command
+		} else {
+			for _, c := range metadata.Aliases() {
+				if c == cmd {
+					return command
+				}
+			}
 		}
 	}
 

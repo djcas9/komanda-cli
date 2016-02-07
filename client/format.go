@@ -8,6 +8,6 @@ import (
 )
 
 func StatusMessage(view *gocui.View, data interface{}) {
-	timestamp := time.Now().Format("3:04PM")
-	fmt.Fprintf(view, "[%s] * %s\n", timestamp, data)
+	timestamp := time.Now().Format("03:04")
+	fmt.Fprintf(view, "-> [%s] * %s\n", timestamp, data)
 }

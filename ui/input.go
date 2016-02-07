@@ -4,7 +4,7 @@ import "github.com/jroimartin/gocui"
 
 func InputView(g *gocui.Gui, maxX, maxY int) error {
 
-	if v, err := g.SetView("input", -1, maxY-3, maxX, maxY); err != nil {
+	if v, err := g.SetView("input", -1, maxY-2, maxX, maxY); err != nil {
 		if err != gocui.ErrUnknownView {
 			return err
 		}
@@ -16,6 +16,7 @@ func InputView(g *gocui.Gui, maxX, maxY int) error {
 		v.Autoscroll = true
 		v.Editable = true
 		v.Wrap = false
+		v.Frame = true
 
 	}
 

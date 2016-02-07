@@ -24,9 +24,15 @@ func New(server *Server) *ircClient.Conn {
 
 	// other client
 	cfg := ircClient.NewConfig(server.Nick)
-	cfg.SSL = false
+	// cfg.SSL = true
+	// cfg.SSLConfig = &tls.Config{
+	// InsecureSkipVerify: true,
+	// }
+
 	cfg.Server = fmt.Sprintf("%s:%s", server.Address, server.Port)
 	cfg.NewNick = func(n string) string { return n + "^" }
+	cfg.Version = server.Version
+	cfg.SplitLen = 2000
 
 	c := ircClient.Client(cfg)
 	c.EnableStateTracking()

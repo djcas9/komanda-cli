@@ -28,7 +28,10 @@ func (e *ClearCmd) Exec(args []string) error {
 func clearCmd() Command {
 	return &ClearCmd{
 		MetadataTmpl: &MetadataTmpl{
-			name:        "clear",
+			name: "clear",
+			aliases: []string{
+				"cls",
+			},
 			description: "clear current view",
 		},
 	}
