@@ -1,33 +1,37 @@
 package client
 
 import (
-	// ircClient "github.com/fluffle/goirc/client"
-	"github.com/thoj/go-ircevent"
+	"fmt"
+
+	ircClient "github.com/fluffle/goirc/client"
 )
 
-func New(server *Server) *irc.Connection {
-	irccon := irc.IRC(server.Nick, server.User)
-	irccon.VerboseCallbackHandler = false
-	irccon.Debug = false
+// "github.com/thoj/go-ircevent"
 
-	//Set options
-	// ircobj.UseTLS = false //default is false
-	//ircobj.TLSOptions //set ssl options
-	// ircobj.Password = ""
+func New(server *Server) *ircClient.Conn {
+	// irccon := irc.IRC(server.Nick, server.User)
+	// irccon.VerboseCallbackHandler = false
+	// irccon.Debug = false
 
-	server.Client = irccon
+	// //Set options
+	// // ircobj.UseTLS = false //default is false
+	// //ircobj.TLSOptions //set ssl options
+	// // ircobj.Password = ""
 
-	return irccon
+	// server.Client = irccon
+
+	// return irccon
 
 	// other client
-	// cfg := ircClient.NewConfig(server.Nick)
-	// cfg.SSL = false
-	// cfg.Server = fmt.Sprintf("%s:%s", )
-	// cfg.NewNick = func(n string) string { return n + "^" }
+	cfg := ircClient.NewConfig(server.Nick)
+	cfg.SSL = false
+	cfg.Server = fmt.Sprintf("%s:%s", server.Address, server.Port)
+	cfg.NewNick = func(n string) string { return n + "^" }
 
-	// c := ircClient.Client(cfg)
+	c := ircClient.Client(cfg)
+	c.EnableStateTracking()
 
-	// server.Client = c
+	server.Client = c
 
-	// return c
+	return c
 }

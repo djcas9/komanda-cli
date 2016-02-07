@@ -17,14 +17,14 @@ func quit(g *gocui.Gui, v *gocui.View) error {
 	return gocui.ErrQuit
 }
 
-func Run() {
+func Run(build string) {
 	var err error
 
 	logger.Start()
 
 	ui.Logo = KomandaLogo
-	ui.VersionLine = fmt.Sprintf("  Version: %s Source Code: %s\n",
-		Version, Website)
+	ui.VersionLine = fmt.Sprintf("  Version: %s%s  Source Code: %s\n",
+		Version, build, Website)
 
 	g := gocui.NewGui()
 

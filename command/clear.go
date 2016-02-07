@@ -14,16 +14,14 @@ func (e *ClearCmd) Metadata() CommandMetadata {
 }
 
 func (e *ClearCmd) Exec(args []string) error {
-	Server.Gui.Execute(func(g *gocui.Gui) error {
-		v, err := g.View(client.StatusChannel)
-		if err != nil {
-			return err
-		}
 
+	Server.Exec(CurrentChannel, func(v *gocui.View, s *client.Server) error {
 		v.Clear()
+		v.SetCursor(0, 0)
 
 		return nil
 	})
+
 	return nil
 }
 

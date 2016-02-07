@@ -1,8 +1,6 @@
 package command
 
 import (
-	"fmt"
-
 	"github.com/jroimartin/gocui"
 	"github.com/mephux/komanda-cli/client"
 )
@@ -18,7 +16,10 @@ func (e *PartCmd) Metadata() CommandMetadata {
 func (e *PartCmd) Exec(args []string) error {
 	Server.Exec(client.StatusChannel, func(v *gocui.View, s *client.Server) error {
 
-		fmt.Fprintln(v, "Part Args", args)
+		if !s.Client.Connected() {
+			client.StatusMessage(v, "Not connected")
+			return nil
+		}
 
 		if len(args) >= 2 {
 

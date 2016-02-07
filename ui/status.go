@@ -2,12 +2,15 @@ package ui
 
 import (
 	"fmt"
+	"strings"
 	"time"
 
+	"github.com/davecgh/go-spew/spew"
 	"github.com/jroimartin/gocui"
 	"github.com/mephux/komanda-cli/client"
 	"github.com/mephux/komanda-cli/logger"
-	"github.com/thoj/go-ircevent"
+
+	irc "github.com/fluffle/goirc/client"
 )
 
 func StatusView(channel *client.Channel, view *gocui.View) error {
@@ -17,84 +20,94 @@ func StatusView(channel *client.Channel, view *gocui.View) error {
 	view.FgColor = gocui.ColorCyan
 	fmt.Fprintln(view, Logo)
 	fmt.Fprintln(view, VersionLine)
-	// view.FgColor = gocui.ColorDefault
-	// fmt.Fprintln(view, spew.Sdump(Irc))
 
-	//event.Message() contains the message
-	//event.Nick Contains the sender
-	//event.Arguments[0] Contains the channel
+	for _, code := range client.IrcCodes {
+		channel.Server.Client.HandleFunc(code, func(conn *irc.Conn, line *irc.Line) {
 
-	var codes = []string{
-		"*",
-		// "0",
-		// "001",
-		// "002",
-		// "003",
-		// "004",
-		// "005",
-		// "007",
-		// "375",
-		// "372",
-		// "377",
-		// "378",
-		// "376",
-		// "221",
-		// "PING",
-		// "CTCP_CLIENTINFO",
-		// "CTCP_USERINFO",
-	}
-
-	for _, code := range codes {
-		channel.Server.Client.AddCallback(code, func(event *irc.Event) {
+			logger.Logger.Printf("LINE %s\n", spew.Sdump(line))
 
 			channel.Server.Exec(client.StatusChannel, func(v *gocui.View, s *client.Server) error {
-				fmt.Fprintln(v, event.Raw)
-
+				client.StatusMessage(v, line.Text())
 				return nil
 			})
 		})
 	}
 
-	channel.Server.Client.AddCallback("332", func(event *irc.Event) {
-		ircChannel := event.Arguments[1]
-		topic := event.Arguments[2]
+	channel.Server.Client.HandleFunc("332", func(conn *irc.Conn, line *irc.Line) {
+		channel.Server.Exec(line.Args[1], func(v *gocui.View, s *client.Server) error {
+			fmt.Fprintf(v, "// TOPIC: %s\n", line.Args[2])
+			return nil
+		})
+	})
 
-		if len(ircChannel) > 0 {
+	// nick list
+	channel.Server.Client.HandleFunc("353", func(conn *irc.Conn, line *irc.Line) {
+		logger.Logger.Printf("LINE %s\n", spew.Sdump(line))
 
-			channel.Server.Exec(ircChannel, func(v *gocui.View, s *client.Server) error {
-				if len(topic) <= 0 {
-					topic = fmt.Sprintf("no topic is set for channel %s", ircChannel)
+		channel.Server.Exec(line.Args[2], func(v *gocui.View, s *client.Server) error {
+			nicks := strings.Split(line.Args[len(line.Args)-1], " ")
+
+			fmt.Fprint(v, "\n// Nick List:\n")
+
+			for _, nick := range nicks {
+				// UnrealIRCd's coders are lazy and leave a trailing space
+				if nick == "" {
+					continue
 				}
-				fmt.Fprintf(v, "* Topic: %s\n", topic)
+				switch c := nick[0]; c {
+				case '~', '&', '@', '%', '+':
+					nick = nick[1:]
+					fallthrough
+				default:
+					switch c {
+					case '~':
+						// conn.st.ChannelModes(ch.Name, "+q", nick)
+					case '&':
+						// conn.st.ChannelModes(ch.Name, "+a", nick)
+					case '@':
+						// conn.st.ChannelModes(ch.Name, "+o", nick)
+						fmt.Fprintf(v, "@%s ", nick)
+					case '%':
+						// conn.st.ChannelModes(ch.Name, "+h", nick)
+					case '+':
+						// conn.st.ChannelModes(ch.Name, "+v", nick)
+						fmt.Fprintf(v, "+%s ", nick)
+					default:
+						{
 
-				return nil
-			})
-		}
+							fmt.Fprintf(v, "+%s ", nick)
+						}
+					}
 
+				}
+			}
+
+			fmt.Fprint(v, "\n\n")
+			return nil
+		})
 	})
 
-	channel.Server.Client.AddCallback("321", func(event *irc.Event) {
-		logger.Logger.Printf("321 %s\n", event.Raw)
+	channel.Server.Client.HandleFunc("366", func(conn *irc.Conn, line *irc.Line) {
+
+		channel.Server.Exec(line.Args[1], func(v *gocui.View, s *client.Server) error {
+
+			ircchan := conn.StateTracker().GetChannel(line.Args[1])
+			logger.Logger.Printf("NICK LIST TEST %s\n", spew.Sdump(ircchan))
+
+			return nil
+		})
 	})
 
-	channel.Server.Client.AddCallback("322", func(event *irc.Event) {
-		logger.Logger.Printf("322 %s\n", event.Raw)
-	})
+	channel.Server.Client.HandleFunc(irc.PRIVMSG, func(conn *irc.Conn, line *irc.Line) {
 
-	channel.Server.Client.AddCallback("323", func(event *irc.Event) {
-		logger.Logger.Printf("323 %s\n", event.Raw)
-	})
+		ircChan := line.Args[0]
 
-	channel.Server.Client.AddCallback("PRIVMSG", func(event *irc.Event) {
-
-		ircChan := event.Arguments[0]
-
-		logger.Logger.Printf("MSG %s %s %s %s\n", ircChan, event.Nick, event.Host, event.Arguments)
+		logger.Logger.Printf("MSG %s %s %s %s\n", ircChan, line.Nick, line.Host, line.Args)
 
 		channel.Server.Exec(ircChan,
 			func(v *gocui.View, s *client.Server) error {
 				timestamp := time.Now().Format("3:04PM")
-				fmt.Fprintf(v, "%s > %s: %s\n", timestamp, event.Nick, event.Message())
+				fmt.Fprintf(v, "%s > %s: %s\n", timestamp, line.Nick, line.Text())
 
 				return nil
 			})

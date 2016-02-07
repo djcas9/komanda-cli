@@ -3,8 +3,8 @@ package client
 import (
 	"errors"
 
+	ircClient "github.com/fluffle/goirc/client"
 	"github.com/jroimartin/gocui"
-	"github.com/thoj/go-ircevent"
 )
 
 const (
@@ -13,7 +13,7 @@ const (
 
 type Server struct {
 	Gui      *gocui.Gui
-	Client   *irc.Connection
+	Client   *ircClient.Conn
 	Channels []*Channel
 
 	Address  string

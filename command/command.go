@@ -1,14 +1,11 @@
 package command
 
-import (
-	"github.com/mephux/komanda-cli/client"
-	"github.com/mephux/komanda-cli/logger"
-)
+import "github.com/mephux/komanda-cli/client"
 
 var (
 	Commands       []Command
 	Server         *client.Server
-	CurrentChannel = ""
+	CurrentChannel = client.StatusChannel
 )
 
 type MetadataTmpl struct {
@@ -37,14 +34,16 @@ type Command interface {
 func Register(server *client.Server) {
 	Server = server
 
-	logger.Logger.Printf("XXX IN REGISTER %p %p\n", Server, server)
 	Commands = []Command{
 		exitCmd(),
 		connectCmd(),
-		testCmd(),
+		statusCmd(),
+		helpCmd(),
 		joinCmd(),
 		partCmd(),
 		clearCmd(),
+		logoCmd(),
+		versionCmd(),
 	}
 }
 

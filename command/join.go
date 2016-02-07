@@ -1,8 +1,6 @@
 package command
 
 import (
-	"fmt"
-
 	"github.com/jroimartin/gocui"
 	"github.com/mephux/komanda-cli/client"
 )
@@ -18,9 +16,12 @@ func (e *JoinCmd) Metadata() CommandMetadata {
 func (e *JoinCmd) Exec(args []string) error {
 	Server.Exec(client.StatusChannel, func(v *gocui.View, s *client.Server) error {
 
-		fmt.Fprintln(v, "Join Args", args)
+		if !s.Client.Connected() {
+			client.StatusMessage(v, "Not connected")
+			return nil
+		}
 
-		if len(args) >= 2 {
+		if len(args) >= 2 && len(args[1]) > 0 {
 			s.Client.Join(args[1])
 			CurrentChannel = args[1]
 

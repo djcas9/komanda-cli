@@ -6,7 +6,7 @@ NAME="komanda"
 BUILDVERSION=$(shell cat VERSION)
 
 # Get the git commit
-SHA=$(git rev-parse --short HEAD)
+SHA=$(shell git rev-parse --short HEAD)
 
 build: lint generate
 	@echo "Building..."

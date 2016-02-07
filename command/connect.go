@@ -1,9 +1,6 @@
 package command
 
 import (
-	"fmt"
-	"log"
-
 	"github.com/jroimartin/gocui"
 	"github.com/mephux/komanda-cli/client"
 )
@@ -20,12 +17,14 @@ func (e *ConnectCmd) Exec(args []string) error {
 
 	Server.Exec(client.StatusChannel, func(v *gocui.View, s *client.Server) error {
 
-		fmt.Fprintln(v, "Got Connect Command", args)
+		if s.Client.Connected() {
+			client.StatusMessage(v, "Already Connecting and/or Connected...")
+			return nil
+		}
 
-		s.Client.Log = log.New(v, "", 0)
+		client.StatusMessage(v, "Connecting... please wait.")
 
-		if err := s.Client.Connect(fmt.Sprintf("%s:%s",
-			s.Address, s.Port)); err != nil {
+		if err := s.Client.Connect(); err != nil {
 			panic(err)
 		}
 

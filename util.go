@@ -74,19 +74,19 @@ func GetLine(g *gocui.Gui, v *gocui.View) error {
 	} else {
 		split := strings.Split(line[1:], " ")
 
-		mainView, _ := g.View(client.StatusChannel)
-		fmt.Fprintln(mainView, "$ COMMAND = ", split[0], len(split))
+		// mainView, _ := g.View(client.StatusChannel)
+		// fmt.Fprintln(mainView, "$ COMMAND = ", split[0], len(split))
 
-		if len(split) <= 1 &&
-			split[0] == "part" {
-			command.Run(split[0], []string{"", command.CurrentChannel})
+		// if len(split) <= 1 &&
+		// split[0] == "part" {
+		// command.Run(split[0], []string{"", command.CurrentChannel})
 
-			v.Clear()
-			fmt.Fprintf(v, "[%s] ", command.CurrentChannel)
-			v.SetCursor(0, 0)
+		// v.Clear()
+		// fmt.Fprintf(v, "[%s] ", command.CurrentChannel)
+		// v.SetCursor(0, 0)
 
-			return nil
-		}
+		// return nil
+		// }
 
 		command.Run(split[0], split)
 
