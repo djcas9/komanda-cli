@@ -1,122 +1,56 @@
-package komanda
+package main
 
 import (
 	"fmt"
-	"log"
+	"runtime"
 
-	"github.com/jroimartin/gocui"
 	"github.com/mephux/komanda-cli/client"
-	"github.com/mephux/komanda-cli/command"
-	"github.com/mephux/komanda-cli/logger"
-	"github.com/mephux/komanda-cli/ui"
+	"github.com/mephux/komanda-cli/komanda"
+	"gopkg.in/alecthomas/kingpin.v2"
 )
 
-var Server *client.Server
+var Build = ""
 
-func quit(g *gocui.Gui, v *gocui.View) error {
-	return gocui.ErrQuit
-}
+var (
+	debug   = kingpin.Flag("debug", "Enable debug logging").Short('d').Bool()
+	version = kingpin.Flag("version", "Komanda Version").Short('v').Bool()
 
-func Run(build string, server *client.Server) {
-	var err error
+	ssl                = kingpin.Flag("ssl", "IRC SSL Connection").Bool()
+	InsecureSkipVerify = kingpin.Flag("ssl-skip-verify", "Insecure skip verify. (self-signed certs)").Bool()
 
-	logger.Start()
+	host = kingpin.Flag("host", "hostname").Short('h').Default("irc.freenode.net").String()
+	port = kingpin.Flag("port", "port").Short('p').Default("6667").String()
+	nick = kingpin.Flag("nick", "nick").Short('n').Default("komanda").String()
+	user = kingpin.Flag("user", "user").Short('u').Default("komanda").String()
+)
 
-	ui.Name = Name
-	ui.Logo = KomandaLogo
-	ui.VersionLine = fmt.Sprintf("  Version: %s%s  Source Code: %s\n",
-		Version, build, Website)
-
-	g := gocui.NewGui()
-
-	if err := g.Init(); err != nil {
-		log.Panicln(err)
+func main() {
+	if len(Build) > 0 {
+		Build = fmt.Sprintf(".%s", Build)
 	}
 
-	defer g.Close()
+	kingpin.Parse()
 
-	server.Gui = g
+	versionOutput := fmt.Sprintf("%s %s%s",
+		komanda.Name, komanda.Version, Build)
 
-	g.Editor = gocui.EditorFunc(simpleEditor)
-
-	client.New(server)
-
-	defer server.Client.Quit()
-
-	Server = server
-	ui.Server = server
-
-	g.SetLayout(ui.Layout)
-
-	command.Register(server)
-
-	g.Cursor = true
-	g.Mouse = true
-
-	if err := g.SetKeybinding("", gocui.KeyCtrlC,
-		gocui.ModNone, quit); err != nil {
-		log.Panicln(err)
+	if *version {
+		fmt.Println(versionOutput)
+		return
 	}
 
-	if err := g.SetKeybinding("input", gocui.KeyEnter,
-		gocui.ModNone, GetLine); err != nil {
-		log.Panicln(err)
+	runtime.GOMAXPROCS(runtime.NumCPU())
+
+	server := &client.Server{
+		Address:            *host,
+		Port:               *port,
+		Nick:               *nick,
+		User:               *user,
+		SSL:                *ssl,
+		Version:            versionOutput,
+		InsecureSkipVerify: *InsecureSkipVerify,
+		CurrentChannel:     client.StatusChannel,
 	}
 
-	// if err := g.SetKeybinding("", gocui.KeyEsc,
-	// gocui.ModNone, FocusStatusView); err != nil {
-	// log.Panicln(err)
-	// }
-
-	// if err := g.SetKeybinding("", gocui.KeyCtrlI,
-	// gocui.ModNone, FocusInputView); err != nil {
-	// log.Panicln(err)
-	// }
-
-	// if err := g.SetKeybinding(client.StatusChannel,
-	// gocui.MouseLeft,
-	// gocui.ModNone, FocusAndResetAll); err != nil {
-	// log.Panicln(err)
-	// }
-
-	if err := g.SetKeybinding("input", gocui.MouseLeft,
-		gocui.ModNone, FocusInputView); err != nil {
-		log.Panicln(err)
-	}
-
-	if err := g.SetKeybinding("", gocui.KeyCtrlN,
-		gocui.ModNone, ScrollDown); err != nil {
-		log.Panicln(err)
-	}
-	if err := g.SetKeybinding("", gocui.KeyCtrlP,
-		gocui.ModNone, ScrollUp); err != nil {
-		log.Panicln(err)
-	}
-
-	if err := g.SetKeybinding("", gocui.KeyArrowLeft, gocui.ModAlt,
-		func(g *gocui.Gui, v *gocui.View) error {
-			return prevView(g, v)
-		}); err != nil {
-		log.Panicln(err)
-	}
-
-	if err := g.SetKeybinding("", gocui.KeyCtrlRsqBracket, gocui.ModNone,
-		func(g *gocui.Gui, v *gocui.View) error {
-			return nextView(g, v)
-		}); err != nil {
-		log.Panicln(err)
-	}
-
-	if err := g.SetKeybinding("", gocui.KeyTab, gocui.ModNone,
-		func(g *gocui.Gui, v *gocui.View) error {
-			return tabComplete(g, v)
-		}); err != nil {
-		log.Panicln(err)
-	}
-
-	err = g.MainLoop()
-
-	if err != nil && err != gocui.ErrQuit {
-		log.Panicln(err)
-	}
+	komanda.Run(Build, server)
 }

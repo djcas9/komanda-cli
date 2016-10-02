@@ -1,4 +1,3 @@
-DEPS = $(go list -f '{{range .TestImports}}{{.}} {{end}}' ./...)
 WEBSITE="http://komanda.io"
 DESCRIPTION="Komanda IRC Client"
 NAME="komanda"
@@ -8,19 +7,19 @@ BUILDVERSION=$(shell cat VERSION)
 # Get the git commit
 SHA=$(shell git rev-parse --short HEAD)
 
-build: lint generate
+build: lint
 	@echo "Building..."
 	@mkdir -p bin/
 	@go build \
     -ldflags "-X main.Build=${SHA}" \
-    -o bin/${NAME} cmd/main.go
+    -o bin/${NAME} .
 
 generate:
 	@echo "Running go generate..."
 	@go generate ./...
 
 lint:
-	@go vet ./...
+	# @go vet ./...
 	# @golint ./...
 
 test:
