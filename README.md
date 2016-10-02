@@ -6,8 +6,6 @@ I thought it would be fun so I did it.
 Would love some help to get it 1:1 with irssi. 
 Maybe embed lua,mruby or something else for the script lang.
 
-[![asciicast](https://asciinema.org/a/44kx7ff9y5qe3tdarese5110k.png)](https://asciinema.org/a/44kx7ff9y5qe3tdarese5110k)
-
 ## Usage
 
   ```bash
@@ -23,14 +21,16 @@ Flags:
   -h, --host="irc.freenode.net"  hostname
   -p, --port="6667"              port
   -n, --nick="komanda"           nick
-  -u, --user="komanda"           user
+  -u, --user="komanda"           server user
+  -P, --password                 server password
   ```
 
 ## Keyboard
 
-  * `ctrl+]` change window
-  * `ctrl+p` scroll up
-  * `ctrl+n` scroll down
+  * `ctrl+n` change to next window
+  * `ctrl+p` change to previous window
+  * `ctrl+alt+p` scroll up
+  * `ctrl+alt+n` scroll down
   * `/help` for everything else
 
 ## Features
