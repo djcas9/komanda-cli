@@ -11,26 +11,20 @@ SHA=$(shell git rev-parse --short HEAD)
 build: lint generate
 	@echo "Building..."
 	@mkdir -p bin/
-	@godep go build \
+	@go build \
     -ldflags "-X main.Build=${SHA}" \
     -o bin/${NAME} cmd/main.go
 
 generate:
 	@echo "Running go generate..."
-	@godep go generate ./...
+	@go generate ./...
 
 lint:
-	@godep go vet ./...
+	@go vet ./...
 	# @golint ./...
 
-updatedeps:
-	@godep update ...
-
-test: deps
+test:
 	go list ./... | xargs -n1 go test
-
-deps:
-	@go get -u github.com/tools/godep
 
 clean:
 	@rm -rf bin/
