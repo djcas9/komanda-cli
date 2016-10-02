@@ -4,7 +4,7 @@ import (
 	"fmt"
 
 	"github.com/jroimartin/gocui"
-	"github.com/mephux/komanda-cli/client"
+	"github.com/mephux/komanda-cli/komanda/client"
 )
 
 type HelpCmd struct {
@@ -17,7 +17,7 @@ func (e *HelpCmd) Metadata() CommandMetadata {
 
 func (e *HelpCmd) Exec(args []string) error {
 
-	Server.Exec(client.StatusChannel, func(v *gocui.View, s *client.Server) error {
+	Server.Exec(Server.CurrentChannel, func(g *gocui.Gui, v *gocui.View, s *client.Server) error {
 
 		client.StatusMessage(v, "==================== HELP COMMANDS ====================")
 

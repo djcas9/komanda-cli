@@ -1,6 +1,6 @@
 package command
 
-import "github.com/mephux/komanda-cli/client"
+import "github.com/mephux/komanda-cli/komanda/client"
 
 var (
 	Commands       []Command
@@ -53,6 +53,8 @@ func Register(server *client.Server) {
 		nickCmd(),
 		passCmd(),
 		rawCmd(),
+		topicCmd(),
+		windowCmd(),
 	}
 }
 

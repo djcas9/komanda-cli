@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"runtime"
 
-	"github.com/mephux/komanda-cli/client"
 	"github.com/mephux/komanda-cli/komanda"
+	"github.com/mephux/komanda-cli/komanda/client"
 	"gopkg.in/alecthomas/kingpin.v2"
 )
 
@@ -21,7 +21,8 @@ var (
 	host = kingpin.Flag("host", "hostname").Short('h').Default("irc.freenode.net").String()
 	port = kingpin.Flag("port", "port").Short('p').Default("6667").String()
 	nick = kingpin.Flag("nick", "nick").Short('n').Default("komanda").String()
-	user = kingpin.Flag("user", "user").Short('u').Default("komanda").String()
+	user = kingpin.Flag("user", "server user").Short('u').Default("komanda").String()
+	pass = kingpin.Flag("password", "server password").Short('P').String()
 )
 
 func main() {
@@ -46,6 +47,7 @@ func main() {
 		Port:               *port,
 		Nick:               *nick,
 		User:               *user,
+		Password:           *pass,
 		SSL:                *ssl,
 		Version:            versionOutput,
 		InsecureSkipVerify: *InsecureSkipVerify,

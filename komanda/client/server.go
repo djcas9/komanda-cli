@@ -32,25 +32,25 @@ type Server struct {
 	InsecureSkipVerify bool
 }
 
-type Handler func(*gocui.View, *Server) error
+type Handler func(*gocui.Gui, *gocui.View, *Server) error
 
 func (server *Server) Exec(channel string, h Handler) {
 	server.Gui.Execute(func(g *gocui.Gui) error {
 		v, err := g.View(channel)
 
 		if err != nil {
-			server.NewChannel(channel)
+			server.NewChannel(channel, false)
 
 			if v, err := g.View(channel); err == nil {
 
 				server.CurrentChannel = channel
-				return h(v, server)
+				return h(server.Gui, v, server)
 			}
 
 			return err
 		}
 
-		return h(v, server)
+		return h(server.Gui, v, server)
 	})
 }
 
@@ -80,22 +80,37 @@ func (server *Server) AddChannel(channel *Channel) {
 	}
 }
 
-func (server *Server) RemoveChannel(name string) error {
-	if channel, i, ok := server.HasChannel(name); ok {
+func (server *Server) RemoveChannel(name string) (int, error) {
+	channel, i, ok := server.HasChannel(name)
+
+	if ok {
 		server.Gui.DeleteView(channel.Name)
 		server.Channels = append(server.Channels[:i], server.Channels[i+1:]...)
+		return i, nil
 	}
 
-	return nil
+	return 0, nil
 }
 
-func (server *Server) NewChannel(name string) error {
+func (server *Server) GetCurrentChannel() *Channel {
+
+	for _, s := range server.Channels {
+		if s.Name == server.CurrentChannel {
+			return s
+		}
+	}
+
+	return server.Channels[0]
+}
+
+func (server *Server) NewChannel(name string, private bool) error {
 	maxX, maxY := server.Gui.Size()
 
 	channel := Channel{
-		Name: name,
-		MaxX: maxX,
-		MaxY: maxY,
+		Unread: false,
+		Name:   name,
+		MaxX:   maxX,
+		MaxY:   maxY,
 		RenderHandler: func(channel *Channel, view *gocui.View) error {
 			return nil
 		},
@@ -103,11 +118,13 @@ func (server *Server) NewChannel(name string) error {
 
 	server.AddChannel(&channel)
 
-	if err := channel.Render(); err != nil {
+	if err := channel.Render(private); err != nil {
 		return err
 	}
 
-	server.CurrentChannel = name
+	if !private {
+		server.CurrentChannel = name
+	}
 
 	return nil
 }

@@ -2,8 +2,8 @@ package command
 
 import (
 	"github.com/jroimartin/gocui"
-	"github.com/mephux/komanda-cli/client"
-	"github.com/mephux/komanda-cli/logger"
+	"github.com/mephux/komanda-cli/komanda/client"
+	"github.com/mephux/komanda-cli/komanda/logger"
 )
 
 type PassCmd struct {
@@ -15,7 +15,7 @@ func (e *PassCmd) Metadata() CommandMetadata {
 }
 
 func (e *PassCmd) Exec(args []string) error {
-	Server.Exec(client.StatusChannel, func(v *gocui.View, s *client.Server) error {
+	Server.Exec(client.StatusChannel, func(g *gocui.Gui, v *gocui.View, s *client.Server) error {
 
 		if !s.Client.Connected() {
 			client.StatusMessage(v, "Not connected")

@@ -4,8 +4,8 @@ import (
 	"fmt"
 
 	"github.com/jroimartin/gocui"
-	"github.com/mephux/komanda-cli/client"
-	"github.com/mephux/komanda-cli/ui"
+	"github.com/mephux/komanda-cli/komanda/client"
+	"github.com/mephux/komanda-cli/komanda/ui"
 )
 
 type LogoCmd struct {
@@ -18,7 +18,7 @@ func (e *LogoCmd) Metadata() CommandMetadata {
 
 func (e *LogoCmd) Exec(args []string) error {
 
-	Server.Exec(client.StatusChannel, func(v *gocui.View, s *client.Server) error {
+	Server.Exec(client.StatusChannel, func(g *gocui.Gui, v *gocui.View, s *client.Server) error {
 		fmt.Fprintln(v, ui.Logo)
 		fmt.Fprintln(v, ui.VersionLine)
 		return nil

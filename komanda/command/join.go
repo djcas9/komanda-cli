@@ -2,7 +2,7 @@ package command
 
 import (
 	"github.com/jroimartin/gocui"
-	"github.com/mephux/komanda-cli/client"
+	"github.com/mephux/komanda-cli/komanda/client"
 )
 
 type JoinCmd struct {
@@ -14,7 +14,7 @@ func (e *JoinCmd) Metadata() CommandMetadata {
 }
 
 func (e *JoinCmd) Exec(args []string) error {
-	Server.Exec(client.StatusChannel, func(v *gocui.View, s *client.Server) error {
+	Server.Exec(client.StatusChannel, func(g *gocui.Gui, v *gocui.View, s *client.Server) error {
 
 		if !s.Client.Connected() {
 			client.StatusMessage(v, "Not connected")
@@ -26,7 +26,7 @@ func (e *JoinCmd) Exec(args []string) error {
 			CurrentChannel = args[1]
 			s.CurrentChannel = args[1]
 
-			return s.NewChannel(args[1])
+			return s.NewChannel(args[1], false)
 		}
 
 		return nil

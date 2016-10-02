@@ -1,6 +1,6 @@
 package history
 
-import "github.com/mephux/komanda-cli/logger"
+import "github.com/mephux/komanda-cli/komanda/logger"
 
 type History struct {
 	Max   int

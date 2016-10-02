@@ -3,9 +3,10 @@ package ui
 import (
 	"fmt"
 
+	"github.com/fatih/color"
 	"github.com/jroimartin/gocui"
-	"github.com/mephux/komanda-cli/client"
-	"github.com/mephux/komanda-cli/logger"
+	"github.com/mephux/komanda-cli/komanda/client"
+	"github.com/mephux/komanda-cli/komanda/logger"
 )
 
 var (
@@ -35,8 +36,8 @@ func Layout(g *gocui.Gui) error {
 				view.Frame = false
 
 				view.FgColor = gocui.ColorCyan
-				fmt.Fprintln(view, Logo)
-				fmt.Fprintln(view, VersionLine)
+				fmt.Fprintln(view, color.CyanString(Logo))
+				fmt.Fprintln(view, color.RedString(VersionLine))
 
 				client.StatusMessage(view, fmt.Sprintf("Welcome to the %s IRC client.", Name))
 				client.StatusMessage(view, "Type /help for a list of commands.\n")
@@ -49,7 +50,7 @@ func Layout(g *gocui.Gui) error {
 
 		logger.Logger.Printf("LAYOUT %p %p\n", g, Server.Gui)
 
-		if err := status.Render(); err != nil {
+		if err := status.Render(false); err != nil {
 			return err
 		}
 
@@ -65,9 +66,9 @@ func Layout(g *gocui.Gui) error {
 		return err
 	}
 
-	if err := InputView(g, maxX, maxY); err != nil {
-		return err
-	}
+	// if err := InputView(g, 20, maxY-2, maxX, maxY); err != nil {
+	// return err
+	// }
 
 	return nil
 }

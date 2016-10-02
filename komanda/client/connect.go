@@ -25,8 +25,15 @@ func New(server *Server) *ircClient.Conn {
 
 	// other client
 	cfg := ircClient.NewConfig(server.Nick, server.User, server.Version)
+
 	cfg.SSL = server.SSL
+
+	if len(server.Password) > 0 {
+		cfg.Pass = server.Password
+	}
+
 	cfg.SSLConfig = &tls.Config{
+		ServerName:         server.Address,
 		InsecureSkipVerify: server.InsecureSkipVerify,
 	}
 

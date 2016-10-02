@@ -2,11 +2,12 @@ package command
 
 import (
 	"fmt"
+	"log"
 	"time"
 
 	"github.com/jroimartin/gocui"
-	"github.com/mephux/komanda-cli/client"
-	"github.com/mephux/komanda-cli/ui"
+	"github.com/mephux/komanda-cli/komanda/client"
+	"github.com/mephux/komanda-cli/komanda/ui"
 )
 
 type ConnectCmd struct {
@@ -19,7 +20,7 @@ func (e *ConnectCmd) Metadata() CommandMetadata {
 
 func (e *ConnectCmd) Exec(args []string) error {
 
-	Server.Exec(client.StatusChannel, func(v *gocui.View, s *client.Server) error {
+	Server.Exec(client.StatusChannel, func(g *gocui.Gui, v *gocui.View, s *client.Server) error {
 
 		if s.Client.Connected() {
 			client.StatusMessage(v, "Already Connecting and/or Connected...")
@@ -29,7 +30,7 @@ func (e *ConnectCmd) Exec(args []string) error {
 		client.StatusMessage(v, "Connecting... please wait.")
 
 		if err := s.Client.Connect(); err != nil {
-			panic(err)
+			log.Fatal(err)
 		}
 
 		go func() {
@@ -38,7 +39,7 @@ func (e *ConnectCmd) Exec(args []string) error {
 			for {
 				select {
 				case <-ticker.C:
-					Server.Exec(client.StatusChannel, func(v *gocui.View, s *client.Server) error {
+					Server.Exec(client.StatusChannel, func(g *gocui.Gui, v *gocui.View, s *client.Server) error {
 						fmt.Fprint(v, ".")
 						return nil
 					})

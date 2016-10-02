@@ -4,8 +4,8 @@ import (
 	"strings"
 
 	"github.com/jroimartin/gocui"
-	"github.com/mephux/komanda-cli/client"
-	"github.com/mephux/komanda-cli/logger"
+	"github.com/mephux/komanda-cli/komanda/client"
+	"github.com/mephux/komanda-cli/komanda/logger"
 )
 
 type RawCmd struct {
@@ -18,7 +18,7 @@ func (e *RawCmd) Metadata() CommandMetadata {
 
 func (e *RawCmd) Exec(args []string) error {
 
-	Server.Exec(client.StatusChannel, func(v *gocui.View, s *client.Server) error {
+	Server.Exec(client.StatusChannel, func(g *gocui.Gui, v *gocui.View, s *client.Server) error {
 		if !s.Client.Connected() {
 			client.StatusMessage(v, "Not connected")
 			return nil

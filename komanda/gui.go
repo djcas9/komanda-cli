@@ -3,19 +3,16 @@ package komanda
 import (
 	"fmt"
 	"log"
+	"os"
 
 	"github.com/jroimartin/gocui"
-	"github.com/mephux/komanda-cli/client"
-	"github.com/mephux/komanda-cli/command"
-	"github.com/mephux/komanda-cli/logger"
-	"github.com/mephux/komanda-cli/ui"
+	"github.com/mephux/komanda-cli/komanda/client"
+	"github.com/mephux/komanda-cli/komanda/command"
+	"github.com/mephux/komanda-cli/komanda/logger"
+	"github.com/mephux/komanda-cli/komanda/ui"
 )
 
 var Server *client.Server
-
-func quit(g *gocui.Gui, v *gocui.View) error {
-	return gocui.ErrQuit
-}
 
 func Run(build string, server *client.Server) {
 	var err error
@@ -51,59 +48,71 @@ func Run(build string, server *client.Server) {
 	command.Register(server)
 
 	g.Cursor = true
-	g.Mouse = true
+	g.Mouse = false
 
-	if err := g.SetKeybinding("", gocui.KeyCtrlC,
-		gocui.ModNone, quit); err != nil {
-		log.Panicln(err)
-	}
-
-	if err := g.SetKeybinding("input", gocui.KeyEnter,
-		gocui.ModNone, GetLine); err != nil {
-		log.Panicln(err)
-	}
-
-	// if err := g.SetKeybinding("", gocui.KeyEsc,
-	// gocui.ModNone, FocusStatusView); err != nil {
+	// if err := g.SetKeybinding("input", gocui.KeyEnter,
+	// gocui.ModNone, GetLine); err != nil {
 	// log.Panicln(err)
 	// }
 
-	// if err := g.SetKeybinding("", gocui.KeyCtrlI,
+	// if err := g.SetKeybinding("input", gocui.MouseLeft,
 	// gocui.ModNone, FocusInputView); err != nil {
 	// log.Panicln(err)
 	// }
 
-	// if err := g.SetKeybinding(client.StatusChannel,
-	// gocui.MouseLeft,
-	// gocui.ModNone, FocusAndResetAll); err != nil {
-	// log.Panicln(err)
-	// }
+	if err := g.SetKeybinding("", gocui.KeyCtrlC, gocui.ModNone,
+		func(g *gocui.Gui, v *gocui.View) error {
+			return gocui.ErrQuit
+		}); err != nil {
+		log.Panicln(err)
+	}
 
-	if err := g.SetKeybinding("input", gocui.MouseLeft,
+	if err := g.SetKeybinding("", gocui.KeyEsc,
+		gocui.ModNone, FocusStatusView); err != nil {
+		log.Panicln(err)
+	}
+
+	if err := g.SetKeybinding("", gocui.KeyCtrlI,
 		gocui.ModNone, FocusInputView); err != nil {
 		log.Panicln(err)
 	}
 
+	if err := g.SetKeybinding(client.StatusChannel,
+		gocui.MouseLeft,
+		gocui.ModNone, FocusAndResetAll); err != nil {
+		log.Panicln(err)
+	}
+
 	if err := g.SetKeybinding("", gocui.KeyCtrlN,
-		gocui.ModNone, ScrollDown); err != nil {
+		gocui.ModAlt, ScrollDown); err != nil {
 		log.Panicln(err)
 	}
 	if err := g.SetKeybinding("", gocui.KeyCtrlP,
-		gocui.ModNone, ScrollUp); err != nil {
+		gocui.ModAlt, ScrollUp); err != nil {
 		log.Panicln(err)
 	}
 
-	if err := g.SetKeybinding("", gocui.KeyArrowLeft, gocui.ModAlt,
-		func(g *gocui.Gui, v *gocui.View) error {
-			return prevView(g, v)
-		}); err != nil {
+	// if err := g.SetKeybinding("input", gocui.KeyArrowLeft, gocui.Modifier(termbox.InputAlt),
+	// func(g *gocui.Gui, v *gocui.View) error {
+	// return prevView(g, v)
+	// }); err != nil {
+	// log.Panicln(err)
+	// }
+
+	// if err := g.SetKeybinding("input", gocui.KeyArrowRight, gocui.Modifier(termbox.ModAlt),
+	// func(g *gocui.Gui, v *gocui.View) error {
+	// return nextView(g, v)
+	// }); err != nil {
+	// log.Panicln(err)
+	// }
+
+	if err := g.SetKeybinding("", gocui.KeyCtrlN,
+		gocui.ModNone, nextView); err != nil {
 		log.Panicln(err)
 	}
 
-	if err := g.SetKeybinding("", gocui.KeyCtrlRsqBracket, gocui.ModNone,
-		func(g *gocui.Gui, v *gocui.View) error {
-			return nextView(g, v)
-		}); err != nil {
+	if err := g.SetKeybinding("", gocui.KeyCtrlP,
+		gocui.ModNone, prevView); err != nil {
 		log.Panicln(err)
 	}
 
@@ -116,7 +125,8 @@ func Run(build string, server *client.Server) {
 
 	err = g.MainLoop()
 
-	if err != nil && err != gocui.ErrQuit {
-		log.Panicln(err)
+	if err != nil || err != gocui.ErrQuit {
+		logger.Logger.Println(err)
+		os.Exit(1)
 	}
 }

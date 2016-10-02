@@ -2,8 +2,8 @@ package command
 
 import (
 	"github.com/jroimartin/gocui"
-	"github.com/mephux/komanda-cli/client"
-	"github.com/mephux/komanda-cli/ui"
+	"github.com/mephux/komanda-cli/komanda/client"
+	"github.com/mephux/komanda-cli/komanda/ui"
 )
 
 type VersionCmd struct {
@@ -16,7 +16,7 @@ func (e *VersionCmd) Metadata() CommandMetadata {
 
 func (e *VersionCmd) Exec(args []string) error {
 
-	Server.Exec(client.StatusChannel, func(v *gocui.View, s *client.Server) error {
+	Server.Exec(client.StatusChannel, func(g *gocui.Gui, v *gocui.View, s *client.Server) error {
 		client.StatusMessage(v, ui.VersionLine)
 		return nil
 	})

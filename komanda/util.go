@@ -5,13 +5,15 @@ import (
 	"strings"
 	"time"
 
+	"github.com/davecgh/go-spew/spew"
+	"github.com/fatih/color"
 	"github.com/jroimartin/gocui"
-	"github.com/mephux/komanda-cli/client"
-	"github.com/mephux/komanda-cli/command"
-	"github.com/mephux/komanda-cli/logger"
-	"github.com/mephux/komanda-cli/share/history"
-	"github.com/mephux/komanda-cli/share/trie"
-	"github.com/mephux/komanda-cli/ui"
+	"github.com/mephux/komanda-cli/komanda/client"
+	"github.com/mephux/komanda-cli/komanda/command"
+	"github.com/mephux/komanda-cli/komanda/logger"
+	"github.com/mephux/komanda-cli/komanda/share/history"
+	"github.com/mephux/komanda-cli/komanda/share/trie"
+	"github.com/mephux/komanda-cli/komanda/ui"
 )
 
 var (
@@ -21,6 +23,10 @@ var (
 	cacheTabSearch  = ""
 	cacheTabResults = []string{}
 	InputHistory    = history.New()
+
+	myNickColor     = color.New(color.FgGreen).SprintFunc()
+	myTimetampColor = color.New(color.FgMagenta).SprintFunc()
+	myTextColor     = color.New(color.FgCyan).SprintFunc()
 )
 
 func tabUpdateInput(input *gocui.View) (string, bool) {
@@ -38,9 +44,15 @@ func tabUpdateInput(input *gocui.View) (string, bool) {
 		searchSplit[len(searchSplit)-1] = cacheTabResults[cacheTabIndex]
 
 		newInputData := strings.Join(searchSplit, " ")
+
 		input.Clear()
-		fmt.Fprint(input, newInputData)
-		input.SetCursor(len(input.Buffer()), 0)
+
+		if !strings.HasPrefix(newInputData, "/") && !strings.HasPrefix(newInputData, "#") {
+			newInputData = newInputData + ":"
+		}
+
+		fmt.Fprint(input, newInputData+" ")
+		input.SetCursor(len(input.Buffer())-1, 0)
 
 		logger.Logger.Printf("WORD %s -- %s -- %s\n", search, cacheTabSearch, cacheTabResults[cacheTabIndex])
 		return "", true
@@ -142,7 +154,7 @@ func simpleEditor(v *gocui.View, key gocui.Key, ch rune, mod gocui.Modifier) {
 		v.Overwrite = !v.Overwrite
 	case key == gocui.KeyEnter:
 		// v.EditNewLine()
-		// GetLine(Server.Gui, v)
+		GetLine(Server.Gui, v)
 	case key == gocui.KeyArrowDown:
 		inHistroy = true
 		if line := InputHistory.Next(); len(line) > 0 {
@@ -168,6 +180,8 @@ func simpleEditor(v *gocui.View, key gocui.Key, ch rune, mod gocui.Modifier) {
 		v.SetCursor(0, 0)
 	case key == gocui.KeyCtrlE:
 		v.SetCursor(len(v.Buffer())-1, 0)
+	case key == gocui.KeyCtrlLsqBracket:
+		logger.Logger.Println("word...")
 	}
 
 	if !inHistroy {
@@ -206,9 +220,12 @@ func GetLine(g *gocui.Gui, v *gocui.View) error {
 	if strings.HasPrefix(line, "//") || !strings.HasPrefix(line, "/") {
 		if len(Server.CurrentChannel) > 0 {
 
-			Server.Exec(Server.CurrentChannel, func(v *gocui.View, s *client.Server) error {
+			Server.Exec(Server.CurrentChannel, func(g *gocui.Gui, v *gocui.View, s *client.Server) error {
 				if Server.Client.Connected() {
-					Server.Client.Privmsg(Server.CurrentChannel, line)
+					logger.Logger.Println("SEND:::", spew.Sdump(line))
+
+					Server.Client.Privmsg(Server.CurrentChannel,
+						strings.Replace(line, "\x00", " ", -1))
 				}
 				return nil
 			})
@@ -218,7 +235,7 @@ func GetLine(g *gocui.Gui, v *gocui.View) error {
 			} else {
 				if mainView.Name() != client.StatusChannel {
 					timestamp := time.Now().Format("03:04")
-					fmt.Fprintf(mainView, "%s -> %s: %s\n", timestamp, Server.Client.Me().Nick, line)
+					fmt.Fprintf(mainView, "[%s] -> %s: %s\n", myTimetampColor(timestamp), myNickColor(Server.Client.Me().Nick), myTextColor(line))
 				}
 			}
 		}
@@ -320,12 +337,15 @@ func FocusAndResetAll(g *gocui.Gui, v *gocui.View) error {
 }
 
 func nextView(g *gocui.Gui, v *gocui.View) error {
+	curView = getCurrentChannelIndex()
+
 	next := curView + 1
+
 	if next > len(Server.Channels)-1 {
 		next = 0
 	}
 
-	logger.Logger.Printf("INDEX %d\n", next)
+	logger.Logger.Printf("NEXT INDEX %d\n", next)
 
 	if newView, err := g.View(Server.Channels[next].Name); err != nil {
 		return err
@@ -340,21 +360,37 @@ func nextView(g *gocui.Gui, v *gocui.View) error {
 
 	logger.Logger.Printf("Set Current View %d\n", Server.Channels[next].Name)
 	Server.CurrentChannel = Server.Channels[next].Name
+	Server.Channels[next].Unread = false
 
-	ui.UpdateMenuView()
+	ui.UpdateMenuView(g)
 	FocusInputView(g, v)
 
 	curView = next
 	return nil
 }
 
-func prevView(g *gocui.Gui, v *gocui.View) error {
-	next := curView - 1
-	if next < 0 {
-		next = len(Server.Channels)
+func getCurrentChannelIndex() int {
+	for i, s := range Server.Channels {
+		if s.Name == Server.CurrentChannel {
+			return i
+		}
 	}
 
-	logger.Logger.Printf("INDEX %d\n", next)
+	return 0
+}
+
+func prevView(g *gocui.Gui, v *gocui.View) error {
+	logger.Logger.Println("word")
+
+	curView = getCurrentChannelIndex()
+
+	next := curView - 1
+
+	if next < 0 {
+		next = len(Server.Channels) - 1
+	}
+
+	logger.Logger.Printf("PREV INDEX %d\n", next)
 
 	if newView, err := g.View(Server.Channels[next].Name); err != nil {
 		return err
@@ -369,8 +405,9 @@ func prevView(g *gocui.Gui, v *gocui.View) error {
 
 	logger.Logger.Printf("Set Current View %d\n", Server.Channels[next].Name)
 	Server.CurrentChannel = Server.Channels[next].Name
+	Server.Channels[next].Unread = false
 
-	ui.UpdateMenuView()
+	ui.UpdateMenuView(g)
 	FocusInputView(g, v)
 
 	curView = next
