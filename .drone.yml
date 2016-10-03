@@ -28,7 +28,7 @@ build:
 publish:
   github_release:
     api_key: $$GITHUB
-    files: dist/
+    files: dist/*
     file_exists: fail
     # draft: true
     when:
