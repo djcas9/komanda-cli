@@ -16,7 +16,7 @@ const Name = "komanda"
 const Description = "IRC Client"
 
 // Version number
-const Version = "0.3.1"
+const Version = "0.3.2"
 
 // Website number
 const Website = "github.com/mephux/komanda"
