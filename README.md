@@ -10,6 +10,10 @@ Maybe embed lua,mruby or something else for the script lang.
 
 ![komanda](http://i.imgur.com/vTxUkRA.png)
 
+## Download
+
+  [Komanda Downloads](https://github.com/mephux/komanda-cli/releases)
+
 ## Usage
 
   ```bash
