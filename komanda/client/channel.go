@@ -9,6 +9,7 @@ import (
 type RenderHandlerFunc func(*Channel, *gocui.View) error
 
 type Channel struct {
+	Ready         bool
 	Unread        bool
 	Name          string
 	Server        *Server
@@ -55,6 +56,7 @@ func (channel *Channel) Render(private bool) error {
 
 	if channel.Name != StatusChannel {
 		view.Autoscroll = true
+		view.Wrap = true
 		// view.Highlight = true
 		view.Frame = false
 

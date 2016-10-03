@@ -107,6 +107,7 @@ func (server *Server) NewChannel(name string, private bool) error {
 	maxX, maxY := server.Gui.Size()
 
 	channel := Channel{
+		Ready:  false,
 		Unread: false,
 		Name:   name,
 		MaxX:   maxX,
