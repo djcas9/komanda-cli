@@ -1,0 +1,34 @@
+git:
+  path: github.com/mephux/uchit
+  branch: master
+
+clone:
+  depth: 32767
+
+build:
+  normal:
+    image: golang:1.7.1-wheezy
+    environment:
+      - GO15VENDOREXPERIMENT=1
+    commands:
+      - export PATH=$GOPATH/bin:$PATH;
+      - go get github.com/aktau/github-release
+      - make
+    when:
+      event: [push]
+  dist:
+    image: golang:1.7.1-wheezy
+    environment:
+      - GO15VENDOREXPERIMENT=1
+    commands:
+      - make dist
+    when:
+      event: [tag]
+publish:
+  github_release:
+    api_key: $$GITHUB
+    files: dist/*xz
+    file_exists: fail
+    # draft: true
+    when:
+      event: tag

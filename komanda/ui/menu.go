@@ -85,7 +85,6 @@ func UpdateMenuView(gui *gocui.Gui) {
 
 		if err := InputView(g, len(currentChannel), maxY-2, maxX, maxY); err != nil {
 			panic(err)
-			return err
 		}
 
 		// Server.Exec("input", func(g *gocui.Gui, v *gocui.View, s *client.Server) error {
