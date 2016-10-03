@@ -12,7 +12,7 @@ build:
       - GO15VENDOREXPERIMENT=1
     commands:
       - apt-get update > /dev/null 2>&1
-      - apt-get --yes --force-yes install rpmbuild ruby-dev gcc make > /dev/null 2>&1
+      - apt-get --yes --force-yes install rpm ruby-dev gcc make > /dev/null 2>&1
       - gem --no-rdoc --no-ri install fpm
       - make dist
     when:
@@ -23,7 +23,7 @@ build:
       - GO15VENDOREXPERIMENT=1
     commands:
       - apt-get update > /dev/null 2>&1
-      - apt-get --yes --force-yes install rpmbuild ruby-dev gcc make > /dev/null 2>&1
+      - apt-get --yes --force-yes install rpm ruby-dev gcc make > /dev/null 2>&1
       - gem --no-rdoc --no-ri install fpm
       - make dist
     when:
