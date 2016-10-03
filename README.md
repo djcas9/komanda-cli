@@ -1,3 +1,5 @@
+[![Build Status](http://komanda.io:8080/api/badges/mephux/komanda-cli/status.svg)](http://komanda.io:8080/mephux/komanda-cli)
+
 # Komanda CLI
 
 This is the sister app of https://github.com/mephux/komanda. 
