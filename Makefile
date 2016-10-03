@@ -28,6 +28,7 @@ build: banner lint
 	@go build \
     -ldflags "-X main.Build=${SHA}" \
     -o bin/${NAME} .
+	@echo "[*] Done building $(NAME)..."
 
 banner: deps
 	@echo "Project:    $(NAME)"
