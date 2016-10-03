@@ -1,3 +1,4 @@
 bin/
 komanda-irc.log
 dist/
+secrets.yml
