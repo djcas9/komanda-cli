@@ -11,10 +11,7 @@ build:
     environment:
       - GO15VENDOREXPERIMENT=1
     commands:
-      - apt-get update > /dev/null 2>&1
-      - apt-get --yes --force-yes install rpm ruby-dev gcc make > /dev/null 2>&1
-      - gem install fpm --no-rdoc --no-ri
-      - make dist
+      - make
     when:
       event: [push]
   dist:
