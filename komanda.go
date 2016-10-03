@@ -32,8 +32,7 @@ func main() {
 
 	kingpin.Parse()
 
-	versionOutput := fmt.Sprintf("%s %s%s",
-		komanda.Name, komanda.Version, Build)
+	versionOutput := fmt.Sprintf("%s%s", komanda.Version, Build)
 
 	if *version {
 		fmt.Println(versionOutput)

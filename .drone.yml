@@ -11,9 +11,10 @@ build:
     environment:
       - GO15VENDOREXPERIMENT=1
     commands:
-      - export PATH=$GOPATH/bin:$PATH;
-      - go get github.com/aktau/github-release
-      - make
+      - apt-get update #> /dev/null 2>&1
+      - apt-get --yes --force-yes install ruby-dev gcc make #> /dev/null 2>&1
+      - gem install fpm
+      - make dist
     when:
       event: [push]
   dist:
@@ -21,6 +22,9 @@ build:
     environment:
       - GO15VENDOREXPERIMENT=1
     commands:
+      - apt-get update #> /dev/null 2>&1
+      - apt-get --yes --force-yes install ruby-dev gcc make #> /dev/null 2>&1
+      - gem install fpm
       - make dist
     when:
       event: [tag]

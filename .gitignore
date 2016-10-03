@@ -3,3 +3,5 @@ komanda-irc.log
 dist/
 secrets.yml
 Godeps/
+VERSION
+package/
