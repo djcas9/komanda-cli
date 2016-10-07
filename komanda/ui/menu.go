@@ -28,7 +28,7 @@ func MenuView(g *gocui.Gui, maxX, maxY int) error {
 		v.Frame = false
 
 		go func() {
-			for range time.Tick(time.Millisecond * 500) {
+			for range time.Tick(time.Millisecond * 200) {
 				UpdateMenuView(g)
 			}
 		}()

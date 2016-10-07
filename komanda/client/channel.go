@@ -9,6 +9,7 @@ import (
 type RenderHandlerFunc func(*Channel, *gocui.View) error
 
 type Channel struct {
+	Status        bool
 	Ready         bool
 	Unread        bool
 	Name          string
@@ -48,7 +49,7 @@ func (channel *Channel) AddNick(nick string) {
 func (channel *Channel) Render(private bool) error {
 
 	view, err := channel.Server.Gui.SetView(channel.Name,
-		-1, -1, channel.MaxX, channel.MaxY-4)
+		-1, -1, channel.MaxX, channel.MaxY-3)
 
 	if err != gocui.ErrUnknownView {
 		return err
@@ -61,7 +62,7 @@ func (channel *Channel) Render(private bool) error {
 		view.Frame = false
 
 		if !private {
-			fmt.Fprint(view, "Loading...")
+			fmt.Fprintln(view, "\n\n")
 		} else {
 			fmt.Fprint(view, "⣿ Private Message\n\n")
 		}

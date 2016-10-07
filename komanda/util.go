@@ -352,6 +352,7 @@ func nextView(g *gocui.Gui, v *gocui.View) error {
 	} else {
 		newView.Autoscroll = true
 		g.SetViewOnTop(newView.Name())
+		g.SetViewOnTop("header")
 	}
 
 	if err := g.SetCurrentView(Server.Channels[next].Name); err != nil {
@@ -397,6 +398,7 @@ func prevView(g *gocui.Gui, v *gocui.View) error {
 	} else {
 		newView.Autoscroll = true
 		g.SetViewOnTop(newView.Name())
+		g.SetViewOnTop("header")
 	}
 
 	if err := g.SetCurrentView(Server.Channels[next].Name); err != nil {

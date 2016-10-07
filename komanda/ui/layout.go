@@ -25,17 +25,25 @@ func Layout(g *gocui.Gui) error {
 	// }
 	// }
 
+	if err := HeaderView(g, -1, -1, maxX, 1); err != nil {
+		panic(err)
+	}
+
 	if _, _, ok := Server.HasChannel(client.StatusChannel); !ok {
 		status := client.Channel{
-			Name: client.StatusChannel,
-			MaxX: maxX,
-			MaxY: maxY,
+			Status: true,
+			Name:   client.StatusChannel,
+			MaxX:   maxX,
+			MaxY:   maxY,
 			RenderHandler: func(channel *client.Channel, view *gocui.View) error {
 				view.Autoscroll = true
 				view.Wrap = true
 				view.Frame = false
 
-				view.FgColor = gocui.ColorCyan
+				// view.FgColor = gocui.ColorGreen
+				// view.BgColor = gocui.ColorGreen
+
+				fmt.Fprintln(view, "")
 				fmt.Fprintln(view, color.CyanString(Logo))
 				fmt.Fprintln(view, color.RedString(VersionLine))
 

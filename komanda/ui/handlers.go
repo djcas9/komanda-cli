@@ -2,6 +2,7 @@ package ui
 
 import (
 	"fmt"
+	"strconv"
 	"strings"
 	"time"
 
@@ -44,7 +45,8 @@ func BindHandlers() {
 			Server.Exec(c.Name, func(g *gocui.Gui, v *gocui.View, s *client.Server) error {
 				c.Topic = line.Args[1]
 
-				fmt.Fprintf(v, "%s %s changed the topic of %s to: %s\n", color.RedString("=="), line.Nick, line.Nick, c.Topic)
+				fmt.Fprintf(v, "%s %s changed the topic of %s to: %s\n", color.GreenString("**"), line.Nick, line.Nick, c.Topic)
+
 				return nil
 			})
 		}
@@ -57,7 +59,7 @@ func BindHandlers() {
 		if c, _, has := Server.HasChannel(line.Text()); has {
 			Server.Exec(c.Name, func(g *gocui.Gui, v *gocui.View, s *client.Server) error {
 				c.AddNick(line.Nick)
-				fmt.Fprintf(v, "%s %s [%s@%s] has joined %s\n", color.RedString("=="), line.Nick, line.Ident, line.Host, c.Name)
+				fmt.Fprintf(v, "[%s] %s [%s@%s] has joined %s\n", color.GreenString("+++++"), line.Nick, line.Ident, line.Host, c.Name)
 				return nil
 			})
 		}
@@ -69,7 +71,7 @@ func BindHandlers() {
 		if c, _, has := Server.HasChannel(line.Text()); has {
 			Server.Exec(c.Name, func(g *gocui.Gui, v *gocui.View, s *client.Server) error {
 				c.RemoveNick(line.Nick)
-				fmt.Fprintf(v, "%s %s [%s@%s] has quit [%s]\n", color.RedString("=="), line.Nick, line.Ident, line.Host, line.Text())
+				fmt.Fprintf(v, "[%s] %s [%s@%s] has quit [%s]\n", color.RedString("xxxxx"), line.Nick, line.Ident, line.Host, line.Text())
 				return nil
 			})
 		}
@@ -109,12 +111,13 @@ func BindHandlers() {
 	// https://www.alien.net.au/irc/irc2numerics.html
 	//
 	Server.Client.HandleFunc("332", func(conn *irc.Conn, line *irc.Line) {
-		// logger.Logger.Println("TOPIC........", spew.Sdump(line))
+		logger.Logger.Println("TOPIC........", spew.Sdump(line))
 
 		Server.Exec(line.Args[1], func(g *gocui.Gui, v *gocui.View, s *client.Server) error {
 
 			if c, _, has := Server.HasChannel(line.Args[1]); has {
 				c.Topic = line.Args[2]
+				fmt.Fprintf(v, "%s Topic of %s: %s\n", color.GreenString("**"), line.Args[1], c.Topic)
 			}
 
 			return nil
@@ -124,7 +127,7 @@ func BindHandlers() {
 
 	// nick list
 	Server.Client.HandleFunc("353", func(conn *irc.Conn, line *irc.Line) {
-		logger.Logger.Printf("LINE %s\n", spew.Sdump(line))
+		// logger.Logger.Printf("NICK LIST %s\n", spew.Sdump(line))
 
 		Server.Exec(line.Args[2], func(g *gocui.Gui, v *gocui.View, s *client.Server) error {
 
@@ -186,7 +189,25 @@ func BindHandlers() {
 		// logger.Logger.Printf("TOPIC SET BY %s\n", spew.Sdump(line))
 
 		Server.Exec(line.Args[1], func(g *gocui.Gui, v *gocui.View, s *client.Server) error {
-			// fmt.Fprint(v, "\n\n")
+
+			i, err := strconv.ParseInt(line.Args[3], 10, 64)
+
+			if err != nil {
+				logger.Logger.Printf(err.Error())
+			}
+
+			tm := time.Unix(i, 0)
+
+			if strings.Contains(line.Args[2], "!") {
+				ss := strings.Split(line.Args[2], "!")
+
+				fmt.Fprintf(v, "%s Topic set by %s [%s] [%s]\n", color.GreenString("**"),
+					ss[0], ss[1], tm.Format(time.RFC822))
+			} else {
+				fmt.Fprintf(v, "%s Topic set by %s [%s]\n", color.GreenString("**"),
+					line.Args[2], tm.Format(time.RFC822))
+			}
+
 			return nil
 		})
 	})
@@ -195,22 +216,22 @@ func BindHandlers() {
 	Server.Client.HandleFunc("366", func(conn *irc.Conn, line *irc.Line) {
 		Server.Exec(line.Args[1], func(g *gocui.Gui, v *gocui.View, s *client.Server) error {
 
-			v.Clear()
-			v.SetCursor(0, 0)
+			// v.Clear()
+			// v.SetCursor(0, 0)
 
-			if c, _, has := s.HasChannel(line.Args[1]); has {
+			if _, _, has := s.HasChannel(line.Args[1]); has {
 
-				var topic string
+				// var topic string
 
-				if len(c.Topic) <= 0 {
-					topic = "N/A"
-				} else {
-					topic = c.Topic
-				}
+				// if len(c.Topic) <= 0 {
+				// topic = "N/A"
+				// } else {
+				// topic = c.Topic
+				// }
 
-				fmt.Fprintf(v, "⣿ CHANNEL: %s\n", c.Name)
-				fmt.Fprintf(v, "⣿   Users: %d\n", len(c.Names))
-				fmt.Fprintf(v, "⣿   TOPIC: %s\n", topic)
+				// fmt.Fprintf(v, "⣿ CHANNEL: %s\n", c.Name)
+				// fmt.Fprintf(v, "⣿   Users: %d\n", len(c.Names))
+				// fmt.Fprintf(v, "⣿   TOPIC: %s\n", topic)
 
 				// fmt.Fprint(v, "⣿   NAMES: \n")
 
@@ -235,7 +256,7 @@ func BindHandlers() {
 
 				// w.Flush()
 
-				fmt.Fprint(v, "\n")
+				// fmt.Fprint(v, "\n")
 			}
 			return nil
 		})

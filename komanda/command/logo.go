@@ -3,6 +3,7 @@ package command
 import (
 	"fmt"
 
+	"github.com/fatih/color"
 	"github.com/jroimartin/gocui"
 	"github.com/mephux/komanda-cli/komanda/client"
 	"github.com/mephux/komanda-cli/komanda/ui"
@@ -19,8 +20,8 @@ func (e *LogoCmd) Metadata() CommandMetadata {
 func (e *LogoCmd) Exec(args []string) error {
 
 	Server.Exec(client.StatusChannel, func(g *gocui.Gui, v *gocui.View, s *client.Server) error {
-		fmt.Fprintln(v, ui.Logo)
-		fmt.Fprintln(v, ui.VersionLine)
+		fmt.Fprintln(v, color.CyanString(ui.Logo))
+		fmt.Fprintln(v, color.RedString(ui.VersionLine))
 		return nil
 	})
 
