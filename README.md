@@ -8,9 +8,12 @@ I thought it would be fun so I did it.
 Would love some help to get it 1:1 with irssi. 
 Maybe embed lua,mruby or something else for the script lang.
 
+# UI
+
 ![komanda](http://i.imgur.com/v00gmy2.png)
 
-![komanda](http://i.imgur.com/dEzysbJ.png)
+## Channel UI
+![komanda](http://i.imgur.com/wWGaimg.png)
 
 ## Download
 
