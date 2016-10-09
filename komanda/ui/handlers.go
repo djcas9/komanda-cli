@@ -59,7 +59,9 @@ func BindHandlers() {
 
 		if c, _, has := Server.HasChannel(line.Text()); has {
 			Server.Exec(c.Name, func(g *gocui.Gui, v *gocui.View, s *client.Server) error {
-				c.AddNick(line.Nick)
+				if line.Nick != Server.Client.Me().Nick {
+					c.AddNick(line.Nick)
+				}
 				fmt.Fprintf(v, "[%s] %s [%s@%s] has joined %s\n", color.GreenString("+JOIN"), line.Nick, line.Ident, line.Host, c.Name)
 				return nil
 			})
