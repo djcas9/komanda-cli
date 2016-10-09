@@ -20,7 +20,7 @@ func Run(build string, server *client.Server) {
 	logger.Start()
 
 	ui.Name = Name
-	ui.Logo = KomandaLogo
+	ui.Logo = Logo()
 	ui.VersionLine = fmt.Sprintf("  Version: %s%s  Source Code: %s\n",
 		Version, build, Website)
 

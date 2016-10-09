@@ -50,8 +50,8 @@ func Layout(g *gocui.Gui) error {
 				// view.BgColor = gocui.ColorGreen
 
 				fmt.Fprintln(view, "")
-				fmt.Fprintln(view, color.CyanString(Logo))
-				fmt.Fprintln(view, color.RedString(VersionLine))
+				fmt.Fprintln(view, Logo)
+				fmt.Fprintln(view, color.GreenString(VersionLine))
 
 				client.StatusMessage(view, fmt.Sprintf("Welcome to the %s IRC client.", Name))
 				client.StatusMessage(view, "Type /help for a list of commands.\n")

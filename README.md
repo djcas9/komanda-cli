@@ -12,9 +12,6 @@ Maybe embed lua,mruby or something else for the script lang.
 
 ![komanda](http://i.imgur.com/v00gmy2.png)
 
-## Channel UI
-![komanda](http://i.imgur.com/wWGaimg.png)
-
 ## Download
 
   [Komanda Downloads](https://github.com/mephux/komanda-cli/releases)

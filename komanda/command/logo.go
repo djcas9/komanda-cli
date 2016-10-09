@@ -21,7 +21,7 @@ func (e *LogoCmd) Exec(args []string) error {
 
 	Server.Exec(client.StatusChannel, func(g *gocui.Gui, v *gocui.View, s *client.Server) error {
 		fmt.Fprintln(v, color.CyanString(ui.Logo))
-		fmt.Fprintln(v, color.RedString(ui.VersionLine))
+		fmt.Fprintln(v, color.GreenString(ui.VersionLine))
 		return nil
 	})
 
