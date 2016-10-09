@@ -29,7 +29,11 @@ var (
 	myTextColor     = color.New(color.FgCyan).SprintFunc()
 )
 
+// TODO: fix \x00 issues
 func tabUpdateInput(input *gocui.View) (string, bool) {
+
+	logger.Logger.Println(spew.Sdump(input.Buffer()))
+
 	search := strings.TrimSpace(input.Buffer())
 	searchSplit := strings.Split(search, " ")
 	search = searchSplit[len(searchSplit)-1]
@@ -215,7 +219,7 @@ func GetLine(g *gocui.Gui, v *gocui.View) error {
 		return nil
 	}
 
-	InputHistory.Add(line)
+	InputHistory.Add(strings.Replace(line, "\x00", "", -1))
 
 	if strings.HasPrefix(line, "//") || !strings.HasPrefix(line, "/") {
 		if len(Server.CurrentChannel) > 0 {
@@ -225,7 +229,7 @@ func GetLine(g *gocui.Gui, v *gocui.View) error {
 					logger.Logger.Println("SEND:::", spew.Sdump(line))
 
 					go Server.Client.Privmsg(Server.CurrentChannel,
-						strings.Replace(line, "\x00", " ", -1))
+						strings.Replace(line, "\x00", "", -1))
 				}
 				return nil
 			})
@@ -235,7 +239,10 @@ func GetLine(g *gocui.Gui, v *gocui.View) error {
 			} else {
 				if mainView.Name() != client.StatusChannel {
 					timestamp := time.Now().Format("03:04")
-					fmt.Fprintf(mainView, "[%s] -> %s: %s\n", myTimetampColor(timestamp), myNickColor(Server.Client.Me().Nick), myTextColor(line))
+					fmt.Fprintf(mainView, "[%s] -> %s: %s\n",
+						myTimetampColor(timestamp),
+						myNickColor(Server.Client.Me().Nick),
+						myTextColor(strings.Replace(line, "\x00", "", -1)))
 				}
 			}
 		}
