@@ -39,14 +39,13 @@ func (e *ConnectCmd) Exec(args []string) error {
 			for {
 				select {
 				case <-ticker.C:
-					Server.Exec(client.StatusChannel, func(g *gocui.Gui, v *gocui.View, s *client.Server) error {
-						fmt.Fprint(v, ".")
-						return nil
-					})
+					fmt.Fprint(v, ".")
 				case msg := <-ui.LoadingChannel:
 					if msg == "done" {
 						fmt.Fprint(v, "\n")
 						ticker.Stop()
+						close(ui.LoadingChannel)
+						break
 					}
 				}
 			}
