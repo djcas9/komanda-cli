@@ -99,9 +99,9 @@ func tabComplete(g *gocui.Gui, v *gocui.View) error {
 		if c, _, hasCurrentChannel :=
 			Server.HasChannel(Server.CurrentChannel); hasCurrentChannel {
 
-			for userIndex, user := range c.Names {
-				if user != Server.Nick {
-					t.Add(user, fmt.Sprintf("user-%d", userIndex))
+			for userIndex, user := range c.Users {
+				if user.Nick != Server.Nick {
+					t.Add(user.Nick, fmt.Sprintf("user-%d", userIndex))
 				}
 			}
 		}
@@ -224,7 +224,7 @@ func GetLine(g *gocui.Gui, v *gocui.View) error {
 				if Server.Client.Connected() {
 					logger.Logger.Println("SEND:::", spew.Sdump(line))
 
-					Server.Client.Privmsg(Server.CurrentChannel,
+					go Server.Client.Privmsg(Server.CurrentChannel,
 						strings.Replace(line, "\x00", " ", -1))
 				}
 				return nil

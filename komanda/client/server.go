@@ -39,11 +39,13 @@ func (server *Server) Exec(channel string, h Handler) {
 		v, err := g.View(channel)
 
 		if err != nil {
+
 			server.NewChannel(channel, false)
 
 			if v, err := g.View(channel); err == nil {
 
 				server.CurrentChannel = channel
+
 				return h(server.Gui, v, server)
 			}
 
@@ -107,8 +109,9 @@ func (server *Server) NewChannel(name string, private bool) error {
 	maxX, maxY := server.Gui.Size()
 
 	channel := Channel{
+		Topic:  "Loading...",
 		Ready:  false,
-		Unread: false,
+		Unread: private,
 		Name:   name,
 		MaxX:   maxX,
 		MaxY:   maxY,

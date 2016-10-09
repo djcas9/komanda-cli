@@ -3,6 +3,7 @@ package ui
 import (
 	"fmt"
 
+	"github.com/0xAX/notificator"
 	"github.com/fatih/color"
 	"github.com/jroimartin/gocui"
 	"github.com/mephux/komanda-cli/komanda/client"
@@ -14,10 +15,15 @@ var (
 	VersionLine = ""
 	Server      *client.Server
 	Name        = ""
+	notify      *notificator.Notificator
 )
 
 func Layout(g *gocui.Gui) error {
 	maxX, maxY := g.Size()
+
+	notify = notificator.New(notificator.Options{
+		AppName: Name,
+	})
 
 	// if _, err := g.SetView("sidebar", -1, -1, int(0.2*float32(maxX)), maxY-3); err != nil {
 	// if err != gocui.ErrorUnkView {

@@ -2,11 +2,24 @@ package client
 
 import (
 	"fmt"
+	"sort"
 
+	"github.com/fatih/color"
 	"github.com/jroimartin/gocui"
 )
 
 type RenderHandlerFunc func(*Channel, *gocui.View) error
+
+type User struct {
+	Nick string
+	Mode string
+}
+
+type NickSorter []*User
+
+func (a NickSorter) Len() int           { return len(a) }
+func (a NickSorter) Swap(i, j int)      { a[i], a[j] = a[j], a[i] }
+func (a NickSorter) Less(i, j int) bool { return a[i].Nick < a[j].Nick }
 
 type Channel struct {
 	Status        bool
@@ -19,7 +32,7 @@ type Channel struct {
 	RenderHandler RenderHandlerFunc
 	Topic         string
 	TopicSetBy    string
-	Names         []string
+	Users         []*User
 }
 
 func (channel *Channel) View() (*gocui.View, error) {
@@ -34,16 +47,57 @@ func (channel *Channel) Update() (*gocui.View, error) {
 
 }
 
+func (channel *Channel) NickListString(v *gocui.View) {
+	sort.Sort(NickSorter(channel.Users))
+
+	fmt.Fprintf(v, "\n%s", color.GreenString("== NICK LIST START\n"))
+
+	for i, u := range channel.Users {
+		if i == len(channel.Users)-1 {
+			fmt.Fprintf(v, "%s%s", u.Mode, u.Nick)
+		} else {
+			fmt.Fprintf(v, "%s%s, ", u.Mode, u.Nick)
+		}
+	}
+
+	fmt.Fprintf(v, "\n%s", color.GreenString("== NICK LIST END\n\n"))
+}
+
+// 09:41 * Irssi: #google-containers: Total of 213 nicks [0 ops, 0 halfops, 0 voices, 213 normal]
+func (channel *Channel) NickMetricsString(view *gocui.View) {
+	var op, hop, v, n int
+
+	for _, u := range channel.Users {
+		switch u.Mode {
+		case "@":
+			op++
+		case "%":
+			hop++
+		case "v":
+			v++
+		default:
+			n++
+		}
+	}
+
+	fmt.Fprintf(view, "%s Komanda: %s: Total of %d nicks [%d ops, %d halfops, %d voices, %d normal]\n\n",
+		color.GreenString("**"), channel.Name, len(channel.Users), op, hop, v, n)
+}
+
 func (channel *Channel) RemoveNick(nick string) {
-	for i, n := range channel.Names {
-		if n == nick {
-			channel.Names = append(channel.Names[:i], channel.Names[i+1:]...)
+	for i, user := range channel.Users {
+		if user.Nick == nick {
+			channel.Users = append(channel.Users[:i], channel.Users[i+1:]...)
 		}
 	}
 }
 
 func (channel *Channel) AddNick(nick string) {
-	channel.Names = append(channel.Names, nick)
+	user := &User{
+		Nick: nick,
+	}
+
+	channel.Users = append(channel.Users, user)
 }
 
 func (channel *Channel) Render(private bool) error {
@@ -64,7 +118,8 @@ func (channel *Channel) Render(private bool) error {
 		if !private {
 			fmt.Fprintln(view, "\n\n")
 		} else {
-			fmt.Fprint(view, "⣿ Private Message\n\n")
+			channel.Topic = fmt.Sprintf("Private Chat: %s", channel.Name)
+			fmt.Fprint(view, "\n\n")
 		}
 	}
 
@@ -72,6 +127,10 @@ func (channel *Channel) Render(private bool) error {
 
 	if err := channel.RenderHandler(channel, view); err != nil {
 		return err
+	}
+
+	if private {
+		channel.Server.Gui.SetViewOnTop(channel.Server.CurrentChannel)
 	}
 
 	return nil

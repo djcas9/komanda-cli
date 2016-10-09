@@ -44,7 +44,9 @@ func New(server *Server) *ircClient.Conn {
 	cfg.SplitLen = 2000
 
 	c := ircClient.Client(cfg)
-	c.EnableStateTracking()
+
+	// this will cause a lot of connection issues
+	// c.EnableStateTracking()
 
 	server.Client = c
 

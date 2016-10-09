@@ -47,9 +47,15 @@ func UpdateHeaderView(g *gocui.Gui) {
 		channel := Server.GetCurrentChannel()
 
 		if channel.Name != client.StatusChannel {
-			fmt.Fprintf(v, "⡇ %s", channel.Topic)
+			if len(channel.Name) <= 0 {
+				fmt.Fprintf(v, "⣿ %s", "Loading...")
+			} else {
+				fmt.Fprintf(v, "⣿ %s", channel.Topic)
+			}
+		} else if channel.Name == client.StatusChannel {
+			fmt.Fprintf(v, "⣿ %s", client.StatusChannel)
 		} else {
-			fmt.Fprintf(v, "⡇ %s", client.StatusChannel)
+			fmt.Fprintf(v, "⣿ %s", "Loading...")
 		}
 
 		return nil

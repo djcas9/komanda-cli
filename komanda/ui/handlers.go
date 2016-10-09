@@ -6,6 +6,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/0xAX/notificator"
 	"github.com/davecgh/go-spew/spew"
 	"github.com/fatih/color"
 	"github.com/jroimartin/gocui"
@@ -59,7 +60,7 @@ func BindHandlers() {
 		if c, _, has := Server.HasChannel(line.Text()); has {
 			Server.Exec(c.Name, func(g *gocui.Gui, v *gocui.View, s *client.Server) error {
 				c.AddNick(line.Nick)
-				fmt.Fprintf(v, "[%s] %s [%s@%s] has joined %s\n", color.GreenString("+++++"), line.Nick, line.Ident, line.Host, c.Name)
+				fmt.Fprintf(v, "[%s] %s [%s@%s] has joined %s\n", color.GreenString("+JOIN"), line.Nick, line.Ident, line.Host, c.Name)
 				return nil
 			})
 		}
@@ -71,7 +72,7 @@ func BindHandlers() {
 		if c, _, has := Server.HasChannel(line.Text()); has {
 			Server.Exec(c.Name, func(g *gocui.Gui, v *gocui.View, s *client.Server) error {
 				c.RemoveNick(line.Nick)
-				fmt.Fprintf(v, "[%s] %s [%s@%s] has quit [%s]\n", color.RedString("xxxxx"), line.Nick, line.Ident, line.Host, line.Text())
+				fmt.Fprintf(v, "[%s] %s [%s@%s] has quit [%s]\n", color.RedString("-PART"), line.Nick, line.Ident, line.Host, line.Text())
 				return nil
 			})
 		}
@@ -127,7 +128,7 @@ func BindHandlers() {
 
 	// nick list
 	Server.Client.HandleFunc("353", func(conn *irc.Conn, line *irc.Line) {
-		// logger.Logger.Printf("NICK LIST %s\n", spew.Sdump(line))
+		logger.Logger.Printf("NICK LIST %s\n", spew.Sdump(line))
 
 		Server.Exec(line.Args[2], func(g *gocui.Gui, v *gocui.View, s *client.Server) error {
 
@@ -139,6 +140,11 @@ func BindHandlers() {
 					if nick == "" {
 						continue
 					}
+
+					logger.Logger.Printf("ADD NICK %s\n", spew.Sdump(nick))
+
+					user := &client.User{}
+
 					switch c := nick[0]; c {
 					case '~', '&', '@', '%', '+':
 						nick = nick[1:]
@@ -150,11 +156,14 @@ func BindHandlers() {
 						case '&':
 							// conn.st.ChannelModes(ch.Name, "+a", nick)
 						case '@':
+							user.Mode = "@"
 							// conn.st.ChannelModes(ch.Name, "+o", nick)
 							// fmt.Fprintf(v, "@%s ", nick)
 						case '%':
 							// conn.st.ChannelModes(ch.Name, "+h", nick)
+							user.Mode = "%"
 						case '+':
+							user.Mode = "+"
 							// conn.st.ChannelModes(ch.Name, "+v", nick)
 							// fmt.Fprintf(v, "+%s ", nick)
 						default:
@@ -166,8 +175,10 @@ func BindHandlers() {
 
 					}
 
-					// logger.Logger.Printf("ADD NICK %s\n", spew.Sdump(nick))
-					c.Names = append(c.Names, nick)
+					logger.Logger.Printf("ADD NICK %s\n", spew.Sdump(nick))
+
+					user.Nick = nick
+					c.Users = append(c.Users, user)
 				}
 			}
 
@@ -219,7 +230,10 @@ func BindHandlers() {
 			// v.Clear()
 			// v.SetCursor(0, 0)
 
-			if _, _, has := s.HasChannel(line.Args[1]); has {
+			if c, _, has := s.HasChannel(line.Args[1]); has {
+
+				c.NickListString(v)
+				c.NickMetricsString(v)
 
 				// var topic string
 
@@ -269,11 +283,13 @@ func BindHandlers() {
 		logger.Logger.Printf("MSG %s %s %s %s\n", ircChan, line.Nick, line.Host, line.Args)
 
 		if ircChan == Server.Client.Me().Nick {
+
 			if c, _, has := Server.HasChannel(line.Nick); !has {
 				Server.NewChannel(line.Nick, true)
 			} else {
-				if Server.CurrentChannel != c.Name {
+				if Server.CurrentChannel != line.Nick {
 					c.Unread = true
+
 				}
 			}
 
@@ -282,25 +298,32 @@ func BindHandlers() {
 					timestamp := time.Now().Format("03:04")
 					fmt.Fprintf(v, "[%s] <- %s: %s\n", timestampColor(timestamp), nickColor(line.Nick), line.Text())
 
+					notify.Push(fmt.Sprintf("Private message from %s", line.Nick), line.Text(), "", notificator.UR_NORMAL)
+
 					return nil
 				})
 
-			return
-		}
+		} else {
 
-		if c, _, has := Server.HasChannel(ircChan); has {
+			if c, _, has := Server.HasChannel(ircChan); has {
 
-			if Server.CurrentChannel != c.Name {
-				c.Unread = true
+				if Server.CurrentChannel != c.Name {
+					c.Unread = true
+				}
+
+				Server.Exec(ircChan,
+					func(g *gocui.Gui, v *gocui.View, s *client.Server) error {
+						timestamp := time.Now().Format("03:04")
+						fmt.Fprintf(v, "[%s] <- %s: %s\n", timestampColor(timestamp), nickColor(line.Nick), line.Text())
+
+						if strings.Contains(line.Text(), Server.Client.Me().Nick) {
+							notify.Push(fmt.Sprintf("Highlight from %s", line.Nick), line.Text(), "", notificator.UR_NORMAL)
+						}
+
+						return nil
+					})
 			}
 
-			Server.Exec(ircChan,
-				func(g *gocui.Gui, v *gocui.View, s *client.Server) error {
-					timestamp := time.Now().Format("03:04")
-					fmt.Fprintf(v, "[%s] <- %s: %s\n", timestampColor(timestamp), nickColor(line.Nick), line.Text())
-
-					return nil
-				})
 		}
 	})
 

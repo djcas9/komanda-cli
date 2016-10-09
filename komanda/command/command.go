@@ -55,6 +55,7 @@ func Register(server *client.Server) {
 		rawCmd(),
 		topicCmd(),
 		windowCmd(),
+		namesCmd(),
 	}
 }
 
