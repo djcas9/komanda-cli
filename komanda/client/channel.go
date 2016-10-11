@@ -115,6 +115,8 @@ func (channel *Channel) Render(private bool) error {
 		// view.Highlight = true
 		view.Frame = false
 
+		view.BgColor = gocui.ColorDefault
+
 		if !private {
 			fmt.Fprintln(view, "\n\n")
 		} else {
