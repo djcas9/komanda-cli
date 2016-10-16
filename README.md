@@ -3,7 +3,7 @@
 # Komanda CLI
 
 This is the sister app of https://github.com/mephux/komanda. 
-I thought it would be fun so I did it.
+I thought it would be fun so I did it. Komanda-cli is built using the awesome [gocui](https://github.com/jroimartin/gocui) package.
 
 Would love some help to get it 1:1 with irssi. 
 Maybe embed lua,mruby or something else for the script lang.
@@ -48,6 +48,7 @@ Flags:
   * tab complete
   * new window per channel
   * history
+  * cross-platform desktop notifications
 
 ## TODO
 
