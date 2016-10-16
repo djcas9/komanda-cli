@@ -21,7 +21,8 @@ func MenuView(g *gocui.Gui, maxX, maxY int) error {
 		}
 
 		// v.FgColor = gocui.ColorGreen
-		// v.BgColor = gocui.ColorBlue
+		v.BgColor = gocui.ColorDefault
+
 		v.Autoscroll = false
 		v.Editable = false
 		v.Wrap = false

@@ -19,7 +19,7 @@ func InputView(g *gocui.Gui, x, y, maxX, maxY int) error {
 		logger.Logger.Println(" CHANGE:", "input", x, y, maxX, maxY)
 
 		// v.FgColor = gocui.ColorGreen
-		// v.BgColor = gocui.ColorGreen
+		v.BgColor = gocui.ColorDefault
 
 		v.Autoscroll = false
 		v.Editable = true

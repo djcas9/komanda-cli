@@ -47,7 +47,7 @@ func Layout(g *gocui.Gui) error {
 				view.Frame = false
 
 				// view.FgColor = gocui.ColorGreen
-				// view.BgColor = gocui.ColorGreen
+				view.BgColor = gocui.ColorDefault
 
 				fmt.Fprintln(view, "")
 				fmt.Fprintln(view, Logo)

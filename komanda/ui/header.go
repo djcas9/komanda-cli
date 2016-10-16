@@ -16,7 +16,7 @@ func HeaderView(g *gocui.Gui, x, y, maxX, maxY int) error {
 		}
 
 		// v.FgColor = gocui.ColorGreen
-		// v.BgColor = gocui.ColorGreen
+		v.BgColor = gocui.ColorDefault
 
 		v.Autoscroll = false
 		v.Editable = false
