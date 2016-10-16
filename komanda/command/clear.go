@@ -42,6 +42,7 @@ func clearCmd() Command {
 	return &ClearCmd{
 		MetadataTmpl: &MetadataTmpl{
 			name: "clear",
+			args: "",
 			aliases: []string{
 				"cls",
 			},

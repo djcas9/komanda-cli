@@ -37,6 +37,7 @@ func rawCmd() Command {
 	return &RawCmd{
 		MetadataTmpl: &MetadataTmpl{
 			name:        "raw",
+			args:        "<command> [data]",
 			description: "raw command",
 		},
 	}

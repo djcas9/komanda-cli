@@ -38,6 +38,7 @@ func namesCmd() Command {
 	return &NamesCmd{
 		MetadataTmpl: &MetadataTmpl{
 			name:        "names",
+			args:        "",
 			aliases:     []string{},
 			description: "list channel names",
 		},

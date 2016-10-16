@@ -4,6 +4,7 @@ import (
 	"errors"
 
 	ircClient "github.com/fluffle/goirc/client"
+	"github.com/hectane/go-nonblockingchan"
 	"github.com/jroimartin/gocui"
 )
 
@@ -109,12 +110,14 @@ func (server *Server) NewChannel(name string, private bool) error {
 	maxX, maxY := server.Gui.Size()
 
 	channel := Channel{
-		Topic:  "Loading...",
-		Ready:  false,
-		Unread: private,
-		Name:   name,
-		MaxX:   maxX,
-		MaxY:   maxY,
+		Topic:         "Loading...",
+		Ready:         false,
+		Unread:        private,
+		Name:          name,
+		MaxX:          maxX,
+		MaxY:          maxY,
+		Loading:       nbc.New(),
+		NickListReady: false,
 		RenderHandler: func(channel *Channel, view *gocui.View) error {
 			return nil
 		},

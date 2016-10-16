@@ -39,6 +39,7 @@ func nickCmd() Command {
 	return &NickCmd{
 		MetadataTmpl: &MetadataTmpl{
 			name: "nick",
+			args: "<nick>",
 			aliases: []string{
 				"n",
 			},

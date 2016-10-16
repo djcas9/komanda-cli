@@ -9,6 +9,7 @@ import (
 	"github.com/0xAX/notificator"
 	"github.com/davecgh/go-spew/spew"
 	"github.com/fatih/color"
+	"github.com/hectane/go-nonblockingchan"
 	"github.com/jroimartin/gocui"
 	"github.com/mephux/komanda-cli/komanda/client"
 	"github.com/mephux/komanda-cli/komanda/logger"
@@ -17,7 +18,7 @@ import (
 )
 
 var (
-	LoadingChannel = make(chan string)
+	LoadingChannel = nbc.New()
 	timestampColor = color.New(color.FgMagenta).SprintFunc()
 	nickColor      = color.New(color.FgBlue).SprintFunc()
 )
@@ -128,6 +129,74 @@ func BindHandlers() {
 
 	})
 
+	// names list done
+	Server.Client.HandleFunc("366", func(conn *irc.Conn, line *irc.Line) {
+		Server.Exec(line.Args[1], func(g *gocui.Gui, v *gocui.View, s *client.Server) error {
+
+			// v.Clear()
+			// v.SetCursor(0, 0)
+
+			logger.Logger.Println("NICK LIST DONE")
+
+			if c, _, has := s.HasChannel(line.Args[1]); has {
+
+				go func(c *client.Channel) {
+					for {
+						select {
+						case <-c.Loading.Recv:
+							logger.Logger.Println("INSIDE THE NAMES AND STUFF...")
+							if !c.NickListReady {
+								c.NickListReady = true
+
+								c.NickListString(v)
+								c.NickMetricsString(v)
+							}
+							break
+						}
+					}
+				}(c)
+
+				// var topic string
+
+				// if len(c.Topic) <= 0 {
+				// topic = "N/A"
+				// } else {
+				// topic = c.Topic
+				// }
+
+				// fmt.Fprintf(v, "⣿ CHANNEL: %s\n", c.Name)
+				// fmt.Fprintf(v, "⣿   Users: %d\n", len(c.Names))
+				// fmt.Fprintf(v, "⣿   TOPIC: %s\n", topic)
+
+				// fmt.Fprint(v, "⣿   NAMES: \n")
+
+				// w := tabwriter.NewWriter(v, 0, 8, 3, ' ', tabwriter.DiscardEmptyColumns)
+
+				// count := 1
+				// current := ""
+				// for _, u := range c.Names {
+				// if count < 7 {
+				// current = current + fmt.Sprintf("%s\t", u)
+				// count += 1
+				// } else {
+				// fmt.Fprintln(w, current)
+				// current = ""
+				// count = 1
+				// }
+				// }
+
+				// if current != "" {
+				// fmt.Fprintln(w, current)
+				// }
+
+				// w.Flush()
+
+				// fmt.Fprint(v, "\n")
+			}
+			return nil
+		})
+	})
+
 	// nick list
 	Server.Client.HandleFunc("353", func(conn *irc.Conn, line *irc.Line) {
 		logger.Logger.Printf("NICK LIST %s\n", spew.Sdump(line))
@@ -143,7 +212,7 @@ func BindHandlers() {
 						continue
 					}
 
-					logger.Logger.Printf("ADD NICK %s\n", spew.Sdump(nick))
+					// logger.Logger.Printf("ADD NICK %s\n", spew.Sdump(nick))
 
 					user := &client.User{}
 
@@ -177,11 +246,13 @@ func BindHandlers() {
 
 					}
 
-					logger.Logger.Printf("ADD NICK %s\n", spew.Sdump(nick))
+					// logger.Logger.Printf("ADD NICK %s\n", spew.Sdump(nick))
 
 					user.Nick = nick
 					c.Users = append(c.Users, user)
 				}
+
+				c.Loading.Send <- nil
 			}
 
 			return nil
@@ -221,59 +292,6 @@ func BindHandlers() {
 					line.Args[2], tm.Format(time.RFC822))
 			}
 
-			return nil
-		})
-	})
-
-	// names list done
-	Server.Client.HandleFunc("366", func(conn *irc.Conn, line *irc.Line) {
-		Server.Exec(line.Args[1], func(g *gocui.Gui, v *gocui.View, s *client.Server) error {
-
-			// v.Clear()
-			// v.SetCursor(0, 0)
-
-			if c, _, has := s.HasChannel(line.Args[1]); has {
-
-				c.NickListString(v)
-				c.NickMetricsString(v)
-
-				// var topic string
-
-				// if len(c.Topic) <= 0 {
-				// topic = "N/A"
-				// } else {
-				// topic = c.Topic
-				// }
-
-				// fmt.Fprintf(v, "⣿ CHANNEL: %s\n", c.Name)
-				// fmt.Fprintf(v, "⣿   Users: %d\n", len(c.Names))
-				// fmt.Fprintf(v, "⣿   TOPIC: %s\n", topic)
-
-				// fmt.Fprint(v, "⣿   NAMES: \n")
-
-				// w := tabwriter.NewWriter(v, 0, 8, 3, ' ', tabwriter.DiscardEmptyColumns)
-
-				// count := 1
-				// current := ""
-				// for _, u := range c.Names {
-				// if count < 7 {
-				// current = current + fmt.Sprintf("%s\t", u)
-				// count += 1
-				// } else {
-				// fmt.Fprintln(w, current)
-				// current = ""
-				// count = 1
-				// }
-				// }
-
-				// if current != "" {
-				// fmt.Fprintln(w, current)
-				// }
-
-				// w.Flush()
-
-				// fmt.Fprint(v, "\n")
-			}
 			return nil
 		})
 	})
@@ -330,16 +348,16 @@ func BindHandlers() {
 	})
 
 	Server.Client.HandleFunc("464", func(conn *irc.Conn, line *irc.Line) {
-		LoadingChannel <- "done"
+		LoadingChannel.Send <- "done"
 	})
 
 	Server.Client.HandleFunc(irc.CONNECTED, func(conn *irc.Conn, line *irc.Line) {
 		// logger.Logger.Printf("LINE %s\n", spew.Sdump(line))
-		LoadingChannel <- "done"
+		LoadingChannel.Send <- "done"
 	})
 
 	Server.Client.HandleFunc(irc.DISCONNECTED, func(conn *irc.Conn, line *irc.Line) {
-		LoadingChannel <- "done"
+		LoadingChannel.Send <- "done"
 	})
 
 }

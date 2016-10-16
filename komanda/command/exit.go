@@ -25,6 +25,7 @@ func exitCmd() Command {
 	return &ExitCmd{
 		MetadataTmpl: &MetadataTmpl{
 			name: "exit",
+			args: "",
 			aliases: []string{
 				"q",
 				"quit",

@@ -28,6 +28,7 @@ func versionCmd() Command {
 	return &VersionCmd{
 		MetadataTmpl: &MetadataTmpl{
 			name: "version",
+			args: "",
 			aliases: []string{
 				"v",
 			},

@@ -38,6 +38,7 @@ func passCmd() Command {
 	return &PassCmd{
 		MetadataTmpl: &MetadataTmpl{
 			name: "pass",
+			args: "<password>",
 			aliases: []string{
 				"password",
 				"server-password",

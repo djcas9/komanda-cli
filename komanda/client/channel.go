@@ -6,6 +6,8 @@ import (
 
 	"github.com/fatih/color"
 	"github.com/jroimartin/gocui"
+
+	"github.com/hectane/go-nonblockingchan"
 )
 
 type RenderHandlerFunc func(*Channel, *gocui.View) error
@@ -33,6 +35,8 @@ type Channel struct {
 	Topic         string
 	TopicSetBy    string
 	Users         []*User
+	NickListReady bool
+	Loading       *nbc.NonBlockingChan
 }
 
 func (channel *Channel) View() (*gocui.View, error) {

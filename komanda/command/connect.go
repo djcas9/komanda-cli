@@ -40,11 +40,11 @@ func (e *ConnectCmd) Exec(args []string) error {
 				select {
 				case <-ticker.C:
 					fmt.Fprint(v, ".")
-				case msg := <-ui.LoadingChannel:
+				case msg := <-ui.LoadingChannel.Recv:
 					if msg == "done" {
+
 						fmt.Fprint(v, "\n")
 						ticker.Stop()
-						close(ui.LoadingChannel)
 						break
 					}
 				}
@@ -61,6 +61,7 @@ func connectCmd() Command {
 	return &ConnectCmd{
 		MetadataTmpl: &MetadataTmpl{
 			name: "connect",
+			args: "",
 			aliases: []string{
 				"c",
 			},

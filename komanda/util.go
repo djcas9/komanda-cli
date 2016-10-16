@@ -34,7 +34,7 @@ func tabUpdateInput(input *gocui.View) (string, bool) {
 
 	logger.Logger.Println(spew.Sdump(input.Buffer()))
 
-	search := strings.TrimSpace(input.Buffer())
+	search := strings.TrimSpace(input.ViewBuffer())
 	searchSplit := strings.Split(search, " ")
 	search = searchSplit[len(searchSplit)-1]
 
@@ -58,6 +58,7 @@ func tabUpdateInput(input *gocui.View) (string, bool) {
 		fmt.Fprint(input, newInputData+" ")
 		input.SetCursor(len(input.Buffer())-1, 0)
 
+		logger.Logger.Println(spew.Sdump(newInputData + ""))
 		logger.Logger.Printf("WORD %s -- %s -- %s\n", search, cacheTabSearch, cacheTabResults[cacheTabIndex])
 		return "", true
 	}
@@ -248,11 +249,14 @@ func GetLine(g *gocui.Gui, v *gocui.View) error {
 		}
 		// send text
 	} else {
-		split := strings.Split(line[1:], " ")
+		split := strings.Split(strings.Replace(line[1:], "\x00", "", -1), " ")
+
+		logger.Logger.Println("IN COMMAND!!!", line, spew.Sdump(split))
 
 		// mainView, _ := g.View(client.StatusChannel)
 		// fmt.Fprintln(mainView, "$ COMMAND = ", split[0], len(split))
 
+		// TODO: what was this?
 		if len(split) <= 1 {
 			if split[0] == "p" || split[0] == "part" {
 				command.Run(split[0], []string{"", Server.CurrentChannel})
@@ -325,7 +329,7 @@ func FocusStatusView(g *gocui.Gui, v *gocui.View) error {
 
 func FocusInputView(g *gocui.Gui, v *gocui.View) error {
 
-	v.SetCursor(len(v.Buffer())-1, 0)
+	v.SetCursor(len(v.Buffer()+"")-1, 0)
 
 	if err := g.SetCurrentView("input"); err != nil {
 		return err

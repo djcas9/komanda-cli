@@ -10,12 +10,17 @@ var (
 
 type MetadataTmpl struct {
 	name        string
+	args        string
 	description string
 	aliases     []string
 }
 
 func (c *MetadataTmpl) Name() string {
 	return c.name
+}
+
+func (c *MetadataTmpl) Args() string {
+	return c.args
 }
 
 func (c *MetadataTmpl) Description() string {
@@ -28,6 +33,7 @@ func (c *MetadataTmpl) Aliases() []string {
 
 type CommandMetadata interface {
 	Name() string
+	Args() string
 	Description() string
 	Aliases() []string
 }
@@ -56,6 +62,7 @@ func Register(server *client.Server) {
 		topicCmd(),
 		windowCmd(),
 		namesCmd(),
+		queryCmd(),
 	}
 }
 

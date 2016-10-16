@@ -32,6 +32,7 @@ func logoCmd() Command {
 	return &LogoCmd{
 		MetadataTmpl: &MetadataTmpl{
 			name:        "logo",
+			args:        "",
 			description: "logo command",
 		},
 	}

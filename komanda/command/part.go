@@ -68,10 +68,11 @@ func partCmd() Command {
 	return &PartCmd{
 		MetadataTmpl: &MetadataTmpl{
 			name: "part",
+			args: "[channel]",
 			aliases: []string{
 				"p",
 			},
-			description: "part irc channel",
+			description: "part irc channel or current if no channel given",
 		},
 	}
 }

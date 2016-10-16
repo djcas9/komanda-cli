@@ -29,6 +29,7 @@ func emptyCmd() Command {
 	return &EmptyCmd{
 		MetadataTmpl: &MetadataTmpl{
 			name:        "empty",
+			args:        "",
 			description: "empty command",
 		},
 	}

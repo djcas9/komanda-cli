@@ -39,10 +39,11 @@ func topicCmd() Command {
 	return &TopicCmd{
 		MetadataTmpl: &MetadataTmpl{
 			name: "topic",
+			args: "[channel] [topic]",
 			aliases: []string{
 				"t",
 			},
-			description: "set channel topic",
+			description: "set topic for given channel or current channel if empty",
 		},
 	}
 }

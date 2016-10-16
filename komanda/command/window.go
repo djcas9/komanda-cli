@@ -54,6 +54,7 @@ func windowCmd() Command {
 	return &WindowCmd{
 		MetadataTmpl: &MetadataTmpl{
 			name: "window",
+			args: "<id>",
 			aliases: []string{
 				"w",
 			},

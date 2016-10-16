@@ -23,8 +23,8 @@ func (e *HelpCmd) Exec(args []string) error {
 
 		for _, command := range Commands {
 			metadata := command.Metadata()
-			client.StatusMessage(v, fmt.Sprintf("/%s - %s",
-				metadata.Name(), metadata.Description()))
+			client.StatusMessage(v, fmt.Sprintf("/%s %s - %s",
+				metadata.Name(), metadata.Args(), metadata.Description()))
 		}
 
 		client.StatusMessage(v, "==================== HELP COMMANDS ====================\n")

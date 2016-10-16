@@ -32,6 +32,7 @@ func statusCmd() Command {
 	return &StatusCmd{
 		MetadataTmpl: &MetadataTmpl{
 			name:        "status",
+			args:        "",
 			description: "status command",
 		},
 	}

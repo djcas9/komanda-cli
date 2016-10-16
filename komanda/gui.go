@@ -10,6 +10,7 @@ import (
 	"github.com/mephux/komanda-cli/komanda/command"
 	"github.com/mephux/komanda-cli/komanda/logger"
 	"github.com/mephux/komanda-cli/komanda/ui"
+	termbox "github.com/nsf/termbox-go"
 )
 
 var Server *client.Server
@@ -92,19 +93,19 @@ func Run(build string, server *client.Server) {
 		log.Panicln(err)
 	}
 
-	// if err := g.SetKeybinding("input", gocui.KeyArrowLeft, gocui.Modifier(termbox.InputAlt),
-	// func(g *gocui.Gui, v *gocui.View) error {
-	// return prevView(g, v)
-	// }); err != nil {
-	// log.Panicln(err)
-	// }
+	if err := g.SetKeybinding("input", gocui.KeyArrowLeft, gocui.Modifier(termbox.InputAlt),
+		func(g *gocui.Gui, v *gocui.View) error {
+			return prevView(g, v)
+		}); err != nil {
+		log.Panicln(err)
+	}
 
-	// if err := g.SetKeybinding("input", gocui.KeyArrowRight, gocui.Modifier(termbox.ModAlt),
-	// func(g *gocui.Gui, v *gocui.View) error {
-	// return nextView(g, v)
-	// }); err != nil {
-	// log.Panicln(err)
-	// }
+	if err := g.SetKeybinding("input", gocui.KeyArrowRight, gocui.Modifier(termbox.ModAlt),
+		func(g *gocui.Gui, v *gocui.View) error {
+			return nextView(g, v)
+		}); err != nil {
+		log.Panicln(err)
+	}
 
 	if err := g.SetKeybinding("", gocui.KeyCtrlN,
 		gocui.ModNone, nextView); err != nil {

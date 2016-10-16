@@ -1,19 +1,21 @@
 package command
 
 import (
+	"strings"
+
 	"github.com/jroimartin/gocui"
 	"github.com/mephux/komanda-cli/komanda/client"
 )
 
-type JoinCmd struct {
+type QueryCmd struct {
 	*MetadataTmpl
 }
 
-func (e *JoinCmd) Metadata() CommandMetadata {
+func (e *QueryCmd) Metadata() CommandMetadata {
 	return e
 }
 
-func (e *JoinCmd) Exec(args []string) error {
+func (e *QueryCmd) Exec(args []string) error {
 	Server.Exec(client.StatusChannel, func(g *gocui.Gui, v *gocui.View, s *client.Server) error {
 
 		if !s.Client.Connected() {
@@ -22,11 +24,16 @@ func (e *JoinCmd) Exec(args []string) error {
 		}
 
 		if len(args) >= 2 && len(args[1]) > 0 {
-			s.Client.Join(args[1])
 			CurrentChannel = args[1]
 			s.CurrentChannel = args[1]
 
-			return s.NewChannel(args[1], false)
+			s.NewChannel(args[1], true)
+
+			if len(args[2]) > 0 {
+				go Server.Client.Privmsg(args[1],
+					strings.Replace(args[2], "\x00", "", -1))
+			}
+
 		}
 
 		return nil
@@ -35,15 +42,15 @@ func (e *JoinCmd) Exec(args []string) error {
 	return nil
 }
 
-func joinCmd() Command {
-	return &JoinCmd{
+func queryCmd() Command {
+	return &QueryCmd{
 		MetadataTmpl: &MetadataTmpl{
-			name: "join",
-			args: "<channel>",
+			name: "query",
+			args: "<user> [message]",
 			aliases: []string{
-				"j",
+				"pm",
 			},
-			description: "join irc channel",
+			description: "send private message to user",
 		},
 	}
 }
