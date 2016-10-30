@@ -16,6 +16,9 @@ var (
 	Server      *client.Server
 	Name        = ""
 	notify      *notificator.Notificator
+
+	// Editor for input
+	Editor gocui.Editor
 )
 
 func Layout(g *gocui.Gui) error {

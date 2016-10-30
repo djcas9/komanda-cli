@@ -2,6 +2,7 @@ package ui
 
 import (
 	"fmt"
+	"math/rand"
 	"strconv"
 	"strings"
 	"time"
@@ -249,6 +250,7 @@ func BindHandlers() {
 					// logger.Logger.Printf("ADD NICK %s\n", spew.Sdump(nick))
 
 					user.Nick = nick
+					user.Color = client.ANSIColors[rand.Intn(len(client.ANSIColors))]
 					c.Users = append(c.Users, user)
 				}
 
@@ -334,11 +336,23 @@ func BindHandlers() {
 				Server.Exec(ircChan,
 					func(g *gocui.Gui, v *gocui.View, s *client.Server) error {
 						timestamp := time.Now().Format("03:04")
-						fmt.Fprintf(v, "[%s] <- %s: %s\n", timestampColor(timestamp), nickColor(line.Nick), line.Text())
+
+						var highlight bool
 
 						if strings.Contains(line.Text(), Server.Client.Me().Nick) {
+							highlight = true
 							notify.Push(fmt.Sprintf("Highlight from %s", line.Nick), line.Text(), "", notificator.UR_NORMAL)
 						}
+
+						text := line.Text()
+						style := "<-"
+
+						if highlight {
+							text = color.YellowString(text)
+							style = color.YellowString("!!")
+						}
+
+						fmt.Fprintf(v, "[%s] %s %s: %s\n", timestampColor(timestamp), style, c.FindUser(line.Nick).String(true), text)
 
 						return nil
 					})

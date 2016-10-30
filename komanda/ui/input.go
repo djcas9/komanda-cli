@@ -12,11 +12,15 @@ func InputView(g *gocui.Gui, x, y, maxX, maxY int) error {
 			return err
 		}
 
-		if err := g.SetCurrentView("input"); err != nil {
+		_, err := g.SetCurrentView("input")
+
+		if err != nil {
 			return err
 		}
 
 		logger.Logger.Println(" CHANGE:", "input", x, y, maxX, maxY)
+
+		v.Editor = Editor
 
 		// v.FgColor = gocui.ColorGreen
 		v.BgColor = gocui.ColorDefault

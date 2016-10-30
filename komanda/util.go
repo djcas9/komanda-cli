@@ -26,7 +26,7 @@ var (
 
 	myNickColor     = color.New(color.FgGreen).SprintFunc()
 	myTimetampColor = color.New(color.FgMagenta).SprintFunc()
-	myTextColor     = color.New(color.FgCyan).SprintFunc()
+	myTextColor     = color.New(color.FgHiGreen).SprintFunc()
 )
 
 // TODO: fix \x00 issues
@@ -239,10 +239,13 @@ func GetLine(g *gocui.Gui, v *gocui.View) error {
 				return err
 			} else {
 				if mainView.Name() != client.StatusChannel {
+
+					c := Server.FindChannel(Server.CurrentChannel)
+
 					timestamp := time.Now().Format("03:04")
 					fmt.Fprintf(mainView, "[%s] -> %s: %s\n",
 						myTimetampColor(timestamp),
-						myNickColor(Server.Client.Me().Nick),
+						myNickColor(c.FindUser(Server.Client.Me().Nick).String(false)),
 						myTextColor(strings.Replace(line, "\x00", "", -1)))
 				}
 			}
@@ -320,7 +323,7 @@ func FocusStatusView(g *gocui.Gui, v *gocui.View) error {
 
 	v.Autoscroll = true
 
-	if err := g.SetCurrentView(client.StatusChannel); err != nil {
+	if _, err := g.SetCurrentView(client.StatusChannel); err != nil {
 		return err
 	}
 
@@ -331,7 +334,7 @@ func FocusInputView(g *gocui.Gui, v *gocui.View) error {
 
 	v.SetCursor(len(v.Buffer()+"")-1, 0)
 
-	if err := g.SetCurrentView("input"); err != nil {
+	if _, err := g.SetCurrentView("input"); err != nil {
 		return err
 	}
 
@@ -366,7 +369,7 @@ func nextView(g *gocui.Gui, v *gocui.View) error {
 		g.SetViewOnTop("header")
 	}
 
-	if err := g.SetCurrentView(Server.Channels[next].Name); err != nil {
+	if _, err := g.SetCurrentView(Server.Channels[next].Name); err != nil {
 		return err
 	}
 
@@ -412,7 +415,7 @@ func prevView(g *gocui.Gui, v *gocui.View) error {
 		g.SetViewOnTop("header")
 	}
 
-	if err := g.SetCurrentView(Server.Channels[next].Name); err != nil {
+	if _, err := g.SetCurrentView(Server.Channels[next].Name); err != nil {
 		return err
 	}
 

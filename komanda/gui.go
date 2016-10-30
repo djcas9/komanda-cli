@@ -25,17 +25,15 @@ func Run(build string, server *client.Server) {
 	ui.VersionLine = fmt.Sprintf("  Version: %s%s  Source Code: %s\n",
 		Version, build, Website)
 
-	g := gocui.NewGui()
+	g, err := gocui.NewGui()
 
-	if err := g.Init(); err != nil {
+	if err != nil {
 		log.Panicln(err)
 	}
 
 	defer g.Close()
 
 	server.Gui = g
-
-	g.Editor = gocui.EditorFunc(simpleEditor)
 
 	client.New(server)
 
@@ -44,7 +42,8 @@ func Run(build string, server *client.Server) {
 	Server = server
 	ui.Server = server
 
-	g.SetLayout(ui.Layout)
+	ui.Editor = gocui.EditorFunc(simpleEditor)
+	g.SetManagerFunc(ui.Layout)
 
 	command.Register(server)
 

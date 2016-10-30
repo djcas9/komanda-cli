@@ -42,14 +42,14 @@ func (e *PartCmd) Exec(args []string) error {
 
 				c := Server.GetCurrentChannel()
 
-				if err := g.SetCurrentView(c.Name); err != nil {
+				if _, err := g.SetCurrentView(c.Name); err != nil {
 					return err
 				}
 
 				c.Unread = false
 			}
 
-			if err := g.SetCurrentView("input"); err != nil {
+			if _, err := g.SetCurrentView("input"); err != nil {
 				return err
 			}
 

@@ -16,7 +16,9 @@ func MenuView(g *gocui.Gui, maxX, maxY int) error {
 			return err
 		}
 
-		if err := g.SetCurrentView("menu"); err != nil {
+		_, err := g.SetCurrentView("menu")
+
+		if err != nil {
 			return err
 		}
 

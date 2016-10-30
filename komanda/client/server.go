@@ -67,6 +67,16 @@ func (server *Server) HasChannel(name string) (*Channel, int, bool) {
 	return nil, -1, false
 }
 
+func (server *Server) FindChannel(name string) *Channel {
+	c, _, has := server.HasChannel(name)
+
+	if has {
+		return c
+	}
+
+	return nil
+}
+
 func (server *Server) ChannelView(name string) (*gocui.View, error) {
 	if c, _, ok := server.HasChannel(name); ok {
 		return c.View()

@@ -2,6 +2,7 @@ package client
 
 import (
 	"fmt"
+	"math/rand"
 	"sort"
 
 	"github.com/fatih/color"
@@ -12,9 +13,22 @@ import (
 
 type RenderHandlerFunc func(*Channel, *gocui.View) error
 
+var (
+	ANSIColors = []int{34, 36, 31, 35, 33, 37, 34, 32, 36, 31, 35, 33}
+)
+
 type User struct {
-	Nick string
-	Mode string
+	Nick  string
+	Mode  string
+	Color int
+}
+
+func (u *User) String(color bool) string {
+	if color {
+		return fmt.Sprintf("\033[%dm%s%s\033[0m", u.Color, u.Mode, u.Nick)
+	} else {
+		return fmt.Sprintf("%s%s", u.Mode, u.Nick)
+	}
 }
 
 type NickSorter []*User
@@ -37,6 +51,16 @@ type Channel struct {
 	Users         []*User
 	NickListReady bool
 	Loading       *nbc.NonBlockingChan
+}
+
+func (channel *Channel) FindUser(nick string) *User {
+	for _, u := range channel.Users {
+		if u.Nick == nick {
+			return u
+		}
+	}
+
+	return nil
 }
 
 func (channel *Channel) View() (*gocui.View, error) {
@@ -98,7 +122,8 @@ func (channel *Channel) RemoveNick(nick string) {
 
 func (channel *Channel) AddNick(nick string) {
 	user := &User{
-		Nick: nick,
+		Nick:  nick,
+		Color: ANSIColors[rand.Intn(len(ANSIColors))],
 	}
 
 	channel.Users = append(channel.Users, user)
