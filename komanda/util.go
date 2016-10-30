@@ -5,12 +5,10 @@ import (
 	"strings"
 	"time"
 
-	"github.com/davecgh/go-spew/spew"
 	"github.com/fatih/color"
 	"github.com/jroimartin/gocui"
 	"github.com/mephux/komanda-cli/komanda/client"
 	"github.com/mephux/komanda-cli/komanda/command"
-	"github.com/mephux/komanda-cli/komanda/logger"
 	"github.com/mephux/komanda-cli/komanda/share/history"
 	"github.com/mephux/komanda-cli/komanda/share/trie"
 	"github.com/mephux/komanda-cli/komanda/ui"
@@ -32,7 +30,7 @@ var (
 // TODO: fix \x00 issues
 func tabUpdateInput(input *gocui.View) (string, bool) {
 
-	logger.Logger.Println(spew.Sdump(input.Buffer()))
+	// logger.Logger.Println(spew.Sdump(input.Buffer()))
 
 	search := strings.TrimSpace(input.ViewBuffer())
 	searchSplit := strings.Split(search, " ")
@@ -58,8 +56,8 @@ func tabUpdateInput(input *gocui.View) (string, bool) {
 		fmt.Fprint(input, newInputData+" ")
 		input.SetCursor(len(input.Buffer())-1, 0)
 
-		logger.Logger.Println(spew.Sdump(newInputData + ""))
-		logger.Logger.Printf("WORD %s -- %s -- %s\n", search, cacheTabSearch, cacheTabResults[cacheTabIndex])
+		// logger.Logger.Println(spew.Sdump(newInputData + ""))
+		// logger.Logger.Printf("WORD %s -- %s -- %s\n", search, cacheTabSearch, cacheTabResults[cacheTabIndex])
 		return "", true
 	}
 
@@ -134,7 +132,7 @@ func tabComplete(g *gocui.Gui, v *gocui.View) error {
 			return nil
 		}
 
-		logger.Logger.Printf("RESULTS %s -- %s\n", search, results)
+		// logger.Logger.Printf("RESULTS %s -- %s\n", search, results)
 	}
 
 	return nil
@@ -186,7 +184,7 @@ func simpleEditor(v *gocui.View, key gocui.Key, ch rune, mod gocui.Modifier) {
 	case key == gocui.KeyCtrlE:
 		v.SetCursor(len(v.Buffer())-1, 0)
 	case key == gocui.KeyCtrlLsqBracket:
-		logger.Logger.Println("word...")
+		// logger.Logger.Println("word...")
 	}
 
 	if !inHistroy {
@@ -194,7 +192,7 @@ func simpleEditor(v *gocui.View, key gocui.Key, ch rune, mod gocui.Modifier) {
 	}
 
 	if !tab {
-		logger.Logger.Print("CALL\n")
+		// logger.Logger.Print("CALL\n")
 
 		inCacheTab = false
 		cacheTabSearch = ""
@@ -211,7 +209,7 @@ func GetLine(g *gocui.Gui, v *gocui.View) error {
 		line = ""
 	}
 
-	logger.Logger.Printf("LINE %s\n", line)
+	// logger.Logger.Printf("LINE %s\n", line)
 
 	if len(line) <= 0 {
 		// return errors.New("input line empty")
@@ -227,7 +225,7 @@ func GetLine(g *gocui.Gui, v *gocui.View) error {
 
 			Server.Exec(Server.CurrentChannel, func(g *gocui.Gui, v *gocui.View, s *client.Server) error {
 				if Server.Client.Connected() {
-					logger.Logger.Println("SEND:::", spew.Sdump(line))
+					// logger.Logger.Println("SEND:::", spew.Sdump(line))
 
 					go Server.Client.Privmsg(Server.CurrentChannel,
 						strings.Replace(line, "\x00", "", -1))
@@ -254,7 +252,7 @@ func GetLine(g *gocui.Gui, v *gocui.View) error {
 	} else {
 		split := strings.Split(strings.Replace(line[1:], "\x00", "", -1), " ")
 
-		logger.Logger.Println("IN COMMAND!!!", line, spew.Sdump(split))
+		// logger.Logger.Println("IN COMMAND!!!", line, spew.Sdump(split))
 
 		// mainView, _ := g.View(client.StatusChannel)
 		// fmt.Fprintln(mainView, "$ COMMAND = ", split[0], len(split))
@@ -359,7 +357,7 @@ func nextView(g *gocui.Gui, v *gocui.View) error {
 		next = 0
 	}
 
-	logger.Logger.Printf("NEXT INDEX %d\n", next)
+	// logger.Logger.Printf("NEXT INDEX %d\n", next)
 
 	if newView, err := g.View(Server.Channels[next].Name); err != nil {
 		return err
@@ -373,7 +371,7 @@ func nextView(g *gocui.Gui, v *gocui.View) error {
 		return err
 	}
 
-	logger.Logger.Printf("Set Current View %d\n", Server.Channels[next].Name)
+	// logger.Logger.Printf("Set Current View %d\n", Server.Channels[next].Name)
 	Server.CurrentChannel = Server.Channels[next].Name
 	Server.Channels[next].Unread = false
 
@@ -395,7 +393,7 @@ func getCurrentChannelIndex() int {
 }
 
 func prevView(g *gocui.Gui, v *gocui.View) error {
-	logger.Logger.Println("word")
+	// logger.Logger.Println("word")
 
 	curView = getCurrentChannelIndex()
 
@@ -405,7 +403,7 @@ func prevView(g *gocui.Gui, v *gocui.View) error {
 		next = len(Server.Channels) - 1
 	}
 
-	logger.Logger.Printf("PREV INDEX %d\n", next)
+	// logger.Logger.Printf("PREV INDEX %d\n", next)
 
 	if newView, err := g.View(Server.Channels[next].Name); err != nil {
 		return err
@@ -419,7 +417,7 @@ func prevView(g *gocui.Gui, v *gocui.View) error {
 		return err
 	}
 
-	logger.Logger.Printf("Set Current View %d\n", Server.Channels[next].Name)
+	// logger.Logger.Printf("Set Current View %d\n", Server.Channels[next].Name)
 	Server.CurrentChannel = Server.Channels[next].Name
 	Server.Channels[next].Unread = false
 
@@ -433,12 +431,13 @@ func prevView(g *gocui.Gui, v *gocui.View) error {
 func moveView(g *gocui.Gui, v *gocui.View, dx, dy int) error {
 
 	name := v.Name()
-	x0, y0, x1, y1, err := g.ViewPosition(name)
-	if err != nil {
-		return err
-	}
 
-	logger.Logger.Printf("RESIZE %d %d %d %d\n", x0+dx, y0+dy, x1+dx, y1+dy)
+	// x0, y0, x1, y1, err := g.ViewPosition(name)
+	// if err != nil {
+	// return err
+	// }
+
+	// logger.Logger.Printf("RESIZE %d %d %d %d\n", x0+dx, y0+dy, x1+dx, y1+dy)
 
 	if _, err := g.SetView(name, 0, 0, 0, 0); err != nil {
 		return err

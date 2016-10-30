@@ -37,8 +37,70 @@ func BindHandlers() {
 		})
 	}
 
+	Server.Client.HandleFunc("WHOIS", func(conn *irc.Conn, line *irc.Line) {
+		logger.Logger.Println("WHOIS -----------------------------", spew.Sdump(line))
+	})
+
+	Server.Client.HandleFunc("WHO", func(conn *irc.Conn, line *irc.Line) {
+		logger.Logger.Println("WHO -----------------------------", spew.Sdump(line))
+	})
+
+	Server.Client.HandleFunc("NOTICE", func(conn *irc.Conn, line *irc.Line) {
+		logger.Logger.Println("NOTICE -----------------------------", spew.Sdump(line))
+	})
+
+	Server.Client.HandleFunc("NICK", func(conn *irc.Conn, line *irc.Line) {
+		logger.Logger.Println("NICK -----------------------------", spew.Sdump(line))
+
+		for _, c := range Server.Channels {
+			u := c.FindUser(line.Nick)
+
+			if u != nil {
+				u.Nick = line.Args[0]
+
+				Server.Exec(c.Name, func(g *gocui.Gui, v *gocui.View, s *client.Server) error {
+					fmt.Fprintf(v, "[%s] %s has changed nick to %s\n", color.GreenString("+NICK"), line.Nick, line.Args[0])
+					return nil
+				})
+			}
+		}
+	})
+
+	Server.Client.HandleFunc("KICK", func(conn *irc.Conn, line *irc.Line) {
+		logger.Logger.Println("KICK -----------------------------", spew.Sdump(line))
+	})
+
+	Server.Client.HandleFunc("AWAY", func(conn *irc.Conn, line *irc.Line) {
+		logger.Logger.Println("AWAY -----------------------------", spew.Sdump(line))
+	})
+
+	Server.Client.HandleFunc("ACTION", func(conn *irc.Conn, line *irc.Line) {
+		logger.Logger.Println("ACTION -----------------------------", spew.Sdump(line))
+	})
+
 	Server.Client.HandleFunc("REGISTER", func(conn *irc.Conn, line *irc.Line) {
-		// logger.Logger.Println("REGISTER -----------------------------", spew.Sdump(line))
+		logger.Logger.Println("REGISTER -----------------------------", spew.Sdump(line))
+	})
+
+	Server.Client.HandleFunc("QUIT", func(conn *irc.Conn, line *irc.Line) {
+		// logger.Logger.Println("QUIT -----------------------------", spew.Sdump(line))
+
+		for _, c := range Server.Channels {
+			u := c.FindUser(line.Nick)
+
+			if u != nil {
+				c.RemoveNick(line.Nick)
+
+				Server.Exec(c.Name, func(g *gocui.Gui, v *gocui.View, s *client.Server) error {
+					fmt.Fprintf(v, "[%s] %s [%s@%s] has quit [%s]\n", color.RedString("-EXIT"), line.Nick, line.Ident, line.Host, line.Text())
+					return nil
+				})
+			}
+		}
+	})
+
+	Server.Client.HandleFunc("USER", func(conn *irc.Conn, line *irc.Line) {
+		logger.Logger.Println("USER -----------------------------", spew.Sdump(line))
 	})
 
 	Server.Client.HandleFunc("TOPIC", func(conn *irc.Conn, line *irc.Line) {
@@ -71,7 +133,7 @@ func BindHandlers() {
 	})
 
 	Server.Client.HandleFunc("PART", func(conn *irc.Conn, line *irc.Line) {
-		logger.Logger.Println("PART -----------------------------", line.Text())
+		// logger.Logger.Println("PART -----------------------------", line.Text())
 
 		if c, _, has := Server.HasChannel(line.Text()); has {
 			Server.Exec(c.Name, func(g *gocui.Gui, v *gocui.View, s *client.Server) error {
@@ -116,7 +178,7 @@ func BindHandlers() {
 	// https://www.alien.net.au/irc/irc2numerics.html
 	//
 	Server.Client.HandleFunc("332", func(conn *irc.Conn, line *irc.Line) {
-		logger.Logger.Println("TOPIC........", spew.Sdump(line))
+		// logger.Logger.Println("TOPIC........", spew.Sdump(line))
 
 		Server.Exec(line.Args[1], func(g *gocui.Gui, v *gocui.View, s *client.Server) error {
 
@@ -137,7 +199,7 @@ func BindHandlers() {
 			// v.Clear()
 			// v.SetCursor(0, 0)
 
-			logger.Logger.Println("NICK LIST DONE")
+			// logger.Logger.Println("NICK LIST DONE")
 
 			if c, _, has := s.HasChannel(line.Args[1]); has {
 
@@ -145,7 +207,7 @@ func BindHandlers() {
 					for {
 						select {
 						case <-c.Loading.Recv:
-							logger.Logger.Println("INSIDE THE NAMES AND STUFF...")
+							// logger.Logger.Println("INSIDE THE NAMES AND STUFF...")
 							if !c.NickListReady {
 								c.NickListReady = true
 
@@ -200,7 +262,7 @@ func BindHandlers() {
 
 	// nick list
 	Server.Client.HandleFunc("353", func(conn *irc.Conn, line *irc.Line) {
-		logger.Logger.Printf("NICK LIST %s\n", spew.Sdump(line))
+		// logger.Logger.Printf("NICK LIST %s\n", spew.Sdump(line))
 
 		Server.Exec(line.Args[2], func(g *gocui.Gui, v *gocui.View, s *client.Server) error {
 
@@ -249,9 +311,12 @@ func BindHandlers() {
 
 					// logger.Logger.Printf("ADD NICK %s\n", spew.Sdump(nick))
 
-					user.Nick = nick
-					user.Color = client.ANSIColors[rand.Intn(len(client.ANSIColors))]
-					c.Users = append(c.Users, user)
+					if u := c.FindUser(nick); u == nil {
+						user.Nick = nick
+						user.Color = client.ANSIColors[rand.Intn(len(client.ANSIColors))]
+						c.Users = append(c.Users, user)
+					}
+
 				}
 
 				c.Loading.Send <- nil
@@ -302,7 +367,7 @@ func BindHandlers() {
 
 		ircChan := line.Args[0]
 
-		logger.Logger.Printf("MSG %s %s %s %s\n", ircChan, line.Nick, line.Host, line.Args)
+		// logger.Logger.Printf("MSG %s %s %s %s\n", ircChan, line.Nick, line.Host, line.Args)
 
 		if ircChan == Server.Client.Me().Nick {
 

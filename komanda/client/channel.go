@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"math/rand"
 	"sort"
+	"sync"
 
 	"github.com/fatih/color"
 	"github.com/jroimartin/gocui"
@@ -51,6 +52,8 @@ type Channel struct {
 	Users         []*User
 	NickListReady bool
 	Loading       *nbc.NonBlockingChan
+
+	mu sync.Mutex
 }
 
 func (channel *Channel) FindUser(nick string) *User {
@@ -115,18 +118,27 @@ func (channel *Channel) NickMetricsString(view *gocui.View) {
 func (channel *Channel) RemoveNick(nick string) {
 	for i, user := range channel.Users {
 		if user.Nick == nick {
+			channel.mu.Lock()
+			defer channel.mu.Unlock()
+
 			channel.Users = append(channel.Users[:i], channel.Users[i+1:]...)
 		}
 	}
 }
 
 func (channel *Channel) AddNick(nick string) {
-	user := &User{
-		Nick:  nick,
-		Color: ANSIColors[rand.Intn(len(ANSIColors))],
-	}
 
-	channel.Users = append(channel.Users, user)
+	if u := channel.FindUser(nick); u == nil {
+		channel.mu.Lock()
+		defer channel.mu.Unlock()
+
+		user := &User{
+			Nick:  nick,
+			Color: ANSIColors[rand.Intn(len(ANSIColors))],
+		}
+
+		channel.Users = append(channel.Users, user)
+	}
 }
 
 func (channel *Channel) Render(private bool) error {

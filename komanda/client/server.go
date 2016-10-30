@@ -2,6 +2,7 @@ package client
 
 import (
 	"errors"
+	"sync"
 
 	ircClient "github.com/fluffle/goirc/client"
 	"github.com/hectane/go-nonblockingchan"
@@ -31,6 +32,8 @@ type Server struct {
 	CurrentChannel string
 
 	InsecureSkipVerify bool
+
+	mu sync.Mutex
 }
 
 type Handler func(*gocui.Gui, *gocui.View, *Server) error
@@ -87,16 +90,24 @@ func (server *Server) ChannelView(name string) (*gocui.View, error) {
 }
 
 func (server *Server) AddChannel(channel *Channel) {
+
 	if _, _, ok := server.HasChannel(channel.Name); !ok {
+		server.mu.Lock()
+		defer server.mu.Unlock()
+
 		channel.Server = server
 		server.Channels = append(server.Channels, channel)
 	}
 }
 
 func (server *Server) RemoveChannel(name string) (int, error) {
+
 	channel, i, ok := server.HasChannel(name)
 
 	if ok {
+		server.mu.Lock()
+		defer server.mu.Unlock()
+
 		server.Gui.DeleteView(channel.Name)
 		server.Channels = append(server.Channels[:i], server.Channels[i+1:]...)
 		return i, nil
