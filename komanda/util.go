@@ -6,9 +6,9 @@ import (
 	"time"
 
 	"github.com/davecgh/go-spew/spew"
-	"github.com/fatih/color"
 	"github.com/jroimartin/gocui"
 	"github.com/mephux/komanda-cli/komanda/client"
+	"github.com/mephux/komanda-cli/komanda/color"
 	"github.com/mephux/komanda-cli/komanda/command"
 	"github.com/mephux/komanda-cli/komanda/logger"
 	"github.com/mephux/komanda-cli/komanda/share/history"
@@ -23,10 +23,6 @@ var (
 	cacheTabSearch  = ""
 	cacheTabResults = []string{}
 	InputHistory    = history.New()
-
-	myNickColor     = color.New(color.FgGreen).SprintFunc()
-	myTimetampColor = color.New(color.FgMagenta).SprintFunc()
-	myTextColor     = color.New(color.FgHiGreen).SprintFunc()
 )
 
 // TODO: fix \x00 issues
@@ -263,10 +259,17 @@ func GetLine(g *gocui.Gui, v *gocui.View) error {
 					c := Server.FindChannel(Server.CurrentChannel)
 
 					timestamp := time.Now().Format("03:04")
+
+					logger.Logger.Println(spew.Sdump(color.String(color.TimestampColor, timestamp)))
+					logger.Logger.Println(spew.Sdump(color.String(color.Red, "word")))
+
 					fmt.Fprintf(mainView, "[%s] -> %s: %s\n",
-						ui.ColorString(ui.TimestampColor, timestamp),
-						myNickColor(c.FindUser(Server.Client.Me().Nick).String(false)),
-						myTextColor(line))
+						color.String(color.TimestampColor, timestamp),
+						color.String(
+							color.MyNickColor,
+							c.FindUser(Server.Client.Me().Nick).String(false),
+						),
+						color.String(color.MyTextColor, line))
 				}
 			}
 		}

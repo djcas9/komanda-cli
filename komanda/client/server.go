@@ -27,11 +27,10 @@ type Server struct {
 	Nick    string
 	AltNick string
 
-	Version string
-
-	CurrentChannel string
-
+	Version            string
+	CurrentChannel     string
 	InsecureSkipVerify bool
+	AutoConnect        bool
 
 	mu sync.Mutex
 }

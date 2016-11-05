@@ -3,9 +3,9 @@ package command
 import (
 	"fmt"
 
-	"github.com/fatih/color"
 	"github.com/jroimartin/gocui"
 	"github.com/mephux/komanda-cli/komanda/client"
+	"github.com/mephux/komanda-cli/komanda/color"
 	"github.com/mephux/komanda-cli/komanda/ui"
 )
 
@@ -26,8 +26,8 @@ func (e *ClearCmd) Exec(args []string) error {
 
 		if Server.CurrentChannel == client.StatusChannel {
 			fmt.Fprintln(v, "")
-			fmt.Fprintln(v, color.CyanString(ui.Logo))
-			fmt.Fprintln(v, color.RedString(ui.VersionLine))
+			fmt.Fprintln(v, color.String(color.Logo, ui.Logo))
+			fmt.Fprintln(v, color.String(color.Red, ui.VersionLine))
 		} else {
 			fmt.Fprintln(v, "\n\n")
 		}

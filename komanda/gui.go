@@ -21,7 +21,7 @@ func Run(build string, server *client.Server) {
 	logger.Start()
 
 	ui.Name = Name
-	ui.Logo = Logo()
+	ui.Logo = Logo
 	ui.VersionLine = fmt.Sprintf("  Version: %s%s  Source Code: %s\n",
 		Version, build, Website)
 
@@ -31,7 +31,7 @@ func Run(build string, server *client.Server) {
 		log.Panicln(err)
 	}
 
-	// gocui.SetOutputMode(termbox.Output256)
+	g.SetOutputMode(termbox.Output256)
 
 	defer g.Close()
 
@@ -123,6 +123,11 @@ func Run(build string, server *client.Server) {
 			return prevView(g, v)
 		}); err != nil {
 		log.Panicln(err)
+	}
+
+	if Server.AutoConnect {
+		logger.Logger.Println("send auto connect command")
+		command.Run("connect", []string{})
 	}
 
 	err = g.MainLoop()

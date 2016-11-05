@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/fatih/color"
 	"github.com/jroimartin/gocui"
 	"github.com/mephux/komanda-cli/komanda/client"
+	"github.com/mephux/komanda-cli/komanda/color"
 )
 
 func MenuView(g *gocui.Gui, maxX, maxY int) error {
@@ -22,8 +22,8 @@ func MenuView(g *gocui.Gui, maxX, maxY int) error {
 			return err
 		}
 
-		// v.FgColor = gocui.ColorGreen
-		v.BgColor = gocui.ColorDefault
+		// v.FgColor = gocui.ColorWhite
+		// v.BgColor = gocui.ColorBlack
 
 		v.Autoscroll = false
 		v.Editable = false
@@ -58,30 +58,30 @@ func UpdateMenuView(gui *gocui.Gui) {
 			}
 
 			if Server.CurrentChannel == channel.Name {
-				name = color.GreenString(fmt.Sprintf("*%d:%s", i, channel.Name))
+				name = color.String(color.Green, fmt.Sprintf("*%d:%s", i, channel.Name))
 			} else {
 				if channel.Unread {
-					name = color.RedString(name + "+")
+					name = color.String(color.Red, name+"+")
 				}
 			}
 
 			channelList = append(channelList, name)
 		}
 
-		var connected = color.RedString("OFF")
+		var connected = color.String(color.Red, "OFF")
 		if Server.Client.Connected() {
-			connected = color.GreenString("ON")
+			connected = color.String(color.Green, "ON")
 		}
 
-		timestamp := color.GreenString(time.Now().Format("03:04:05"))
+		timestamp := color.String(color.Green, time.Now().Format("03:04:05"))
 
 		currentChannel := fmt.Sprintf("[%s]", Server.GetCurrentChannel().Name)
 
 		fmt.Fprintf(v, "⣿ [%s] ⡇ %s ⡇ %s@%s ⡇ %s\n\n%s",
 			connected,
 			timestamp,
-			color.GreenString(Server.Client.Me().Nick),
-			color.GreenString(Server.Address),
+			color.String(color.Green, Server.Client.Me().Nick),
+			color.String(color.Green, Server.Address),
 			channelList, currentChannel)
 
 		maxX, maxY := g.Size()
@@ -107,7 +107,7 @@ func UpdateMenuView(gui *gocui.Gui) {
 		// } else {
 		// g.SetViewOnTop(name)
 		// vv.Clear()
-		// vv.SelBgColor = gocui.ColorGreen
+		// vv.SelBgColor = gocui.Colorcolor.Green
 		// }
 
 		// return nil

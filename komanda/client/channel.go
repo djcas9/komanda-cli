@@ -2,12 +2,12 @@ package client
 
 import (
 	"fmt"
-	"math/rand"
 	"sort"
 	"sync"
 
-	"github.com/fatih/color"
 	"github.com/jroimartin/gocui"
+	colorful "github.com/lucasb-eyer/go-colorful"
+	"github.com/mephux/komanda-cli/komanda/color"
 
 	"github.com/hectane/go-nonblockingchan"
 )
@@ -21,12 +21,12 @@ var (
 type User struct {
 	Nick  string
 	Mode  string
-	Color int
+	Color color.Color
 }
 
-func (u *User) String(color bool) string {
-	if color {
-		return fmt.Sprintf("\033[%dm%s%s\033[0m", u.Color, u.Mode, u.Nick)
+func (u *User) String(c bool) string {
+	if c {
+		return color.Stringf(u.Color, "%s%s", u.Mode, u.Nick)
 	} else {
 		return fmt.Sprintf("%s%s", u.Mode, u.Nick)
 	}
@@ -81,7 +81,7 @@ func (channel *Channel) Update() (*gocui.View, error) {
 func (channel *Channel) NickListString(v *gocui.View) {
 	sort.Sort(NickSorter(channel.Users))
 
-	fmt.Fprintf(v, "\n%s", color.GreenString("== NICK LIST START\n"))
+	fmt.Fprintf(v, "\n%s", color.String(color.Green, "== NICK LIST START\n"))
 
 	for i, u := range channel.Users {
 		if i == len(channel.Users)-1 {
@@ -91,7 +91,7 @@ func (channel *Channel) NickListString(v *gocui.View) {
 		}
 	}
 
-	fmt.Fprintf(v, "\n%s", color.GreenString("== NICK LIST END\n\n"))
+	fmt.Fprintf(v, "\n%s", color.String(color.Green, "== NICK LIST END\n\n"))
 }
 
 // 09:41 * Irssi: #google-containers: Total of 213 nicks [0 ops, 0 halfops, 0 voices, 213 normal]
@@ -112,7 +112,7 @@ func (channel *Channel) NickMetricsString(view *gocui.View) {
 	}
 
 	fmt.Fprintf(view, "%s Komanda: %s: Total of %d nicks [%d ops, %d halfops, %d voices, %d normal]\n\n",
-		color.GreenString("**"), channel.Name, len(channel.Users), op, hop, v, n)
+		color.String(color.Green, "**"), channel.Name, len(channel.Users), op, hop, v, n)
 }
 
 func (channel *Channel) RemoveNick(nick string) {
@@ -132,9 +132,16 @@ func (channel *Channel) AddNick(nick string) {
 		channel.mu.Lock()
 		defer channel.mu.Unlock()
 
+		c := colorful.WarmColor()
+		r, g, b := c.RGB255()
+
 		user := &User{
-			Nick:  nick,
-			Color: ANSIColors[rand.Intn(len(ANSIColors))],
+			Nick: nick,
+			Color: color.Color{
+				R: r,
+				G: g,
+				B: b,
+			},
 		}
 
 		channel.Users = append(channel.Users, user)
@@ -156,7 +163,8 @@ func (channel *Channel) Render(private bool) error {
 		// view.Highlight = true
 		view.Frame = false
 
-		view.BgColor = gocui.ColorDefault
+		// view.FgColor = gocui.ColorWhite
+		// view.BgColor = gocui.ColorBlack
 
 		if !private {
 			fmt.Fprintln(view, "\n\n")

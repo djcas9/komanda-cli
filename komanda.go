@@ -15,17 +15,24 @@ var (
 	debug   = kingpin.Flag("debug", "Enable debug logging").Short('d').Bool()
 	version = kingpin.Flag("version", "Komanda Version").Short('v').Bool()
 
-	ssl                = kingpin.Flag("ssl", "IRC SSL Connection").Bool()
-	InsecureSkipVerify = kingpin.Flag("ssl-skip-verify", "Insecure skip verify. (self-signed certs)").Bool()
+	ssl = kingpin.Flag("ssl", "IRC SSL Connection").Bool()
+
+	InsecureSkipVerify = kingpin.
+				Flag("insecure", "Insecure SSL skip verify. (self-signed certs)").
+				Short('i').Bool()
 
 	host = kingpin.Flag("host", "hostname").Short('h').Default("irc.freenode.net").String()
 	port = kingpin.Flag("port", "port").Short('p').Default("6667").String()
 	nick = kingpin.Flag("nick", "nick").Short('n').Default("komanda").String()
 	user = kingpin.Flag("user", "server user").Short('u').Default("komanda").String()
 	pass = kingpin.Flag("password", "server password").Short('P').String()
+
+	autoConnect = kingpin.Flag("auto", "Auto connect on startup.").Short('a').Bool()
 )
 
 func main() {
+	runtime.GOMAXPROCS(runtime.NumCPU())
+
 	if len(Build) > 0 {
 		Build = fmt.Sprintf(".%s", Build)
 	}
@@ -39,8 +46,6 @@ func main() {
 		return
 	}
 
-	runtime.GOMAXPROCS(runtime.NumCPU())
-
 	server := &client.Server{
 		Address:            *host,
 		Port:               *port,
@@ -51,6 +56,7 @@ func main() {
 		Version:            versionOutput,
 		InsecureSkipVerify: *InsecureSkipVerify,
 		CurrentChannel:     client.StatusChannel,
+		AutoConnect:        *autoConnect,
 	}
 
 	komanda.Run(Build, server)

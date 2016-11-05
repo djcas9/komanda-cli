@@ -18,6 +18,14 @@ var (
 	ErrUnknownView = errors.New("unknown view")
 )
 
+type OutputMode termbox.OutputMode
+
+const (
+	OutputCurrent OutputMode = iota
+	OutputNormal
+	Output256
+)
+
 // Gui represents the whole User Interface, including the views, layouts
 // and keybindings.
 type Gui struct {
@@ -64,6 +72,17 @@ func NewGui() (*Gui, error) {
 	g.BgColor, g.FgColor = ColorBlack, ColorWhite
 	g.SelBgColor, g.SelFgColor = ColorBlack, ColorWhite
 	return g, nil
+}
+
+// SetOutputMode for termbox output. Currently gocui only
+// supports OutputNormal and Output256
+func (g *Gui) SetOutputMode(mode termbox.OutputMode) {
+	if mode != termbox.OutputNormal && mode != termbox.Output256 {
+		mode = termbox.OutputNormal
+	}
+
+	outputMode = mode
+	termbox.SetOutputMode(mode)
 }
 
 // Close finalizes the library. It should be called after a successful

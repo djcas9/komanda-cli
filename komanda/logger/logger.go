@@ -18,6 +18,6 @@ func Start() {
 	if err != nil {
 		fmt.Printf("error opening file: %v", err)
 	}
-	Logger = log.New(f, "logs", log.Lshortfile)
+	Logger = log.New(f, "logs :: ", log.Lshortfile)
 
 }

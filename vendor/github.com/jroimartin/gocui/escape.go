@@ -7,6 +7,8 @@ package gocui
 import (
 	"errors"
 	"strconv"
+
+	termbox "github.com/nsf/termbox-go"
 )
 
 type escapeInterpreter struct {
@@ -26,6 +28,7 @@ const (
 )
 
 var (
+	outputMode       = termbox.OutputNormal
 	errNotCSI        = errors.New("Not a CSI escape sequence")
 	errCSINotANumber = errors.New("CSI escape sequence was expecting a number or a ;")
 	errCSIParseError = errors.New("CSI escape sequence parsing error")
@@ -138,31 +141,102 @@ func (ei *escapeInterpreter) parseOne(ch rune) (isEscape bool, err error) {
 			if len(ei.csiParam) < 1 {
 				return false, errCSIParseError
 			}
-			for _, param := range ei.csiParam {
-				p, err := strconv.Atoi(param)
-				if err != nil {
-					return false, errCSIParseError
-				}
-				switch {
-				case p >= 30 && p <= 37:
-					ei.curFgColor = paramToColor(p - 30)
-				case p >= 40 && p <= 47:
-					ei.curBgColor = paramToColor(p - 40)
-				case p == 1:
-					ei.curFgColor |= AttrBold
-				case p == 4:
-					ei.curFgColor |= AttrUnderline
-				case p == 7:
-					ei.curFgColor |= AttrReverse
-				case p == 0 || p == 39:
-					ei.curFgColor = ColorDefault
-					ei.curBgColor = ColorDefault
-				}
+
+			switch outputMode {
+			case termbox.OutputNormal:
+				return ei.outputNormal()
+			case termbox.Output256:
+				return ei.output256()
 			}
-			ei.state = stateNone
-			ei.csiParam = nil
-			return true, nil
 		}
 	}
 	return false, nil
+}
+
+// outputNormal  provides 8 different colors:
+// black, red, green, yellow, blue, magenta, cyan, white
+func (ei *escapeInterpreter) outputNormal() (bool, error) {
+
+	for _, param := range ei.csiParam {
+		p, err := strconv.Atoi(param)
+		if err != nil {
+			return false, errCSIParseError
+		}
+		switch {
+		case p >= 30 && p <= 37:
+			ei.curFgColor = paramToColor(p - 30)
+		case p >= 40 && p <= 47:
+			ei.curBgColor = paramToColor(p - 40)
+		case p == 1:
+			ei.curFgColor |= AttrBold
+		case p == 4:
+			ei.curFgColor |= AttrUnderline
+		case p == 7:
+			ei.curFgColor |= AttrReverse
+		case p == 0 || p == 39:
+			ei.curFgColor = ColorDefault
+			ei.curBgColor = ColorDefault
+		}
+	}
+
+	ei.state = stateNone
+	ei.csiParam = nil
+	return true, nil
+}
+
+// output256 allows you to leverage the 256 terminal mode
+//    0x01 - 0x08: the 8 colors as in OutputNormal
+//    0x09 - 0x10: Color* | AttrBold
+//    0x11 - 0xe8: 216 different colors
+//    0xe9 - 0x1ff: 24 different shades of grey
+func (ei *escapeInterpreter) output256() (bool, error) {
+
+	if len(ei.csiParam) < 3 {
+		ei.curFgColor = ColorDefault
+		ei.curBgColor = ColorDefault
+		ei.state = stateNone
+		ei.csiParam = nil
+		return true, nil
+	}
+
+	first, err := strconv.Atoi(ei.csiParam[0])
+
+	if err != nil {
+		return false, errCSIParseError
+	}
+
+	if first == 38 {
+		ei.curFgColor = 38
+
+		for _, param := range ei.csiParam[1:] {
+			p, err := strconv.Atoi(param)
+
+			if err != nil {
+				return false, errCSIParseError
+			}
+
+			ei.curFgColor |= Attribute(p)
+
+		}
+
+	} else if first == 48 {
+		ei.curBgColor = 48
+
+		for _, param := range ei.csiParam[1:] {
+			p, err := strconv.Atoi(param)
+
+			if err != nil {
+				return false, errCSIParseError
+			}
+
+			ei.curFgColor |= Attribute(p)
+
+		}
+	} else {
+		return false, errCSIParseError
+	}
+
+	ei.state = stateNone
+	ei.csiParam = nil
+	return true, nil
 }
