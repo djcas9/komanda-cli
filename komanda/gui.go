@@ -25,13 +25,11 @@ func Run(build string, server *client.Server) {
 	ui.VersionLine = fmt.Sprintf("  Version: %s%s  Source Code: %s\n",
 		Version, build, Website)
 
-	g, err := gocui.NewGui()
+	g, err := gocui.NewGui(gocui.Output256)
 
 	if err != nil {
 		log.Panicln(err)
 	}
-
-	g.SetOutputMode(termbox.Output256)
 
 	defer g.Close()
 

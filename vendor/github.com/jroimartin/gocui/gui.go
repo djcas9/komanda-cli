@@ -18,12 +18,15 @@ var (
 	ErrUnknownView = errors.New("unknown view")
 )
 
+// OutputMode for use with termbox output parsing
 type OutputMode termbox.OutputMode
 
 const (
-	OutputCurrent OutputMode = iota
-	OutputNormal
-	Output256
+	// OutputNormal 8 base terminal color support
+	OutputNormal = termbox.OutputNormal
+
+	// Output256 256 terminal color support
+	Output256 = termbox.Output256
 )
 
 // Gui represents the whole User Interface, including the views, layouts
@@ -36,6 +39,7 @@ type Gui struct {
 	managers    []Manager
 	keybindings []*keybinding
 	maxX, maxY  int
+	outputMode  OutputMode
 
 	// BgColor and FgColor allow to configure the background and foreground
 	// colors of the GUI.
@@ -61,28 +65,25 @@ type Gui struct {
 }
 
 // NewGui returns a new Gui object.
-func NewGui() (*Gui, error) {
+func NewGui(mode termbox.OutputMode) (*Gui, error) {
 	if err := termbox.Init(); err != nil {
 		return nil, err
 	}
+
 	g := &Gui{}
+
+	g.outputMode = OutputMode(mode)
+	termbox.SetOutputMode(termbox.OutputMode(mode))
+
 	g.tbEvents = make(chan termbox.Event, 20)
 	g.userEvents = make(chan userEvent, 20)
+
 	g.maxX, g.maxY = termbox.Size()
+
 	g.BgColor, g.FgColor = ColorBlack, ColorWhite
 	g.SelBgColor, g.SelFgColor = ColorBlack, ColorWhite
+
 	return g, nil
-}
-
-// SetOutputMode for termbox output. Currently gocui only
-// supports OutputNormal and Output256
-func (g *Gui) SetOutputMode(mode termbox.OutputMode) {
-	if mode != termbox.OutputNormal && mode != termbox.Output256 {
-		mode = termbox.OutputNormal
-	}
-
-	outputMode = mode
-	termbox.SetOutputMode(mode)
 }
 
 // Close finalizes the library. It should be called after a successful
@@ -139,7 +140,7 @@ func (g *Gui) SetView(name string, x0, y0, x1, y1 int) (*View, error) {
 		return v, nil
 	}
 
-	v := newView(name, x0, y0, x1, y1)
+	v := newView(name, x0, y0, x1, y1, g.outputMode)
 	v.BgColor, v.FgColor = g.BgColor, g.FgColor
 	v.SelBgColor, v.SelFgColor = g.SelBgColor, g.SelFgColor
 	g.views = append(g.views, v)
