@@ -5,10 +5,12 @@ import (
 	"strings"
 	"time"
 
+	"github.com/davecgh/go-spew/spew"
 	"github.com/fatih/color"
 	"github.com/jroimartin/gocui"
 	"github.com/mephux/komanda-cli/komanda/client"
 	"github.com/mephux/komanda-cli/komanda/command"
+	"github.com/mephux/komanda-cli/komanda/logger"
 	"github.com/mephux/komanda-cli/komanda/share/history"
 	"github.com/mephux/komanda-cli/komanda/share/trie"
 	"github.com/mephux/komanda-cli/komanda/ui"
@@ -156,10 +158,16 @@ func simpleEditor(v *gocui.View, key gocui.Key, ch rune, mod gocui.Modifier) {
 	case key == gocui.KeyInsert:
 		v.Overwrite = !v.Overwrite
 	case key == gocui.KeyEnter:
+
+		if line := v.ViewBuffer(); len(line) > 0 {
+			GetLine(Server.Gui, v)
+		}
 		// v.EditNewLine()
-		GetLine(Server.Gui, v)
+		// v.Rewind()
+
 	case key == gocui.KeyArrowDown:
 		inHistroy = true
+
 		if line := InputHistory.Next(); len(line) > 0 {
 			v.Clear()
 			fmt.Fprint(v, line)
@@ -167,6 +175,7 @@ func simpleEditor(v *gocui.View, key gocui.Key, ch rune, mod gocui.Modifier) {
 		}
 	case key == gocui.KeyArrowUp:
 		inHistroy = true
+
 		if line := InputHistory.Prev(); len(line) > 0 {
 			v.Clear()
 			fmt.Fprint(v, line)
@@ -175,7 +184,19 @@ func simpleEditor(v *gocui.View, key gocui.Key, ch rune, mod gocui.Modifier) {
 	case key == gocui.KeyArrowLeft:
 		v.MoveCursor(-1, 0, false)
 	case key == gocui.KeyArrowRight:
-		v.MoveCursor(1, 0, false)
+
+		cx, _ := v.Cursor()
+		line := v.ViewBuffer()
+
+		logger.Logger.Println(len(line), cx)
+		logger.Logger.Println(spew.Sdump(line))
+
+		// if cx == 0 {
+		// v.MoveCursor(-1, 0, false)
+		if cx < len(line)-1 {
+			v.MoveCursor(1, 0, false)
+		}
+
 	case key == gocui.KeyCtrlA:
 		v.SetCursor(0, 0)
 	case key == gocui.KeyCtrlK:
@@ -201,13 +222,12 @@ func simpleEditor(v *gocui.View, key gocui.Key, ch rune, mod gocui.Modifier) {
 }
 
 func GetLine(g *gocui.Gui, v *gocui.View) error {
-	var line string
-	var err error
-
 	// _, cy := v.Cursor()
-	if line, err = v.Line(0); err != nil {
-		line = ""
-	}
+	// if line, err = v.Line(0); err != nil {
+	// line = ""
+	// }
+
+	line := v.Buffer()
 
 	// logger.Logger.Printf("LINE %s\n", line)
 
@@ -218,7 +238,10 @@ func GetLine(g *gocui.Gui, v *gocui.View) error {
 		return nil
 	}
 
-	InputHistory.Add(strings.Replace(line, "\x00", "", -1))
+	line = strings.Replace(line, "\x00", "", -1)
+	line = strings.Replace(line, "\n", "", -1)
+
+	InputHistory.Add(line)
 
 	if strings.HasPrefix(line, "//") || !strings.HasPrefix(line, "/") {
 		if len(Server.CurrentChannel) > 0 {
@@ -227,8 +250,7 @@ func GetLine(g *gocui.Gui, v *gocui.View) error {
 				if Server.Client.Connected() {
 					// logger.Logger.Println("SEND:::", spew.Sdump(line))
 
-					go Server.Client.Privmsg(Server.CurrentChannel,
-						strings.Replace(line, "\x00", "", -1))
+					go Server.Client.Privmsg(Server.CurrentChannel, line)
 				}
 				return nil
 			})
@@ -242,9 +264,9 @@ func GetLine(g *gocui.Gui, v *gocui.View) error {
 
 					timestamp := time.Now().Format("03:04")
 					fmt.Fprintf(mainView, "[%s] -> %s: %s\n",
-						myTimetampColor(timestamp),
+						ui.ColorString(ui.TimestampColor, timestamp),
 						myNickColor(c.FindUser(Server.Client.Me().Nick).String(false)),
-						myTextColor(strings.Replace(line, "\x00", "", -1)))
+						myTextColor(line))
 				}
 			}
 		}
@@ -357,7 +379,41 @@ func nextView(g *gocui.Gui, v *gocui.View) error {
 		next = 0
 	}
 
-	// logger.Logger.Printf("NEXT INDEX %d\n", next)
+	logger.Logger.Printf("NEXT INDEX %d\n", next)
+
+	if newView, err := g.View(Server.Channels[next].Name); err != nil {
+		return err
+	} else {
+		newView.Autoscroll = true
+		g.SetViewOnTop(newView.Name())
+		g.SetViewOnTop("header")
+	}
+
+	if _, err := g.SetCurrentView(Server.Channels[next].Name); err != nil {
+		return err
+	}
+
+	// logger.Logger.Printf("Set Current View %d\n", Server.Channels[next].Name)
+	Server.CurrentChannel = Server.Channels[next].Name
+	Server.Channels[next].Unread = false
+
+	ui.UpdateMenuView(g)
+	FocusInputView(g, v)
+
+	curView = next
+	return nil
+}
+
+func prevView(g *gocui.Gui, v *gocui.View) error {
+	curView = getCurrentChannelIndex()
+
+	next := curView - 1
+
+	if next < 0 {
+		next = len(Server.Channels) - 1
+	}
+
+	logger.Logger.Printf("PREV INDEX %d\n", next)
 
 	if newView, err := g.View(Server.Channels[next].Name); err != nil {
 		return err
@@ -390,42 +446,6 @@ func getCurrentChannelIndex() int {
 	}
 
 	return 0
-}
-
-func prevView(g *gocui.Gui, v *gocui.View) error {
-	// logger.Logger.Println("word")
-
-	curView = getCurrentChannelIndex()
-
-	next := curView - 1
-
-	if next < 0 {
-		next = len(Server.Channels) - 1
-	}
-
-	// logger.Logger.Printf("PREV INDEX %d\n", next)
-
-	if newView, err := g.View(Server.Channels[next].Name); err != nil {
-		return err
-	} else {
-		newView.Autoscroll = true
-		g.SetViewOnTop(newView.Name())
-		g.SetViewOnTop("header")
-	}
-
-	if _, err := g.SetCurrentView(Server.Channels[next].Name); err != nil {
-		return err
-	}
-
-	// logger.Logger.Printf("Set Current View %d\n", Server.Channels[next].Name)
-	Server.CurrentChannel = Server.Channels[next].Name
-	Server.Channels[next].Unread = false
-
-	ui.UpdateMenuView(g)
-	FocusInputView(g, v)
-
-	curView = next
-	return nil
 }
 
 func moveView(g *gocui.Gui, v *gocui.View, dx, dy int) error {
