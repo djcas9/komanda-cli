@@ -7,8 +7,6 @@ package gocui
 import (
 	"errors"
 	"strconv"
-
-	"github.com/mephux/komanda-cli/komanda/logger"
 )
 
 type escapeInterpreter struct {
@@ -212,7 +210,7 @@ func (ei *escapeInterpreter) output256() error {
 	}
 
 	if fgbgParam == 38 {
-		ei.curFgColor = 0
+		ei.curBgColor = 0
 
 		for _, param := range ei.csiParam[2:] {
 			p, err := strconv.Atoi(param)
@@ -223,8 +221,6 @@ func (ei *escapeInterpreter) output256() error {
 
 			ei.curFgColor |= Attribute(p)
 		}
-
-		logger.Logger.Println(ei.curFgColor)
 
 	} else if fgbgParam == 48 {
 		ei.curBgColor = 0

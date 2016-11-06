@@ -3,7 +3,6 @@ package color
 import (
 	"fmt"
 	"math/rand"
-	"time"
 )
 
 // http://www.calmar.ws/vim/256-xterm-24bit-rgb-color-chart.html
@@ -12,7 +11,7 @@ var (
 	BgColor        = 0
 	Black          = 0
 	White          = 255
-	Red            = 124
+	Red            = 196
 	Purple         = 92
 	Logo           = 75
 	Yellow         = 11
@@ -28,11 +27,11 @@ func Stringf(c int, format string, args ...interface{}) string {
 }
 
 func String(c int, str string) string {
-	return fmt.Sprintf("\x1b[38;5;%dm%s\x1b[0;00m", c, str)
+	return fmt.Sprintf("\x1b[38;5;%d;1m%s\x1b[0;00m", c, str)
 }
 
 // Random color number
 func Random(min, max int) int {
-	rand.Seed(time.Now().Unix())
+	// rand.Seed(time.Now().Unix())
 	return rand.Intn(max-min) + min
 }
