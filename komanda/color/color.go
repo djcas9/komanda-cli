@@ -6,6 +6,8 @@ import (
 	"time"
 )
 
+// http://www.calmar.ws/vim/256-xterm-24bit-rgb-color-chart.html
+// make this customizable in the future
 var (
 	BgColor        = 0
 	Black          = 0
