@@ -6,7 +6,6 @@ import (
 	"sync"
 
 	"github.com/jroimartin/gocui"
-	colorful "github.com/lucasb-eyer/go-colorful"
 	"github.com/mephux/komanda-cli/komanda/color"
 
 	"github.com/hectane/go-nonblockingchan"
@@ -21,7 +20,7 @@ var (
 type User struct {
 	Nick  string
 	Mode  string
-	Color color.Color
+	Color int
 }
 
 func (u *User) String(c bool) string {
@@ -132,16 +131,9 @@ func (channel *Channel) AddNick(nick string) {
 		channel.mu.Lock()
 		defer channel.mu.Unlock()
 
-		c := colorful.WarmColor()
-		r, g, b := c.RGB255()
-
 		user := &User{
-			Nick: nick,
-			Color: color.Color{
-				R: r,
-				G: g,
-				B: b,
-			},
+			Nick:  nick,
+			Color: color.Random(22, 231),
 		}
 
 		channel.Users = append(channel.Users, user)

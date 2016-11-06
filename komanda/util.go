@@ -260,15 +260,16 @@ func GetLine(g *gocui.Gui, v *gocui.View) error {
 
 					timestamp := time.Now().Format("03:04")
 
-					logger.Logger.Println(spew.Sdump(color.String(color.TimestampColor, timestamp)))
-					logger.Logger.Println(spew.Sdump(color.String(color.Red, "word")))
+					// logger.Logger.Println(spew.Sdump(color.String(color.TimestampColor, timestamp)))
+					// logger.Logger.Println(spew.Sdump(color.String(color.Red, "word")))
 
 					fmt.Fprintf(mainView, "[%s] -> %s: %s\n",
 						color.String(color.TimestampColor, timestamp),
-						color.String(
-							color.MyNickColor,
-							c.FindUser(Server.Client.Me().Nick).String(false),
-						),
+						color.String(color.Green, c.FindUser(Server.Client.Me().Nick).String(false)),
+						// color.String(
+						// color.MyNickColor,
+						// c.FindUser(Server.Client.Me().Nick).String(false),
+						// ),
 						color.String(color.MyTextColor, line))
 				}
 			}

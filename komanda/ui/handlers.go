@@ -10,7 +10,6 @@ import (
 	"github.com/davecgh/go-spew/spew"
 	"github.com/hectane/go-nonblockingchan"
 	"github.com/jroimartin/gocui"
-	colorful "github.com/lucasb-eyer/go-colorful"
 	"github.com/mephux/komanda-cli/komanda/client"
 	"github.com/mephux/komanda-cli/komanda/color"
 	"github.com/mephux/komanda-cli/komanda/logger"
@@ -314,16 +313,7 @@ func BindHandlers() {
 
 					if u := c.FindUser(nick); u == nil {
 						user.Nick = nick
-
-						cc := colorful.WarmColor()
-						r, g, b := cc.RGB255()
-
-						user.Color = color.Color{
-							R: r,
-							G: g,
-							B: b,
-						}
-
+						user.Color = color.Random(22, 231)
 						c.Users = append(c.Users, user)
 					}
 

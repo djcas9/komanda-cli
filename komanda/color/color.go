@@ -2,42 +2,35 @@ package color
 
 import (
 	"fmt"
-
-	"github.com/aybabtme/rgbterm"
+	"math/rand"
+	"time"
 )
-
-type Color struct {
-	R uint8
-	G uint8
-	B uint8
-}
 
 var (
-	BgColor        = Color{0, 0, 0}
-	Black          = Color{0, 0, 0}
-	White          = Color{255, 255, 255}
-	Red            = Color{224, 8, 8}
-	Purple         = Color{252, 255, 43}
-	Logo           = Color{252, 255, 43}
-	Yellow         = Color{250, 255, 0}
-	Green          = Color{7, 237, 56}
-	MyNickColor    = Color{22, 226, 46}
-	OtherNickColor = Color{83, 168, 214}
-	// MyNickColor    = Color{215, 0, 215}
-	TimestampColor = Color{155, 12, 12}
-	MyTextColor    = Color{192, 232, 32}
+	BgColor        = 0
+	Black          = 0
+	White          = 255
+	Red            = 124
+	Purple         = 92
+	Logo           = 75
+	Yellow         = 11
+	Green          = 119
+	MyNickColor    = 164
+	OtherNickColor = 14
+	TimestampColor = 240
+	MyTextColor    = 80
 )
 
-func String(color Color, str string) string {
-	c := rgbterm.FgString(str, color.R, color.G, color.B)
-	// c := rgbterm.String(str, color.R, color.G, color.B, 0, 0, 0)
-
-	// logger.Logger.Println(spew.Sdump(c))
-
-	// return strings.Replace(c, "\x1b[0;00m", "\x1b[0m", -1)
-	return c
+func Stringf(c int, format string, args ...interface{}) string {
+	return fmt.Sprintf("\x1b[38;5;%dm%s\x1b[0;00m", c, fmt.Sprintf(format, args...))
 }
 
-func Stringf(color Color, format string, args ...interface{}) string {
-	return rgbterm.FgString(fmt.Sprintf(format, args...), color.R, color.G, color.B)
+func String(c int, str string) string {
+	return fmt.Sprintf("\x1b[38;5;%dm%s\x1b[0;00m", c, str)
+}
+
+// Random color number
+func Random(min, max int) int {
+	rand.Seed(time.Now().Unix())
+	return rand.Intn(max-min) + min
 }
