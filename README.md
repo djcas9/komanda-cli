@@ -8,7 +8,7 @@ I thought it would be fun so I did it. Komanda-cli is built using the awesome [g
 Would love some help to get it 1:1 with irssi. 
 Maybe embed lua,mruby or something else for the script lang.
 
-# UI
+# You Look Purdy
 
 ![komanda](http://i.imgur.com/UbBYVRq.png)
 ![Komanda-Channel](http://i.imgur.com/4vjrNxg.png)
