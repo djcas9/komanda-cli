@@ -5,10 +5,9 @@ import (
 	"sort"
 	"sync"
 
+	"github.com/hectane/go-nonblockingchan"
 	"github.com/jroimartin/gocui"
 	"github.com/mephux/komanda-cli/komanda/color"
-
-	"github.com/hectane/go-nonblockingchan"
 )
 
 type RenderHandlerFunc func(*Channel, *gocui.View) error
@@ -51,6 +50,7 @@ type Channel struct {
 	Users         []*User
 	NickListReady bool
 	Loading       *nbc.NonBlockingChan
+	Private       bool
 
 	mu sync.Mutex
 }
@@ -140,7 +140,7 @@ func (channel *Channel) AddNick(nick string) {
 	}
 }
 
-func (channel *Channel) Render(private bool) error {
+func (channel *Channel) Render() error {
 
 	view, err := channel.Server.Gui.SetView(channel.Name,
 		-1, -1, channel.MaxX, channel.MaxY-3)
@@ -158,7 +158,7 @@ func (channel *Channel) Render(private bool) error {
 		// view.FgColor = gocui.ColorWhite
 		// view.BgColor = gocui.ColorBlack
 
-		if !private {
+		if !channel.Private {
 			fmt.Fprintln(view, "\n\n")
 		} else {
 			channel.Topic = fmt.Sprintf("Private Chat: %s", channel.Name)
@@ -172,7 +172,7 @@ func (channel *Channel) Render(private bool) error {
 		return err
 	}
 
-	if private {
+	if channel.Private {
 		channel.Server.Gui.SetViewOnTop(channel.Server.CurrentChannel)
 	}
 

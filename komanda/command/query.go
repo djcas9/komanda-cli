@@ -3,8 +3,10 @@ package command
 import (
 	"strings"
 
+	"github.com/davecgh/go-spew/spew"
 	"github.com/jroimartin/gocui"
 	"github.com/mephux/komanda-cli/komanda/client"
+	"github.com/mephux/komanda-cli/komanda/logger"
 )
 
 type QueryCmd struct {
@@ -23,17 +25,21 @@ func (e *QueryCmd) Exec(args []string) error {
 			return nil
 		}
 
+		logger.Logger.Println(spew.Sdump(args))
+
 		if len(args) >= 2 && len(args[1]) > 0 {
 			CurrentChannel = args[1]
 			s.CurrentChannel = args[1]
 
 			s.NewChannel(args[1], true)
+			c := s.FindChannel(args[1])
+			c.AddNick(args[1])
+			c.AddNick(s.Client.Me().Nick)
 
-			if len(args[2]) > 0 {
+			if len(args) > 2 && len(args[2]) > 0 {
 				go Server.Client.Privmsg(args[1],
 					strings.Replace(args[2], "\x00", "", -1))
 			}
-
 		}
 
 		return nil
@@ -49,6 +55,7 @@ func queryCmd() Command {
 			args: "<user> [message]",
 			aliases: []string{
 				"pm",
+				"q",
 			},
 			description: "send private message to user",
 		},

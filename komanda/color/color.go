@@ -22,6 +22,7 @@ var (
 	Timestamp        = 247
 	MyText           = 129
 	Header           = 57
+	QueryHeader      = 11
 )
 
 func Stringf(c int, format string, args ...interface{}) string {

@@ -67,7 +67,7 @@ func Layout(g *gocui.Gui) error {
 
 		logger.Logger.Printf("LAYOUT %p %p\n", g, Server.Gui)
 
-		if err := status.Render(false); err != nil {
+		if err := status.Render(); err != nil {
 			return err
 		}
 

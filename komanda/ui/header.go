@@ -67,7 +67,11 @@ func UpdateHeaderView(g *gocui.Gui) {
 			header += " "
 		}
 
-		fmt.Fprintf(v, color.StringFormat(color.Header, header, []string{"7"}))
+		if channel.Private {
+			fmt.Fprintf(v, color.StringFormat(color.QueryHeader, header, []string{"7"}))
+		} else {
+			fmt.Fprintf(v, color.StringFormat(color.Header, header, []string{"7"}))
+		}
 
 		return nil
 	})

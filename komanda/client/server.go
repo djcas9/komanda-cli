@@ -137,6 +137,7 @@ func (server *Server) NewChannel(name string, private bool) error {
 		MaxX:          maxX,
 		MaxY:          maxY,
 		Loading:       nbc.New(),
+		Private:       private,
 		NickListReady: false,
 		RenderHandler: func(channel *Channel, view *gocui.View) error {
 			return nil
@@ -145,11 +146,11 @@ func (server *Server) NewChannel(name string, private bool) error {
 
 	server.AddChannel(&channel)
 
-	if err := channel.Render(private); err != nil {
+	if err := channel.Render(); err != nil {
 		return err
 	}
 
-	if !private {
+	if !channel.Private {
 		server.CurrentChannel = name
 	}
 
