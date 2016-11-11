@@ -7,6 +7,7 @@ import (
 	"github.com/jroimartin/gocui"
 	"github.com/mephux/komanda-cli/komanda/client"
 	"github.com/mephux/komanda-cli/komanda/color"
+	"github.com/mephux/komanda-cli/komanda/config"
 	"github.com/mephux/komanda-cli/komanda/logger"
 )
 
@@ -54,7 +55,7 @@ func Layout(g *gocui.Gui) error {
 
 				fmt.Fprintln(view, "\n")
 				fmt.Fprintln(view, Logo)
-				fmt.Fprintln(view, color.String(color.Green, VersionLine))
+				fmt.Fprintln(view, color.String(config.C.Color.Green, VersionLine))
 
 				client.StatusMessage(view, fmt.Sprintf("Welcome to the %s IRC client.", Name))
 				client.StatusMessage(view, "Type /help for a list of commands.\n")

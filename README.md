@@ -49,6 +49,7 @@ Flags:
 
 ## Features
 
+  * activity monitoring (new messages/highlights)
   * color nick
   * znc support
   * 256 colors

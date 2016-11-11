@@ -5,3 +5,4 @@ secrets.yml
 Godeps/
 VERSION
 package/
+komanda.log

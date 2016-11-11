@@ -18,10 +18,9 @@ var Server *client.Server
 func Run(build string, server *client.Server) {
 	var err error
 
-	logger.Start()
-
 	ui.Name = Name
 	ui.Logo = ColorLogo()
+
 	ui.VersionLine = fmt.Sprintf("  Version: %s%s  Source Code: %s\n",
 		Version, build, Website)
 

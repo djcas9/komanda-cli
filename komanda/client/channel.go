@@ -8,6 +8,7 @@ import (
 	"github.com/hectane/go-nonblockingchan"
 	"github.com/jroimartin/gocui"
 	"github.com/mephux/komanda-cli/komanda/color"
+	"github.com/mephux/komanda-cli/komanda/config"
 )
 
 type RenderHandlerFunc func(*Channel, *gocui.View) error
@@ -84,7 +85,7 @@ func (channel *Channel) Update() (*gocui.View, error) {
 func (channel *Channel) NickListString(v *gocui.View, c bool) {
 	sort.Sort(NickSorter(channel.Users))
 
-	fmt.Fprintf(v, "\n%s", color.String(color.Green, "== NICK LIST START\n"))
+	fmt.Fprintf(v, "\n%s", color.String(config.C.Color.Green, "== NICK LIST START\n"))
 
 	for i, u := range channel.Users {
 		if i == len(channel.Users)-1 {
@@ -94,7 +95,7 @@ func (channel *Channel) NickListString(v *gocui.View, c bool) {
 		}
 	}
 
-	fmt.Fprintf(v, "\n%s", color.String(color.Green, "== NICK LIST END\n\n"))
+	fmt.Fprintf(v, "\n%s", color.String(config.C.Color.Green, "== NICK LIST END\n\n"))
 }
 
 // 09:41 * Irssi: #google-containers: Total of 213 nicks [0 ops, 0 halfops, 0 voices, 213 normal]
@@ -115,7 +116,7 @@ func (channel *Channel) NickMetricsString(view *gocui.View) {
 	}
 
 	fmt.Fprintf(view, "%s Komanda: %s: Total of %d nicks [%d ops, %d halfops, %d voices, %d normal]\n\n",
-		color.String(color.Green, "**"), channel.Name, len(channel.Users), op, hop, v, n)
+		color.String(config.C.Color.Green, "**"), channel.Name, len(channel.Users), op, hop, v, n)
 }
 
 func (channel *Channel) RemoveNick(nick string) {
@@ -161,6 +162,9 @@ func (channel *Channel) Render() error {
 
 		// view.FgColor = gocui.ColorWhite
 		// view.BgColor = gocui.ColorBlack
+
+		view.FgColor = gocui.Attribute(15 + 1)
+		view.BgColor = gocui.Attribute(0)
 
 		if !channel.Private {
 			fmt.Fprintln(view, "\n\n")

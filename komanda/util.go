@@ -258,19 +258,19 @@ func GetLine(g *gocui.Gui, v *gocui.View) error {
 
 					c := Server.FindChannel(Server.CurrentChannel)
 
-					timestamp := time.Now().Format(config.MessageTimestampFormat)
+					timestamp := time.Now().Format(config.C.Time.MessageFormat)
 
 					// logger.Logger.Println(spew.Sdump(color.String(color.TimestampColor, timestamp)))
 					// logger.Logger.Println(spew.Sdump(color.String(color.Red, "word")))
 
 					fmt.Fprintf(mainView, "[%s] -> %s: %s\n",
-						color.String(color.Timestamp, timestamp),
-						color.String(color.Green, c.FindUser(Server.Client.Me().Nick).String(false)),
+						color.String(config.C.Color.Timestamp, timestamp),
+						color.String(config.C.Color.Green, c.FindUser(Server.Client.Me().Nick).String(false)),
 						// color.String(
 						// color.MyNickColor,
 						// c.FindUser(Server.Client.Me().Nick).String(false),
 						// ),
-						color.String(color.MyText, line))
+						color.String(config.C.Color.MyText, line))
 				}
 			}
 		}

@@ -23,8 +23,8 @@ func MenuView(g *gocui.Gui, maxX, maxY int) error {
 			return err
 		}
 
-		// v.FgColor = gocui.ColorWhite
-		// v.BgColor = gocui.ColorBlack
+		v.FgColor = gocui.Attribute(15 + 1)
+		v.BgColor = gocui.Attribute(0)
 
 		v.Autoscroll = false
 		v.Editable = false
@@ -59,31 +59,31 @@ func UpdateMenuView(gui *gocui.Gui) {
 			}
 
 			if Server.CurrentChannel == channel.Name {
-				name = color.String(color.Green, fmt.Sprintf("*%d:%s", i, channel.Name))
+				name = color.String(config.C.Color.Green, fmt.Sprintf("*%d:%s", i, channel.Name))
 			} else {
 				if channel.Unread {
-					name = color.String(color.Red, name+"+")
+					name = color.String(config.C.Color.Red, name+"+")
 				}
 			}
 
 			channelList = append(channelList, name)
 		}
 
-		var connected = color.String(color.Red, "OFF")
+		var connected = color.String(config.C.Color.Red, "OFF")
 		if Server.Client.Connected() {
-			connected = color.String(color.Green, "ON")
+			connected = color.String(config.C.Color.Green, "ON")
 		}
 
-		timestamp := time.Now().Format(config.MenuTimestampFormat)
+		timestamp := time.Now().Format(config.C.Time.MenuFormat)
 
 		currentChannel := fmt.Sprintf("[%s]", Server.GetCurrentChannel().Name)
 
 		fmt.Fprintf(v, "⣿ %s [%s] ⡇ %s ⡇ %s@%s ⡇ %s\n\n%s",
-			color.String(color.Menu, "MENU"),
+			color.String(config.C.Color.Menu, "MENU"),
 			connected,
-			color.String(color.Yellow, timestamp),
-			color.String(color.Green, Server.Client.Me().Nick),
-			color.String(color.Green, Server.Address),
+			color.String(config.C.Color.Yellow, timestamp),
+			color.String(config.C.Color.Green, Server.Client.Me().Nick),
+			color.String(config.C.Color.Green, Server.Address),
 			channelList, currentChannel)
 
 		maxX, maxY := g.Size()

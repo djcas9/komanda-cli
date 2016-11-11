@@ -10,10 +10,10 @@ import (
 )
 
 func StatusMessage(view *gocui.View, data string) {
-	timestamp := time.Now().Format(config.MessageTimestampFormat)
+	timestamp := time.Now().Format(config.C.Time.MessageFormat)
 
 	fmt.Fprintf(view, "-> [%s] * %s\n",
-		color.String(color.Yellow, timestamp),
-		color.String(color.White, data),
+		color.String(config.C.Color.Yellow, timestamp),
+		color.String(config.C.Color.White, data),
 	)
 }

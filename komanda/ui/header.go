@@ -7,6 +7,7 @@ import (
 	"github.com/jroimartin/gocui"
 	"github.com/mephux/komanda-cli/komanda/client"
 	"github.com/mephux/komanda-cli/komanda/color"
+	"github.com/mephux/komanda-cli/komanda/config"
 )
 
 func HeaderView(g *gocui.Gui, x, y, maxX, maxY int) error {
@@ -16,8 +17,8 @@ func HeaderView(g *gocui.Gui, x, y, maxX, maxY int) error {
 			return err
 		}
 
-		v.FgColor = gocui.ColorWhite
-		v.BgColor = gocui.ColorBlack
+		v.FgColor = gocui.Attribute(15 + 1)
+		v.BgColor = gocui.Attribute(0)
 
 		v.Autoscroll = false
 		v.Editable = false
@@ -68,12 +69,12 @@ func UpdateHeaderView(g *gocui.Gui) {
 		}
 
 		if channel.Private {
-			fmt.Fprintf(v, color.StringFormat(color.QueryHeader, header, []string{"7"}))
+			fmt.Fprintf(v, color.StringFormat(config.C.Color.QueryHeader, header, []string{"7"}))
 		} else {
 			fmt.Fprintf(v,
 				color.StringFormatBoth(
-					color.White,
-					color.Header,
+					config.C.Color.White,
+					config.C.Color.Header,
 					header,
 					[]string{"1"},
 				),

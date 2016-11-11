@@ -7,27 +7,6 @@ import (
 	"time"
 )
 
-// http://www.calmar.ws/vim/256-xterm-24bit-rgb-color-chart.html
-// make this customizable in the future
-var (
-	BgColor          = 0
-	Black            = 0
-	White            = 255
-	Red              = 196
-	Purple           = 92
-	Logo             = 75
-	Yellow           = 11
-	Green            = 119
-	Menu             = 209
-	MyNick           = 164
-	OtherNickDefault = 14
-	Timestamp        = 247
-	MyText           = 129
-	Header           = 57
-	QueryHeader      = 11
-	CurrentInputView = 215
-)
-
 func Stringf(c int, format string, args ...interface{}) string {
 	return fmt.Sprintf("\x1b[38;5;%dm%s\x1b[0m", c, fmt.Sprintf(format, args...))
 }

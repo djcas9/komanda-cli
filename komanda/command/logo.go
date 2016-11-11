@@ -6,6 +6,7 @@ import (
 	"github.com/jroimartin/gocui"
 	"github.com/mephux/komanda-cli/komanda/client"
 	"github.com/mephux/komanda-cli/komanda/color"
+	"github.com/mephux/komanda-cli/komanda/config"
 	"github.com/mephux/komanda-cli/komanda/ui"
 )
 
@@ -21,7 +22,7 @@ func (e *LogoCmd) Exec(args []string) error {
 
 	Server.Exec(Server.CurrentChannel, func(g *gocui.Gui, v *gocui.View, s *client.Server) error {
 		fmt.Fprintln(v, ui.Logo)
-		fmt.Fprintln(v, color.String(color.Green, ui.VersionLine))
+		fmt.Fprintln(v, color.String(config.C.Color.Green, ui.VersionLine))
 		return nil
 	})
 
