@@ -71,6 +71,7 @@ func partCmd() Command {
 			args: "[channel]",
 			aliases: []string{
 				"p",
+				"q",
 			},
 			description: "part irc channel or current if no channel given",
 		},

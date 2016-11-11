@@ -1,5 +1,7 @@
 package komanda
 
+import "github.com/mephux/komanda-cli/komanda/color"
+
 const Logo = `
 
   ██╗  ██╗ ██████╗ ███╗   ███╗ █████╗ ███╗   ██╗██████╗  █████╗ 
@@ -21,17 +23,17 @@ const Version = "0.5.2"
 // Website number
 const Website = "github.com/mephux/komanda"
 
-// Logo with color
-// func Logo() string {
-// var logo string
+//ColorLogo with color
+func ColorLogo() string {
+	var logo string
 
-// logo += "\n\n"
-// logo += color.GreenString("  ██╗  ██╗ ██████╗ ███╗   ███╗ █████╗ ███╗   ██╗██████╗  █████╗\n")
-// logo += color.MagentaString("  ██║ ██╔╝██╔═══██╗████╗ ████║██╔══██╗████╗  ██║██╔══██╗██╔══██╗\n")
-// logo += color.YellowString("  █████╔╝ ██║   ██║██╔████╔██║███████║██╔██╗ ██║██║  ██║███████║\n")
-// logo += color.CyanString("  ██╔═██╗ ██║   ██║██║╚██╔╝██║██╔══██║██║╚██╗██║██║  ██║██╔══██║\n")
-// logo += color.BlueString("  ██║  ██╗╚██████╔╝██║ ╚═╝ ██║██║  ██║██║ ╚████║██████╔╝██║  ██║\n")
-// logo += color.RedString("  ╚═╝  ╚═╝ ╚═════╝ ╚═╝     ╚═╝╚═╝  ╚═╝╚═╝  ╚═══╝╚═════╝ ╚═╝  ╚═╝")
+	logo += "\n\n"
+	logo += color.StringRandom("  ██╗  ██╗ ██████╗ ███╗   ███╗ █████╗ ███╗   ██╗██████╗  █████╗\n")
+	logo += color.StringRandom("  ██║ ██╔╝██╔═══██╗████╗ ████║██╔══██╗████╗  ██║██╔══██╗██╔══██╗\n")
+	logo += color.StringRandom("  █████╔╝ ██║   ██║██╔████╔██║███████║██╔██╗ ██║██║  ██║███████║\n")
+	logo += color.StringRandom("  ██╔═██╗ ██║   ██║██║╚██╔╝██║██╔══██║██║╚██╗██║██║  ██║██╔══██║\n")
+	logo += color.StringRandom("  ██║  ██╗╚██████╔╝██║ ╚═╝ ██║██║  ██║██║ ╚████║██████╔╝██║  ██║\n")
+	logo += color.StringRandom("  ╚═╝  ╚═╝ ╚═════╝ ╚═╝     ╚═╝╚═╝  ╚═╝╚═╝  ╚═══╝╚═════╝ ╚═╝  ╚═╝")
 
-// return logo
-// }
+	return logo
+}

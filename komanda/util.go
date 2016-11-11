@@ -286,7 +286,7 @@ func GetLine(g *gocui.Gui, v *gocui.View) error {
 
 		// TODO: what was this?
 		if len(split) <= 1 {
-			if split[0] == "p" || split[0] == "part" {
+			if split[0] == "p" || split[0] == "part" || split[0] == "q" {
 				command.Run(split[0], []string{"", Server.CurrentChannel})
 				v.Clear()
 				v.SetCursor(0, 0)

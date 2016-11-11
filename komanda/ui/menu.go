@@ -73,13 +73,13 @@ func UpdateMenuView(gui *gocui.Gui) {
 			connected = color.String(color.Green, "ON")
 		}
 
-		timestamp := color.String(color.Green, time.Now().Format("03:04:05"))
+		timestamp := time.Now().Format("03:04:05")
 
 		currentChannel := fmt.Sprintf("[%s]", Server.GetCurrentChannel().Name)
 
 		fmt.Fprintf(v, "⣿ [%s] ⡇ %s ⡇ %s@%s ⡇ %s\n\n%s",
 			connected,
-			timestamp,
+			color.String(color.Yellow, timestamp),
 			color.String(color.Green, Server.Client.Me().Nick),
 			color.String(color.Green, Server.Address),
 			channelList, currentChannel)

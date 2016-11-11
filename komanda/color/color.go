@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"math/rand"
 	"strings"
+	"time"
 )
 
 // http://www.calmar.ws/vim/256-xterm-24bit-rgb-color-chart.html
@@ -37,8 +38,16 @@ func StringFormat(c int, str string, args []string) string {
 	return fmt.Sprintf("\x1b[38;5;%d;%sm%s\x1b[0m", c, strings.Join(args, ";"), str)
 }
 
+func StringFormatBoth(fg, bg int, str string, args []string) string {
+	return fmt.Sprintf("\x1b[48;5;%dm\x1b[38;5;%d;%sm%s\x1b[0m", bg, fg, strings.Join(args, ";"), str)
+}
+
+func StringRandom(str string) string {
+	return String(Random(22, 231), str)
+}
+
 // Random color number
 func Random(min, max int) int {
-	// rand.Seed(time.Now().Unix())
+	rand.Seed(time.Now().UTC().UnixNano())
 	return rand.Intn(max-min) + min
 }
