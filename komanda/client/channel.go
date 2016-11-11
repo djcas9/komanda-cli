@@ -23,6 +23,10 @@ type User struct {
 }
 
 func (u *User) String(c bool) string {
+	if u == nil {
+		return ""
+	}
+
 	if c {
 		return color.Stringf(u.Color, "%s%s", u.Mode, u.Nick)
 	} else {

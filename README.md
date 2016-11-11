@@ -11,6 +11,7 @@ Maybe embed lua,mruby or something else for the script lang.
 # UI
 
 ![komanda](http://i.imgur.com/UbBYVRq.png)
+![Komanda-Channel](http://i.imgur.com/4vjrNxg.png)
 
 ## Download
 
