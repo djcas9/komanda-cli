@@ -77,16 +77,16 @@ func (channel *Channel) Update() (*gocui.View, error) {
 
 }
 
-func (channel *Channel) NickListString(v *gocui.View) {
+func (channel *Channel) NickListString(v *gocui.View, c bool) {
 	sort.Sort(NickSorter(channel.Users))
 
 	fmt.Fprintf(v, "\n%s", color.String(color.Green, "== NICK LIST START\n"))
 
 	for i, u := range channel.Users {
 		if i == len(channel.Users)-1 {
-			fmt.Fprintf(v, "%s%s", u.Mode, u.Nick)
+			fmt.Fprintf(v, "%s", u.String(c))
 		} else {
-			fmt.Fprintf(v, "%s%s, ", u.Mode, u.Nick)
+			fmt.Fprintf(v, "%s, ", u.String(c))
 		}
 	}
 

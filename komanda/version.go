@@ -27,7 +27,7 @@ const Website = "github.com/mephux/komanda"
 func ColorLogo() string {
 	var logo string
 
-	logo += "\n\n"
+	logo += "\n"
 	logo += color.StringRandom("  ██╗  ██╗ ██████╗ ███╗   ███╗ █████╗ ███╗   ██╗██████╗  █████╗\n")
 	logo += color.StringRandom("  ██║ ██╔╝██╔═══██╗████╗ ████║██╔══██╗████╗  ██║██╔══██╗██╔══██╗\n")
 	logo += color.StringRandom("  █████╔╝ ██║   ██║██╔████╔██║███████║██╔██╗ ██║██║  ██║███████║\n")

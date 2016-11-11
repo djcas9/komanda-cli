@@ -25,7 +25,7 @@ func (e *NamesCmd) Exec(args []string) error {
 		channel := Server.GetCurrentChannel()
 
 		if channel != nil {
-			channel.NickListString(v)
+			channel.NickListString(v, true)
 		}
 
 		return nil

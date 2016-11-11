@@ -18,12 +18,14 @@ var (
 	Logo             = 75
 	Yellow           = 11
 	Green            = 119
+	Menu             = 209
 	MyNick           = 164
 	OtherNickDefault = 14
 	Timestamp        = 247
 	MyText           = 129
 	Header           = 57
 	QueryHeader      = 11
+	CurrentInputView = 215
 )
 
 func Stringf(c int, format string, args ...interface{}) string {

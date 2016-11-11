@@ -9,6 +9,7 @@ import (
 	"github.com/mephux/komanda-cli/komanda/client"
 	"github.com/mephux/komanda-cli/komanda/color"
 	"github.com/mephux/komanda-cli/komanda/command"
+	"github.com/mephux/komanda-cli/komanda/config"
 	"github.com/mephux/komanda-cli/komanda/logger"
 	"github.com/mephux/komanda-cli/komanda/share/history"
 	"github.com/mephux/komanda-cli/komanda/share/trie"
@@ -257,7 +258,7 @@ func GetLine(g *gocui.Gui, v *gocui.View) error {
 
 					c := Server.FindChannel(Server.CurrentChannel)
 
-					timestamp := time.Now().Format("03:04")
+					timestamp := time.Now().Format(config.MessageTimestampFormat)
 
 					// logger.Logger.Println(spew.Sdump(color.String(color.TimestampColor, timestamp)))
 					// logger.Logger.Println(spew.Sdump(color.String(color.Red, "word")))

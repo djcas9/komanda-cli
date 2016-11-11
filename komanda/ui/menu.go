@@ -7,6 +7,7 @@ import (
 	"github.com/jroimartin/gocui"
 	"github.com/mephux/komanda-cli/komanda/client"
 	"github.com/mephux/komanda-cli/komanda/color"
+	"github.com/mephux/komanda-cli/komanda/config"
 )
 
 func MenuView(g *gocui.Gui, maxX, maxY int) error {
@@ -73,11 +74,12 @@ func UpdateMenuView(gui *gocui.Gui) {
 			connected = color.String(color.Green, "ON")
 		}
 
-		timestamp := time.Now().Format("03:04:05")
+		timestamp := time.Now().Format(config.MenuTimestampFormat)
 
 		currentChannel := fmt.Sprintf("[%s]", Server.GetCurrentChannel().Name)
 
-		fmt.Fprintf(v, "⣿ [%s] ⡇ %s ⡇ %s@%s ⡇ %s\n\n%s",
+		fmt.Fprintf(v, "⣿ %s [%s] ⡇ %s ⡇ %s@%s ⡇ %s\n\n%s",
+			color.String(color.Menu, "MENU"),
 			connected,
 			color.String(color.Yellow, timestamp),
 			color.String(color.Green, Server.Client.Me().Nick),

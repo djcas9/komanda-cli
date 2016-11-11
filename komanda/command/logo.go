@@ -3,9 +3,9 @@ package command
 import (
 	"fmt"
 
-	"github.com/fatih/color"
 	"github.com/jroimartin/gocui"
 	"github.com/mephux/komanda-cli/komanda/client"
+	"github.com/mephux/komanda-cli/komanda/color"
 	"github.com/mephux/komanda-cli/komanda/ui"
 )
 
@@ -19,9 +19,9 @@ func (e *LogoCmd) Metadata() CommandMetadata {
 
 func (e *LogoCmd) Exec(args []string) error {
 
-	Server.Exec(client.StatusChannel, func(g *gocui.Gui, v *gocui.View, s *client.Server) error {
-		fmt.Fprintln(v, color.CyanString(ui.Logo))
-		fmt.Fprintln(v, color.GreenString(ui.VersionLine))
+	Server.Exec(Server.CurrentChannel, func(g *gocui.Gui, v *gocui.View, s *client.Server) error {
+		fmt.Fprintln(v, ui.Logo)
+		fmt.Fprintln(v, color.String(color.Green, ui.VersionLine))
 		return nil
 	})
 

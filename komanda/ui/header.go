@@ -28,7 +28,7 @@ func HeaderView(g *gocui.Gui, x, y, maxX, maxY int) error {
 		fmt.Fprintf(v, "  --")
 
 		go func() {
-			for range time.Tick(time.Millisecond * 100) {
+			for range time.Tick(time.Millisecond * 50) {
 				UpdateHeaderView(g)
 			}
 		}()

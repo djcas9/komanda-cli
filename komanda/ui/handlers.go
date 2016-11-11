@@ -12,6 +12,7 @@ import (
 	"github.com/jroimartin/gocui"
 	"github.com/mephux/komanda-cli/komanda/client"
 	"github.com/mephux/komanda-cli/komanda/color"
+	"github.com/mephux/komanda-cli/komanda/config"
 	"github.com/mephux/komanda-cli/komanda/logger"
 
 	irc "github.com/fluffle/goirc/client"
@@ -211,7 +212,7 @@ func BindHandlers() {
 							if !c.NickListReady {
 								c.NickListReady = true
 
-								c.NickListString(v)
+								c.NickListString(v, false)
 								c.NickMetricsString(v)
 							}
 							break
@@ -353,10 +354,10 @@ func BindHandlers() {
 				ss := strings.Split(line.Args[2], "!")
 
 				fmt.Fprintf(v, "%s Topic set by %s [%s] [%s]\n", color.String(color.Green, "**"),
-					ss[0], ss[1], tm.Format(time.RFC822))
+					ss[0], ss[1], tm.Format(config.NoticeTimestampFormat))
 			} else {
 				fmt.Fprintf(v, "%s Topic set by %s [%s]\n", color.String(color.Green, "**"),
-					line.Args[2], tm.Format(time.RFC822))
+					line.Args[2], tm.Format(config.NoticeTimestampFormat))
 			}
 
 			return nil
@@ -382,7 +383,7 @@ func BindHandlers() {
 
 			Server.Exec(line.Nick,
 				func(g *gocui.Gui, v *gocui.View, s *client.Server) error {
-					timestamp := time.Now().Format("03:04")
+					timestamp := time.Now().Format(config.MessageTimestampFormat)
 					fmt.Fprintf(v, "[%s] <- %s: %s\n",
 						color.String(color.Timestamp, timestamp),
 						color.String(color.OtherNickDefault, line.Nick),
@@ -404,7 +405,7 @@ func BindHandlers() {
 
 				Server.Exec(ircChan,
 					func(g *gocui.Gui, v *gocui.View, s *client.Server) error {
-						timestamp := time.Now().Format("03:04")
+						timestamp := time.Now().Format(config.MessageTimestampFormat)
 
 						var highlight bool
 
