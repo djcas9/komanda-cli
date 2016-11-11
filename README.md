@@ -77,6 +77,7 @@ Flags:
   Password = ""
   auto_connect = false
 
+# http://www.calmar.ws/vim/256-xterm-24bit-rgb-color-chart.html
 [Color]
   Black = 0
   White = 15
@@ -94,6 +95,7 @@ Flags:
   QueryHeader = 11
   current_input_view = 215
 
+# https://golang.org/pkg/time/#pkg-constants
 [Time]
   message_format = "15:04"
   notice_format = "02 Jan 06 15:04 MST"
