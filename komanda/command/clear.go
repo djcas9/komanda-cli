@@ -20,7 +20,7 @@ func (e *ClearCmd) Metadata() CommandMetadata {
 func (e *ClearCmd) Exec(args []string) error {
 
 	Server.Exec(Server.CurrentChannel, func(g *gocui.Gui, v *gocui.View, s *client.Server) error {
-		v.Autoscroll = true
+		v.Autoscroll = false
 		v.Clear()
 		v.SetCursor(0, 0)
 
@@ -29,8 +29,13 @@ func (e *ClearCmd) Exec(args []string) error {
 			fmt.Fprintln(v, color.String(color.Logo, ui.Logo))
 			fmt.Fprintln(v, color.String(color.Red, ui.VersionLine))
 		} else {
-			fmt.Fprintln(v, "\n\n")
+			fmt.Fprintln(v, "\n")
+			c := Server.FindChannel(Server.CurrentChannel)
+			c.NickListString(v, false)
+			c.NickMetricsString(v)
 		}
+
+		v.Autoscroll = true
 
 		return nil
 	})
