@@ -103,7 +103,7 @@ func (channel *Channel) NickMetricsString(view *gocui.View) {
 			op++
 		case "%":
 			hop++
-		case "v":
+		case "+":
 			v++
 		default:
 			n++

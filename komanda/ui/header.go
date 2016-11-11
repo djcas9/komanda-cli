@@ -6,6 +6,7 @@ import (
 
 	"github.com/jroimartin/gocui"
 	"github.com/mephux/komanda-cli/komanda/client"
+	"github.com/mephux/komanda-cli/komanda/color"
 )
 
 func HeaderView(g *gocui.Gui, x, y, maxX, maxY int) error {
@@ -42,21 +43,31 @@ func UpdateHeaderView(g *gocui.Gui) {
 		v.Clear()
 		v.SetCursor(0, 0)
 
+		maxX, _ := g.Size()
+
 		g.SetViewOnTop(v.Name())
 
 		channel := Server.GetCurrentChannel()
 
+		var header = "⣿ Loading..."
+
 		if channel.Name != client.StatusChannel {
-			if len(channel.Name) <= 0 {
-				fmt.Fprintf(v, "⣿ %s", "Loading...")
-			} else {
-				fmt.Fprintf(v, "⣿ %s", channel.Topic)
+			if len(channel.Name) > 0 {
+				header = fmt.Sprintf("⣿ %s", channel.Topic)
 			}
 		} else if channel.Name == client.StatusChannel {
-			fmt.Fprintf(v, "⣿ %s", client.StatusChannel)
-		} else {
-			fmt.Fprintf(v, "⣿ %s", "Loading...")
+			header = fmt.Sprintf("⣿ %s", client.StatusChannel)
 		}
+
+		pad := maxX - len(header) + 1
+
+		var i int
+		for i <= pad {
+			i++
+			header += " "
+		}
+
+		fmt.Fprintf(v, color.StringFormat(color.Header, header, []string{"7"}))
 
 		return nil
 	})

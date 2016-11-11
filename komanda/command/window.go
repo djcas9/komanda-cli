@@ -16,6 +16,7 @@ func (e *WindowCmd) Metadata() CommandMetadata {
 }
 
 func (e *WindowCmd) Exec(args []string) error {
+
 	Server.Exec(client.StatusChannel, func(g *gocui.Gui, v *gocui.View, s *client.Server) error {
 
 		if !s.Client.Connected() {

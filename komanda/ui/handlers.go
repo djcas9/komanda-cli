@@ -56,7 +56,7 @@ func BindHandlers() {
 				u.Nick = line.Args[0]
 
 				Server.Exec(c.Name, func(g *gocui.Gui, v *gocui.View, s *client.Server) error {
-					fmt.Fprintf(v, "[%s] %s has changed nick to %s\n", color.String(color.Green, "+NICK"), line.Nick, line.Args[0])
+					fmt.Fprintf(v, "[%s] -- %s has changed nick to %s\n", color.String(color.Green, "+NICK"), line.Nick, line.Args[0])
 					return nil
 				})
 			}
@@ -89,7 +89,7 @@ func BindHandlers() {
 				c.RemoveNick(line.Nick)
 
 				Server.Exec(c.Name, func(g *gocui.Gui, v *gocui.View, s *client.Server) error {
-					fmt.Fprintf(v, "[%s] %s [%s@%s] has quit [%s]\n", color.String(color.Red, "-EXIT"), line.Nick, line.Ident, line.Host, line.Text())
+					fmt.Fprintf(v, "[%s] -- %s [%s@%s] has quit [%s]\n", color.String(color.Red, "-EXIT"), line.Nick, line.Ident, line.Host, line.Text())
 					return nil
 				})
 			}
@@ -123,7 +123,7 @@ func BindHandlers() {
 				if line.Nick != Server.Client.Me().Nick {
 					c.AddNick(line.Nick)
 				}
-				fmt.Fprintf(v, "[%s] %s [%s@%s] has joined %s\n", color.String(color.Green, "+JOIN"), line.Nick, line.Ident, line.Host, c.Name)
+				fmt.Fprintf(v, "[%s] -- %s [%s@%s] has joined %s\n", color.String(color.Green, "+JOIN"), line.Nick, line.Ident, line.Host, c.Name)
 				return nil
 			})
 		}
@@ -135,7 +135,7 @@ func BindHandlers() {
 		if c, _, has := Server.HasChannel(line.Text()); has {
 			Server.Exec(c.Name, func(g *gocui.Gui, v *gocui.View, s *client.Server) error {
 				c.RemoveNick(line.Nick)
-				fmt.Fprintf(v, "[%s] %s [%s@%s] has quit [%s]\n", color.String(color.Red, "-PART"), line.Nick, line.Ident, line.Host, line.Text())
+				fmt.Fprintf(v, "[%s] -- %s [%s@%s] has quit [%s]\n", color.String(color.Red, "-PART"), line.Nick, line.Ident, line.Host, line.Text())
 				return nil
 			})
 		}
@@ -145,7 +145,7 @@ func BindHandlers() {
 	Server.Client.HandleFunc("433", func(conn *irc.Conn, line *irc.Line) {
 		Server.Exec(Server.CurrentChannel, func(g *gocui.Gui, v *gocui.View, s *client.Server) error {
 			fmt.Fprintf(v, "%s %s\n",
-				color.String(color.Red, "=="),
+				color.String(color.Red, "XX"),
 				fmt.Sprintf("Nick %s is already in use.", line.Nick),
 			)
 			return nil
@@ -156,12 +156,12 @@ func BindHandlers() {
 	Server.Client.HandleFunc("482", func(conn *irc.Conn, line *irc.Line) {
 		if c, _, has := Server.HasChannel(line.Args[1]); has {
 			Server.Exec(c.Name, func(g *gocui.Gui, v *gocui.View, s *client.Server) error {
-				fmt.Fprintf(v, "%s %s\n", color.String(color.Red, "=="), line.Text())
+				fmt.Fprintf(v, "%s %s\n", color.String(color.Red, "XX"), line.Text())
 				return nil
 			})
 		} else {
 			Server.Exec(client.StatusChannel, func(g *gocui.Gui, v *gocui.View, s *client.Server) error {
-				fmt.Fprintf(v, "%s %s\n", color.String(color.Red, "=="), line.Text())
+				fmt.Fprintf(v, "%s %s\n", color.String(color.Red, "XX"), line.Text())
 				return nil
 			})
 		}
@@ -384,8 +384,8 @@ func BindHandlers() {
 				func(g *gocui.Gui, v *gocui.View, s *client.Server) error {
 					timestamp := time.Now().Format("03:04")
 					fmt.Fprintf(v, "[%s] <- %s: %s\n",
-						color.String(color.TimestampColor, timestamp),
-						color.String(color.OtherNickColor, line.Nick),
+						color.String(color.Timestamp, timestamp),
+						color.String(color.OtherNickDefault, line.Nick),
 						line.Text(),
 					)
 
@@ -422,7 +422,7 @@ func BindHandlers() {
 						}
 
 						fmt.Fprintf(v, "[%s] %s %s: %s\n",
-							color.String(color.TimestampColor, timestamp),
+							color.String(color.Timestamp, timestamp),
 							style,
 							c.FindUser(line.Nick).String(true),
 							text,

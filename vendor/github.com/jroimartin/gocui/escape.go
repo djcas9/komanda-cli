@@ -204,37 +204,34 @@ func (ei *escapeInterpreter) output256() error {
 	}
 
 	fgbgParam, err := strconv.Atoi(ei.csiParam[0])
+	fgbgColor, err := strconv.Atoi(ei.csiParam[2])
 
 	if err != nil {
 		return errCSIParseError
 	}
 
 	if fgbgParam == 38 {
-		ei.curBgColor = 0
+		ei.curFgColor = Attribute(fgbgColor + 1)
 
-		for _, param := range ei.csiParam[2:] {
+		for _, param := range ei.csiParam[3:] {
 			p, err := strconv.Atoi(param)
 
 			if err != nil {
 				return errCSIParseError
 			}
 
-			ei.curFgColor |= Attribute(p)
+			switch {
+			case p == 1:
+				ei.curFgColor |= AttrBold
+			case p == 4:
+				ei.curFgColor |= AttrUnderline
+			case p == 7:
+				ei.curFgColor |= AttrReverse
+			}
 		}
 
 	} else if fgbgParam == 48 {
-		ei.curBgColor = 0
-
-		for _, param := range ei.csiParam[2:] {
-			p, err := strconv.Atoi(param)
-
-			if err != nil {
-				return errCSIParseError
-			}
-
-			ei.curBgColor |= Attribute(p)
-		}
-
+		ei.curBgColor = Attribute(fgbgColor + 1)
 	} else {
 		return errCSIParseError
 	}

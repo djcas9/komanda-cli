@@ -5,7 +5,6 @@ import (
 	"strings"
 	"time"
 
-	"github.com/davecgh/go-spew/spew"
 	"github.com/jroimartin/gocui"
 	"github.com/mephux/komanda-cli/komanda/client"
 	"github.com/mephux/komanda-cli/komanda/color"
@@ -184,8 +183,8 @@ func simpleEditor(v *gocui.View, key gocui.Key, ch rune, mod gocui.Modifier) {
 		cx, _ := v.Cursor()
 		line := v.ViewBuffer()
 
-		logger.Logger.Println(len(line), cx)
-		logger.Logger.Println(spew.Sdump(line))
+		// logger.Logger.Println(len(line), cx)
+		// logger.Logger.Println(spew.Sdump(line))
 
 		// if cx == 0 {
 		// v.MoveCursor(-1, 0, false)
@@ -264,19 +263,21 @@ func GetLine(g *gocui.Gui, v *gocui.View) error {
 					// logger.Logger.Println(spew.Sdump(color.String(color.Red, "word")))
 
 					fmt.Fprintf(mainView, "[%s] -> %s: %s\n",
-						color.String(color.TimestampColor, timestamp),
+						color.String(color.Timestamp, timestamp),
 						color.String(color.Green, c.FindUser(Server.Client.Me().Nick).String(false)),
 						// color.String(
 						// color.MyNickColor,
 						// c.FindUser(Server.Client.Me().Nick).String(false),
 						// ),
-						color.String(color.MyTextColor, line))
+						color.String(color.MyText, line))
 				}
 			}
 		}
 		// send text
 	} else {
-		split := strings.Split(strings.Replace(line[1:], "\x00", "", -1), " ")
+		l := strings.Replace(line[1:], "\x00", "", -1)
+		l = strings.Replace(l, "\n", "", -1)
+		split := strings.Split(strings.TrimRight(l, " "), " ")
 
 		// logger.Logger.Println("IN COMMAND!!!", line, spew.Sdump(split))
 
@@ -439,6 +440,34 @@ func prevView(g *gocui.Gui, v *gocui.View) error {
 	FocusInputView(g, v)
 
 	curView = next
+	return nil
+}
+
+func setView(g *gocui.Gui, v *gocui.View, index int) error {
+
+	c := Server.Channels[index]
+
+	if c != nil {
+
+		if newView, err := g.View(c.Name); err != nil {
+			return err
+		} else {
+			newView.Autoscroll = true
+			g.SetViewOnTop(newView.Name())
+			g.SetViewOnTop("header")
+		}
+
+		if _, err := g.SetCurrentView(c.Name); err != nil {
+			return err
+		}
+
+		Server.CurrentChannel = c.Name
+		c.Unread = false
+
+		ui.UpdateMenuView(g)
+		FocusInputView(g, v)
+	}
+
 	return nil
 }
 

@@ -116,6 +116,14 @@ func Run(build string, server *client.Server) {
 		log.Panicln(err)
 	}
 
+	if err := g.SetKeybinding("", gocui.Key(0x31), gocui.ModAlt,
+		func(g *gocui.Gui, v *gocui.View) error {
+			logger.Logger.Println("WTF???????????")
+			return setView(g, v, 1)
+		}); err != nil {
+		log.Panicln(err)
+	}
+
 	if err := g.SetKeybinding("input", gocui.KeyArrowLeft, gocui.Modifier(termbox.ModAlt),
 		func(g *gocui.Gui, v *gocui.View) error {
 			return prevView(g, v)

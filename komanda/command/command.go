@@ -1,6 +1,10 @@
 package command
 
-import "github.com/mephux/komanda-cli/komanda/client"
+import (
+	"strconv"
+
+	"github.com/mephux/komanda-cli/komanda/client"
+)
 
 var (
 	Commands       []Command
@@ -86,5 +90,17 @@ func Get(cmd string) Command {
 }
 
 func Run(command string, args []string) error {
-	return Get(command).Exec(args)
+	p, err := strconv.Atoi(command)
+
+	if err != nil {
+		return Get(command).Exec(args)
+	}
+
+	len := len(Server.Channels) - 1
+
+	if p >= 0 && p <= len {
+		return Get("w").Exec([]string{"/w", command})
+	}
+
+	return emptyCmd().Exec([]string{command})
 }
