@@ -22,19 +22,20 @@ Maybe embed lua,mruby or something else for the script lang.
   ```bash
 usage: komanda [<flags>]
 
+The Komanda Command-line IRC Client
+
 Flags:
-      --help                     Show context-sensitive help (also try --help-long and
-                                 --help-man).
-  -d, --debug                    enable debug logging
-  -v, --version                  komanda version
-  -s, --ssl                      enable ssl
-  -i, --insecure                 insecure ssl - skip verify. (self-signed certs)
-  -h, --host="irc.freenode.net"  hostname
-  -p, --port="6667"              port
-  -n, --nick="komanda"           nick
-  -u, --user="komanda"           server user
-  -P, --password=PASSWORD        server password
-  -a, --auto                     auto-connect on startup.
+      --help               Show context-sensitive help (also try --help-long and --help-man).
+  -s, --ssl                enable ssl
+  -i, --insecure           insecure ssl - skip verify. (self-signed certs)
+  -h, --host=HOST          hostname
+  -p, --port=PORT          port
+  -n, --nick=NICK          nick
+  -u, --user=USER          server user
+  -P, --password=PASSWORD  server password
+  -a, --auto               auto-connect on startup.
+  -c, --config=CONFIG      configuration file location
+      --version            Show application version.
   ```
 
 ## Keyboard
@@ -49,6 +50,7 @@ Flags:
 
 ## Features
 
+  * config file support (change colors, time formats etc.)
   * activity monitoring (new messages/highlights)
   * color nick
   * znc support
@@ -57,6 +59,46 @@ Flags:
   * new window per channel
   * history
   * cross-platform desktop notifications
+
+## Config File Example
+
+```toml
+[Komanda]
+  Debug = false
+  LogFile = "/home/dweb/.komanda/komanda.log"
+
+[Server]
+  Host = "irc.freenode.net"
+  Port = "6667"
+  SSL = false
+  Insecure = true
+  Nick = "Komanda"
+  User = "Komanda"
+  Password = ""
+  auto_connect = false
+
+[Color]
+  Black = 0
+  White = 15
+  Red = 160
+  Purple = 92
+  Logo = 75
+  Yellow = 11
+  Green = 119
+  Menu = 209
+  my_nick = 164
+  other_nick_default = 14
+  Timestamp = 247
+  my_text = 129
+  Header = 57
+  QueryHeader = 11
+  current_input_view = 215
+
+[Time]
+  message_format = "15:04"
+  notice_format = "02 Jan 06 15:04 MST"
+  menu_format = "03:04:05 PM"
+```
 
 ## TODO
 

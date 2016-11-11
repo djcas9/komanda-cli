@@ -15,7 +15,7 @@ const Logo = `
 const Name = "komanda"
 
 // Description of application
-const Description = "IRC Client"
+const Description = "The Komanda Command-line IRC Client"
 
 // Version number
 const Version = "0.7.0"
