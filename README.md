@@ -2,10 +2,10 @@
 
 # Komanda CLI
 
-This is the sister app of https://github.com/mephux/komanda. 
+This is the sister app of https://github.com/mephux/komanda.
 I thought it would be fun so I did it. Komanda-cli is built using the awesome [gocui](https://github.com/jroimartin/gocui) package.
 
-Would love some help to get it 1:1 with irssi. 
+Would love some help to get it 1:1 with irssi.
 Maybe embed lua,mruby or something else for the script lang.
 
 # You Look Purdy
@@ -51,24 +51,24 @@ Flags:
 ## /help output
 
 ```bash
--> [12:35] * ==================== HELP COMMANDS ====================                                                                                                                        
--> [12:35] * /exit  - exit komanda-cli                                                                                                                                                      
--> [12:35] * /connect  - connect to irc using passed arguments                                                                                                                              
--> [12:35] * /status  - status command                                                                                                                                                      
--> [12:35] * /help  - help command                                                                                                                                                          
--> [12:35] * /join <channel> - join irc channel                                                                                                                                             
--> [12:35] * /part [channel] - part irc channel or current if no channel given                                                                                                              
--> [12:35] * /clear  - clear current view                                                                                                                                                   
--> [12:35] * /logo  - logo command                                                                                                                                                          
--> [12:35] * /version  - version command                                                                                                                                                    
--> [12:35] * /nick <nick> - nick irc channel                                                                                                                                                
--> [12:35] * /pass <password> - pass irc channel                                                                                                                                            
--> [12:35] * /raw <command> [data] - raw command                                                                                                                                            
--> [12:35] * /topic [channel] [topic] - set topic for given channel or current channel if empty                                                                                             
--> [12:35] * /window <id> - change window example: /window 3                                                                                                                                
--> [12:35] * /names  - list channel names                                                                                                                                                   
--> [12:35] * /query <user> [message] - send private message to user                                                                                                                         
--> [12:35] * ==================== HELP COMMANDS ====================                                    
+-> [12:35] * ==================== HELP COMMANDS ====================
+-> [12:35] * /exit  - exit komanda-cli
+-> [12:35] * /connect  - connect to irc using passed arguments
+-> [12:35] * /status  - status command
+-> [12:35] * /help  - help command
+-> [12:35] * /join <channel> - join irc channel
+-> [12:35] * /part [channel] - part irc channel or current if no channel given
+-> [12:35] * /clear  - clear current view
+-> [12:35] * /logo  - logo command
+-> [12:35] * /version  - version command
+-> [12:35] * /nick <nick> - nick irc channel
+-> [12:35] * /pass <password> - pass irc channel
+-> [12:35] * /raw <command> [data] - raw command
+-> [12:35] * /topic [channel] [topic] - set topic for given channel or current channel if empty
+-> [12:35] * /window <id> - change window example: /window 3
+-> [12:35] * /names  - list channel names
+-> [12:35] * /query <user> [message] - send private message to user
+-> [12:35] * ==================== HELP COMMANDS ====================
 ```
 
 ## Features
