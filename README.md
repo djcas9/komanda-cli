@@ -10,7 +10,7 @@ Maybe embed lua,mruby or something else for the script lang.
 
 # UI
 
-![komanda](http://i.imgur.com/v00gmy2.png)
+![komanda](http://i.imgur.com/UbBYVRq.png)
 
 ## Download
 
