@@ -15,7 +15,7 @@ var (
 	debug   = kingpin.Flag("debug", "enable debug logging").Short('d').Bool()
 	version = kingpin.Flag("version", "komanda version").Short('v').Bool()
 
-	ssl = kingpin.Flag("ssl", "enable ssl").Bool()
+	ssl = kingpin.Flag("ssl", "enable ssl").Short('s').Bool()
 
 	InsecureSkipVerify = kingpin.
 				Flag("insecure", "insecure ssl - skip verify. (self-signed certs)").

@@ -27,7 +27,7 @@ Flags:
                                  --help-man).
   -d, --debug                    enable debug logging
   -v, --version                  komanda version
-      --ssl                      enable ssl
+  -s, --ssl                      enable ssl
   -i, --insecure                 insecure ssl - skip verify. (self-signed certs)
   -h, --host="irc.freenode.net"  hostname
   -p, --port="6667"              port
