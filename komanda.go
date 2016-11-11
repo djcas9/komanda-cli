@@ -12,13 +12,13 @@ import (
 var Build = ""
 
 var (
-	debug   = kingpin.Flag("debug", "Enable debug logging").Short('d').Bool()
-	version = kingpin.Flag("version", "Komanda Version").Short('v').Bool()
+	debug   = kingpin.Flag("debug", "enable debug logging").Short('d').Bool()
+	version = kingpin.Flag("version", "komanda version").Short('v').Bool()
 
-	ssl = kingpin.Flag("ssl", "IRC SSL Connection").Bool()
+	ssl = kingpin.Flag("ssl", "enable ssl").Bool()
 
 	InsecureSkipVerify = kingpin.
-				Flag("insecure", "Insecure SSL skip verify. (self-signed certs)").
+				Flag("insecure", "insecure ssl - skip verify. (self-signed certs)").
 				Short('i').Bool()
 
 	host = kingpin.Flag("host", "hostname").Short('h').Default("irc.freenode.net").String()
@@ -27,7 +27,7 @@ var (
 	user = kingpin.Flag("user", "server user").Short('u').Default("komanda").String()
 	pass = kingpin.Flag("password", "server password").Short('P').String()
 
-	autoConnect = kingpin.Flag("auto", "Auto connect on startup.").Short('a').Bool()
+	autoConnect = kingpin.Flag("auto", "auto-connect on startup.").Short('a').Bool()
 )
 
 func main() {

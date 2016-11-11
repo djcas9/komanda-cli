@@ -25,19 +25,22 @@ usage: komanda [<flags>]
 Flags:
       --help                     Show context-sensitive help (also try --help-long and
                                  --help-man).
-  -d, --debug                    Enable debug logging
-  -v, --version                  Komanda Version
-      --ssl                      IRC SSL Connection
-      --ssl-skip-verify          Insecure skip verify. (self-signed certs)
+  -d, --debug                    enable debug logging
+  -v, --version                  komanda version
+      --ssl                      enable ssl
+  -i, --insecure                 insecure ssl - skip verify. (self-signed certs)
   -h, --host="irc.freenode.net"  hostname
   -p, --port="6667"              port
   -n, --nick="komanda"           nick
   -u, --user="komanda"           server user
-  -P, --password                 server password
+  -P, --password=PASSWORD        server password
+  -a, --auto                     auto-connect on startup.
   ```
 
 ## Keyboard
 
+  * `esc, right-arrow-key` change to next channel
+  * `esc, left-arrow-key` change to previous channel
   * `ctrl+n` change to next window
   * `ctrl+p` change to previous window
   * `ctrl+alt+p` scroll up
@@ -46,6 +49,9 @@ Flags:
 
 ## Features
 
+  * color nick
+  * znc support
+  * 256 colors
   * tab complete
   * new window per channel
   * history
