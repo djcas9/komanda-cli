@@ -131,7 +131,7 @@ func (server *Server) NewChannel(name string, private bool) error {
 	maxX, maxY := server.Gui.Size()
 
 	channel := Channel{
-		Topic:         "Loading...",
+		Topic:         "N/A",
 		Ready:         false,
 		Unread:        private,
 		Name:          name,

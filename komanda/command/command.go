@@ -69,6 +69,8 @@ func Register(server *client.Server) {
 		queryCmd(),
 		whoCmd(),
 		whoIsCmd(),
+		meCmd(),
+		noticeCmd(),
 	}
 }
 

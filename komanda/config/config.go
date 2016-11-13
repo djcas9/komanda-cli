@@ -41,6 +41,8 @@ type server struct {
 }
 
 type color struct {
+	Notice           int
+	Action           int
 	Black            int
 	White            int
 	Red              int
@@ -81,6 +83,8 @@ func Default() *Config {
 			AutoConnect: false,
 		},
 		Color: &color{
+			Notice:           219,
+			Action:           118,
 			Black:            0,
 			White:            15,
 			Red:              160,
@@ -89,7 +93,7 @@ func Default() *Config {
 			Yellow:           11,
 			Green:            119,
 			Menu:             209,
-			MyNick:           164,
+			MyNick:           119,
 			OtherNickDefault: 14,
 			Timestamp:        247,
 			MyText:           129,

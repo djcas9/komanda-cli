@@ -46,6 +46,24 @@ func BindHandlers() {
 
 	Server.Client.HandleFunc("NOTICE", func(conn *irc.Conn, line *irc.Line) {
 		logger.Logger.Println("NOTICE -----------------------------", spew.Sdump(line))
+
+		if c, _, has := Server.HasChannel(line.Args[0]); has {
+
+			Server.Exec(c.Name, func(g *gocui.Gui, v *gocui.View, s *client.Server) error {
+
+				timestamp := time.Now().Format(config.C.Time.MessageFormat)
+
+				fmt.Fprintf(v, "[%s] [%s:(%s:%s)] %s\n",
+					color.String(config.C.Color.Timestamp, timestamp),
+					color.StringFormat(config.C.Color.Red, "notice", []string{"1"}),
+					color.StringFormat(config.C.Color.Notice, line.Nick, []string{"1"}),
+					color.StringFormat(config.C.Color.Notice, line.Args[0], []string{"1"}),
+					helpers.FormatMessage(line.Args[1]),
+				)
+
+				return nil
+			})
+		}
 	})
 
 	Server.Client.HandleFunc("NICK", func(conn *irc.Conn, line *irc.Line) {
@@ -95,6 +113,22 @@ func BindHandlers() {
 
 	Server.Client.HandleFunc("ACTION", func(conn *irc.Conn, line *irc.Line) {
 		logger.Logger.Println("ACTION -----------------------------", spew.Sdump(line))
+
+		if c, _, has := Server.HasChannel(line.Args[0]); has {
+
+			Server.Exec(c.Name, func(g *gocui.Gui, v *gocui.View, s *client.Server) error {
+
+				timestamp := time.Now().Format(config.C.Time.MessageFormat)
+				fmt.Fprintf(v, "[%s] %s %s %s\n",
+					color.String(config.C.Color.Timestamp, timestamp),
+					color.String(config.C.Color.Action, "**"),
+					color.StringFormat(config.C.Color.OtherNickDefault, line.Nick, []string{"1", "4"}),
+					helpers.FormatMessage(line.Args[1]),
+				)
+
+				return nil
+			})
+		}
 	})
 
 	Server.Client.HandleFunc("REGISTER", func(conn *irc.Conn, line *irc.Line) {

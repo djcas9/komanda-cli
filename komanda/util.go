@@ -274,7 +274,7 @@ func GetLine(g *gocui.Gui, v *gocui.View) error {
 
 					fmt.Fprintf(mainView, "[%s] -> %s: %s\n",
 						color.String(config.C.Color.Timestamp, timestamp),
-						color.String(config.C.Color.Green, c.FindUser(Server.Client.Me().Nick).String(false)),
+						color.String(config.C.Color.MyNick, c.FindUser(Server.Client.Me().Nick).String(false)),
 						// color.String(
 						// color.MyNickColor,
 						// c.FindUser(Server.Client.Me().Nick).String(false),

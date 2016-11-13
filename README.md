@@ -51,24 +51,28 @@ Flags:
 ## /help output
 
 ```bash
--> [12:35] * ==================== HELP COMMANDS ====================
--> [12:35] * /exit  - exit komanda-cli
--> [12:35] * /connect  - connect to irc using passed arguments
--> [12:35] * /status  - status command
--> [12:35] * /help  - help command
--> [12:35] * /join <channel> - join irc channel
--> [12:35] * /part [channel] - part irc channel or current if no channel given
--> [12:35] * /clear  - clear current view
--> [12:35] * /logo  - logo command
--> [12:35] * /version  - version command
--> [12:35] * /nick <nick> - nick irc channel
--> [12:35] * /pass <password> - pass irc channel
--> [12:35] * /raw <command> [data] - raw command
--> [12:35] * /topic [channel] [topic] - set topic for given channel or current channel if empty
--> [12:35] * /window <id> - change window example: /window 3
--> [12:35] * /names  - list channel names
--> [12:35] * /query <user> [message] - send private message to user
--> [12:35] * ==================== HELP COMMANDS ====================
+-> [16:07] * ==================== HELP COMMANDS ====================
+-> [16:07] * /exit  - exit komanda-cli
+-> [16:07] * /connect  - connect to irc using passed arguments
+-> [16:07] * /status  - status command
+-> [16:07] * /help  - help command
+-> [16:07] * /join <channel> - join irc channel
+-> [16:07] * /part [channel] - part irc channel or current if no channel given
+-> [16:07] * /clear  - clear current view
+-> [16:07] * /logo  - logo command
+-> [16:07] * /version  - version command
+-> [16:07] * /nick <nick> - nick irc channel
+-> [16:07] * /pass <password> - pass irc channel
+-> [16:07] * /raw <command> [data] - raw command
+-> [16:07] * /topic [channel] [topic] - set topic for given channel or current channel if empty
+-> [16:07] * /window <id> - change window example: /window 3
+-> [16:07] * /names  - list channel names
+-> [16:07] * /query <user> [message] - send private message to user
+-> [16:07] * /who <nick> - send who command to server
+-> [16:07] * /whois <nick> - send whois command to server
+-> [16:07] * /me [message] - send action message to channel
+-> [16:07] * /notice <channel/nick> <message> - send notice message to channel or nick
+-> [16:07] * ==================== HELP COMMANDS ====================
 ```
 
 ## Features
@@ -102,6 +106,8 @@ Flags:
 
 # http://www.calmar.ws/vim/256-xterm-24bit-rgb-color-chart.html
 [Color]
+  Notice = 219
+  Action = 118
   Black = 0
   White = 15
   Red = 160
