@@ -39,6 +39,7 @@ type Handler func(*gocui.Gui, *gocui.View, *Server) error
 
 func (server *Server) Exec(channel string, h Handler) {
 	server.Gui.Execute(func(g *gocui.Gui) error {
+
 		v, err := g.View(channel)
 
 		if err != nil {
@@ -146,7 +147,7 @@ func (server *Server) NewChannel(name string, private bool) error {
 
 	server.AddChannel(&channel)
 
-	if err := channel.Render(); err != nil {
+	if err := channel.Render(false); err != nil {
 		return err
 	}
 

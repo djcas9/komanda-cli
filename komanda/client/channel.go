@@ -145,7 +145,7 @@ func (channel *Channel) AddNick(nick string) {
 	}
 }
 
-func (channel *Channel) Render() error {
+func (channel *Channel) Render(update bool) error {
 
 	view, err := channel.Server.Gui.SetView(channel.Name,
 		-1, -1, channel.MaxX, channel.MaxY-3)
@@ -176,8 +176,10 @@ func (channel *Channel) Render() error {
 
 	view.Wrap = true
 
-	if err := channel.RenderHandler(channel, view); err != nil {
-		return err
+	if !update {
+		if err := channel.RenderHandler(channel, view); err != nil {
+			return err
+		}
 	}
 
 	if channel.Private {

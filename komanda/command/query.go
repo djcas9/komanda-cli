@@ -55,7 +55,7 @@ func queryCmd() Command {
 			args: "<user> [message]",
 			aliases: []string{
 				"pm",
-				"q",
+				"query",
 			},
 			description: "send private message to user",
 		},

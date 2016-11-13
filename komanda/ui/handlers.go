@@ -61,6 +61,26 @@ func BindHandlers() {
 					return nil
 				})
 			}
+
+			if c.Private && c.Name == line.Nick {
+				c.Name = line.Args[0]
+
+				if Server.CurrentChannel == line.Nick {
+					Server.CurrentChannel = c.Name
+
+					Server.Gui.SetViewOnTop(c.Name)
+					Server.Gui.SetViewOnTop("header")
+					c.RemoveNick(line.Nick)
+					c.AddNick(c.Name)
+					c.Render(true)
+					c.Unread = false
+
+					Server.Exec(c.Name, func(g *gocui.Gui, v *gocui.View, s *client.Server) error {
+						fmt.Fprintf(v, "[%s] -- %s has changed nick to %s\n", color.String(config.C.Color.Green, "+NICK"), line.Nick, line.Args[0])
+						return nil
+					})
+				}
+			}
 		}
 	})
 
