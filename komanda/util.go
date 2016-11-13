@@ -111,7 +111,7 @@ func tabComplete(g *gocui.Gui, v *gocui.View) error {
 			return nil
 		}
 
-		results := t.FuzzySearch(search)
+		results := t.PrefixSearch(search)
 
 		if len(results) <= 0 {
 			inCacheTab = false
@@ -237,6 +237,14 @@ func GetLine(g *gocui.Gui, v *gocui.View) error {
 	line = strings.Replace(line, "\x00", "", -1)
 	line = strings.Replace(line, "\n", "", -1)
 
+	if len(line) <= 0 {
+		// return errors.New("input line empty")
+		v.Clear()
+		v.SetCursor(0, 0)
+		v.SetOrigin(0, 0)
+		return nil
+	}
+
 	InputHistory.Add(line)
 
 	if strings.HasPrefix(line, "//") || !strings.HasPrefix(line, "/") {
@@ -311,6 +319,7 @@ func GetLine(g *gocui.Gui, v *gocui.View) error {
 
 	v.Clear()
 	v.SetCursor(0, 0)
+	v.SetOrigin(0, 0)
 
 	inCacheTab = false
 	cacheTabSearch = ""

@@ -47,6 +47,7 @@ func UpdateMenuView(gui *gocui.Gui) {
 	Server.Exec("menu", func(g *gocui.Gui, v *gocui.View, s *client.Server) error {
 		v.Clear()
 		v.SetCursor(0, 0)
+		v.SetOrigin(0, 0)
 
 		var channelList = []string{}
 		var channels = Server.Channels

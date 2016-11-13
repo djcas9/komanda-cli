@@ -24,9 +24,10 @@ func (e *ClearCmd) Exec(args []string) error {
 		v.Autoscroll = false
 		v.Clear()
 		v.SetCursor(0, 0)
+		v.SetOrigin(0, 0)
 
 		if Server.CurrentChannel == client.StatusChannel {
-			fmt.Fprintln(v, "")
+			fmt.Fprintln(v, "\n")
 			fmt.Fprintln(v, color.String(config.C.Color.Logo, ui.Logo))
 			fmt.Fprintln(v, color.String(config.C.Color.Red, ui.VersionLine))
 		} else {

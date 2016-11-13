@@ -43,6 +43,7 @@ func UpdateHeaderView(g *gocui.Gui) {
 	Server.Exec("header", func(g *gocui.Gui, v *gocui.View, s *client.Server) error {
 		v.Clear()
 		v.SetCursor(0, 0)
+		v.SetOrigin(0, 0)
 
 		maxX, _ := g.Size()
 
