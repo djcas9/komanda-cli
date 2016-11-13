@@ -1,6 +1,6 @@
 WEBSITE="http://komanda.io"
 DESCRIPTION="Komanda IRC Client"
-NAME="komanda"
+NAME=komanda
 
 BUILDVERSION=$(shell cat VERSION)
 GO_VERSION=$(shell go version)
@@ -48,7 +48,7 @@ setup:
 	@mkdir -p package/root/usr/bin/
 	@mkdir -p dist/
 	@cp -R ./bin/$(NAME) package/root/usr/bin/$(NAME)
-	@./bin/$(NAME) --version > VERSION
+	@./bin/$(NAME) --version 2> VERSION
 
 cc:
 	@echo "[-] Cross Compiling $(NAME)"
