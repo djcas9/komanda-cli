@@ -13,6 +13,7 @@ import (
 	"github.com/mephux/komanda-cli/komanda/client"
 	"github.com/mephux/komanda-cli/komanda/color"
 	"github.com/mephux/komanda-cli/komanda/config"
+	"github.com/mephux/komanda-cli/komanda/helpers"
 	"github.com/mephux/komanda-cli/komanda/logger"
 
 	irc "github.com/fluffle/goirc/client"
@@ -407,7 +408,7 @@ func BindHandlers() {
 					fmt.Fprintf(v, "[%s] <- %s: %s\n",
 						color.String(config.C.Color.Timestamp, timestamp),
 						color.String(config.C.Color.OtherNickDefault, line.Nick),
-						line.Text(),
+						helpers.FormatMessage(line.Text()),
 					)
 
 					notify.Push(fmt.Sprintf("Private message from %s", line.Nick), line.Text(), "", notificator.UR_NORMAL)
@@ -434,11 +435,15 @@ func BindHandlers() {
 							notify.Push(fmt.Sprintf("Highlight from %s", line.Nick), line.Text(), "", notificator.UR_NORMAL)
 						}
 
-						text := line.Text()
+						text := helpers.FormatMessage(line.Text())
 						style := "<-"
 
 						if highlight {
-							text = color.String(config.C.Color.Yellow, text)
+							text = color.String(
+								config.C.Color.Yellow,
+								text,
+							)
+
 							style = color.String(config.C.Color.Yellow, "!!")
 						}
 

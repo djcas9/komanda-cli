@@ -10,6 +10,7 @@ import (
 	"github.com/mephux/komanda-cli/komanda/color"
 	"github.com/mephux/komanda-cli/komanda/command"
 	"github.com/mephux/komanda-cli/komanda/config"
+	"github.com/mephux/komanda-cli/komanda/helpers"
 	"github.com/mephux/komanda-cli/komanda/logger"
 	"github.com/mephux/komanda-cli/komanda/share/history"
 	"github.com/mephux/komanda-cli/komanda/share/trie"
@@ -278,7 +279,7 @@ func GetLine(g *gocui.Gui, v *gocui.View) error {
 						// color.MyNickColor,
 						// c.FindUser(Server.Client.Me().Nick).String(false),
 						// ),
-						color.String(config.C.Color.MyText, line))
+						color.String(config.C.Color.MyText, helpers.FormatMessage(line)))
 				}
 			}
 		}

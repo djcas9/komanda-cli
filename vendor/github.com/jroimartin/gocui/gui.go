@@ -18,15 +18,15 @@ var (
 	ErrUnknownView = errors.New("unknown view")
 )
 
-// OutputMode for use with termbox output parsing
+// OutputMode represents the terminal's output mode (8 or 256 colors).
 type OutputMode termbox.OutputMode
 
 const (
-	// OutputNormal 8 base terminal color support
-	OutputNormal = termbox.OutputNormal
+	// OutputNormal provides 8-colors terminal mode.
+	OutputNormal = OutputMode(termbox.OutputNormal)
 
-	// Output256 256 terminal color support
-	Output256 = termbox.Output256
+	// Output256 provides 256-colors terminal mode.
+	Output256 = OutputMode(termbox.Output256)
 )
 
 // Gui represents the whole User Interface, including the views, layouts
@@ -64,15 +64,15 @@ type Gui struct {
 	InputEsc bool
 }
 
-// NewGui returns a new Gui object.
-func NewGui(mode termbox.OutputMode) (*Gui, error) {
+// NewGui returns a new Gui object with a given output mode.
+func NewGui(mode OutputMode) (*Gui, error) {
 	if err := termbox.Init(); err != nil {
 		return nil, err
 	}
 
 	g := &Gui{}
 
-	g.outputMode = OutputMode(mode)
+	g.outputMode = mode
 	termbox.SetOutputMode(termbox.OutputMode(mode))
 
 	g.tbEvents = make(chan termbox.Event, 20)

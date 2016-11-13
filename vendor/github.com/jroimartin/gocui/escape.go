@@ -73,29 +73,6 @@ func (ei *escapeInterpreter) reset() {
 	ei.csiParam = nil
 }
 
-// paramToColor returns an attribute given a terminfo coloring.
-func paramToColor(p int) Attribute {
-	switch p {
-	case 0:
-		return ColorBlack
-	case 1:
-		return ColorRed
-	case 2:
-		return ColorGreen
-	case 3:
-		return ColorYellow
-	case 4:
-		return ColorBlue
-	case 5:
-		return ColorMagenta
-	case 6:
-		return ColorCyan
-	case 7:
-		return ColorWhite
-	}
-	return ColorDefault
-}
-
 // parseOne parses a rune. If isEscape is true, it means that the rune is part
 // of an escape sequence, and as such should not be printed verbatim. Otherwise,
 // it's not an escape sequence.
@@ -149,31 +126,32 @@ func (ei *escapeInterpreter) parseOne(ch rune) (isEscape bool, err error) {
 			case OutputMode(Output256):
 				err = ei.output256()
 			}
+			if err != nil {
+				return false, errCSIParseError
+			}
 
 			ei.state = stateNone
 			ei.csiParam = nil
-			return true, err
+			return true, nil
 		}
 	}
 	return false, nil
 }
 
-// outputNormal  provides 8 different colors:
-// black, red, green, yellow, blue, magenta, cyan, white
+// outputNormal provides 8 different colors:
+//   black, red, green, yellow, blue, magenta, cyan, white
 func (ei *escapeInterpreter) outputNormal() error {
-
 	for _, param := range ei.csiParam {
 		p, err := strconv.Atoi(param)
-
 		if err != nil {
 			return errCSIParseError
 		}
 
 		switch {
 		case p >= 30 && p <= 37:
-			ei.curFgColor = paramToColor(p - 30)
+			ei.curFgColor = Attribute(p - 30 + 1)
 		case p >= 40 && p <= 47:
-			ei.curBgColor = paramToColor(p - 40)
+			ei.curBgColor = Attribute(p - 40 + 1)
 		case p == 1:
 			ei.curFgColor |= AttrBold
 		case p == 4:
@@ -189,33 +167,40 @@ func (ei *escapeInterpreter) outputNormal() error {
 	return nil
 }
 
-// output256 allows you to leverage the 256 terminal mode
-//    0x01 - 0x08: the 8 colors as in OutputNormal
-//    0x09 - 0x10: Color* | AttrBold
-//    0x11 - 0xe8: 216 different colors
-//    0xe9 - 0x1ff: 24 different shades of grey
+// output256 allows you to leverage the 256-colors terminal mode:
+//   0x01 - 0x08: the 8 colors as in OutputNormal
+//   0x09 - 0x10: Color* | AttrBold
+//   0x11 - 0xe8: 216 different colors
+//   0xe9 - 0x1ff: 24 different shades of grey
 func (ei *escapeInterpreter) output256() error {
-
 	if len(ei.csiParam) < 3 {
-		ei.curFgColor = ColorDefault
-		ei.curBgColor = ColorDefault
-
-		return nil
+		return ei.outputNormal()
 	}
 
 	fgbgParam, err := strconv.Atoi(ei.csiParam[0])
-	fgbgColor, err := strconv.Atoi(ei.csiParam[2])
-
 	if err != nil {
 		return errCSIParseError
 	}
 
-	if fgbgParam == 38 {
+	fgbgType, err := strconv.Atoi(ei.csiParam[1])
+	if err != nil {
+		return errCSIParseError
+	}
+	if fgbgType != 5 {
+		return ei.outputNormal()
+	}
+
+	fgbgColor, err := strconv.Atoi(ei.csiParam[2])
+	if err != nil {
+		return errCSIParseError
+	}
+
+	switch fgbgParam {
+	case 38:
 		ei.curFgColor = Attribute(fgbgColor + 1)
 
 		for _, param := range ei.csiParam[3:] {
 			p, err := strconv.Atoi(param)
-
 			if err != nil {
 				return errCSIParseError
 			}
@@ -229,10 +214,9 @@ func (ei *escapeInterpreter) output256() error {
 				ei.curFgColor |= AttrReverse
 			}
 		}
-
-	} else if fgbgParam == 48 {
+	case 48:
 		ei.curBgColor = Attribute(fgbgColor + 1)
-	} else {
+	default:
 		return errCSIParseError
 	}
 
