@@ -68,9 +68,11 @@ const (
 	KeyArrowLeft      = Key(termbox.KeyArrowLeft)
 	KeyArrowRight     = Key(termbox.KeyArrowRight)
 
-	MouseLeft   = Key(termbox.MouseLeft)
-	MouseMiddle = Key(termbox.MouseMiddle)
-	MouseRight  = Key(termbox.MouseRight)
+	MouseLeft      = Key(termbox.MouseLeft)
+	MouseMiddle    = Key(termbox.MouseMiddle)
+	MouseRight     = Key(termbox.MouseRight)
+	MouseWheelUp   = Key(termbox.MouseWheelUp)
+	MouseWheelDown = Key(termbox.MouseWheelDown)
 )
 
 // Keys combinations.

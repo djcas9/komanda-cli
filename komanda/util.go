@@ -161,9 +161,17 @@ func simpleEditor(v *gocui.View, key gocui.Key, ch rune, mod gocui.Modifier) {
 
 		if line := v.ViewBuffer(); len(line) > 0 {
 			GetLine(Server.Gui, v)
+		} else {
+			if c, err := Server.Gui.View(Server.CurrentChannel); err == nil {
+				c.Autoscroll = true
+			}
 		}
 		// v.EditNewLine()
 		// v.Rewind()
+
+	// case key == gocui.MouseMiddle:
+	// nextView(Server.Gui, v)
+	// case key == gocui.MouseRight:
 
 	case key == gocui.KeyArrowDown:
 		inHistroy = true
@@ -199,9 +207,11 @@ func simpleEditor(v *gocui.View, key gocui.Key, ch rune, mod gocui.Modifier) {
 
 	case key == gocui.KeyCtrlA:
 		v.SetCursor(0, 0)
+		v.SetOrigin(0, 0)
 	case key == gocui.KeyCtrlK:
 		v.Clear()
 		v.SetCursor(0, 0)
+		v.SetOrigin(0, 0)
 	case key == gocui.KeyCtrlE:
 		v.SetCursor(len(v.Buffer())-1, 0)
 	case key == gocui.KeyCtrlLsqBracket:
@@ -436,6 +446,48 @@ func nextView(g *gocui.Gui, v *gocui.View) error {
 	FocusInputView(g, v)
 
 	curView = next
+	return nil
+}
+
+func nextViewActive(g *gocui.Gui, v *gocui.View) error {
+	curView = getCurrentChannelIndex()
+
+	if curView >= len(Server.Channels)-1 {
+		curView = 0
+	}
+
+	for index, channel := range Server.Channels {
+
+		if index >= curView {
+			if channel.Unread || channel.Highlight {
+
+				view, err := channel.View()
+
+				if err != nil {
+					return err
+				}
+
+				view.Autoscroll = true
+				g.SetViewOnTop(view.Name())
+				g.SetViewOnTop("header")
+
+				if _, err := g.SetCurrentView(channel.Name); err != nil {
+					return err
+				}
+
+				// logger.Logger.Printf("Set Current View %d\n", Server.Channels[next].Name)
+				Server.CurrentChannel = channel.Name
+				channel.Unread = false
+				channel.Highlight = false
+
+				ui.UpdateMenuView(g)
+				FocusInputView(g, v)
+				return nil
+			}
+		}
+
+	}
+
 	return nil
 }
 

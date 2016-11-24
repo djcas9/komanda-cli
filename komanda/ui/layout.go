@@ -9,20 +9,12 @@ import (
 	"github.com/mephux/komanda-cli/komanda/color"
 	"github.com/mephux/komanda-cli/komanda/config"
 	"github.com/mephux/komanda-cli/komanda/logger"
+	"github.com/mephux/komanda-cli/komanda/version"
 )
 
 var (
-	// Logo global
-	Logo = ""
-
-	// VersionLine global
-	VersionLine = ""
-
 	// Server Global
 	Server *client.Server
-
-	// Name for notifications
-	Name = "komanda"
 
 	notify *notificator.Notificator
 
@@ -35,7 +27,7 @@ func Layout(g *gocui.Gui) error {
 	maxX, maxY := g.Size()
 
 	notify = notificator.New(notificator.Options{
-		AppName: Name,
+		AppName: version.Name,
 	})
 
 	// if _, err := g.SetView("sidebar", -1, -1, int(0.2*float32(maxX)), maxY-3); err != nil {
@@ -63,10 +55,15 @@ func Layout(g *gocui.Gui) error {
 				view.BgColor = gocui.ColorBlack
 
 				fmt.Fprint(view, "\n\n")
-				fmt.Fprintln(view, Logo)
-				fmt.Fprintln(view, color.String(config.C.Color.Green, VersionLine))
+				fmt.Fprintln(view, version.ColorLogo())
+				fmt.Fprintln(view, color.String(
+					config.C.Color.Green,
+					fmt.Sprintf("  Version: %s%s  Source Code: %s\n",
+						version.Version, version.Build, version.Website),
+				),
+				)
 
-				client.StatusMessage(view, fmt.Sprintf("Welcome to the %s IRC client.", Name))
+				client.StatusMessage(view, fmt.Sprintf("Welcome to the %s IRC client.", version.Name))
 				client.StatusMessage(view, "Type /help for a list of commands.\n")
 
 				return nil

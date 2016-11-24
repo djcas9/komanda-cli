@@ -163,7 +163,7 @@ func (channel *Channel) AddNick(nick string) {
 func (channel *Channel) Render(update bool) error {
 
 	view, err := channel.Server.Gui.SetView(channel.Name,
-		-1, -1, channel.MaxX, channel.MaxY-3)
+		-1, -1, channel.MaxX, channel.MaxY-2)
 
 	if err != gocui.ErrUnknownView {
 		return err

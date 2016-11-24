@@ -7,7 +7,7 @@ import (
 	"github.com/mephux/komanda-cli/komanda/client"
 	"github.com/mephux/komanda-cli/komanda/color"
 	"github.com/mephux/komanda-cli/komanda/config"
-	"github.com/mephux/komanda-cli/komanda/ui"
+	"github.com/mephux/komanda-cli/komanda/version"
 )
 
 type cmd struct {
@@ -30,8 +30,11 @@ func (e *cmd) Exec(args []string) error {
 
 		if Server.CurrentChannel == client.StatusChannel {
 			fmt.Fprint(v, "\n\n")
-			fmt.Fprintln(v, color.String(config.C.Color.Logo, ui.Logo))
-			fmt.Fprintln(v, color.String(config.C.Color.Red, ui.VersionLine))
+			fmt.Fprintln(v, version.ColorLogo())
+			fmt.Fprintln(v, color.String(config.C.Color.Red,
+				fmt.Sprintf("  Version: %s%s  Source Code: %s\n",
+					version.Version, version.Build, version.Website),
+			))
 		} else {
 			fmt.Fprint(v, "\n\n")
 			c.NickListString(v, false)

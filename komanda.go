@@ -12,6 +12,7 @@ import (
 	"github.com/mephux/komanda-cli/komanda/client"
 	"github.com/mephux/komanda-cli/komanda/config"
 	"github.com/mephux/komanda-cli/komanda/logger"
+	"github.com/mephux/komanda-cli/komanda/version"
 	"gopkg.in/alecthomas/kingpin.v2"
 )
 
@@ -19,7 +20,7 @@ import (
 var Build = ""
 
 var (
-	app = kingpin.New(komanda.Name, komanda.Description)
+	app = kingpin.New(version.Name, version.Description)
 	ssl = app.Flag("ssl", "enable ssl").Short('s').Bool()
 
 	insecureSkipVerify = app.
@@ -40,6 +41,8 @@ var (
 func main() {
 	runtime.GOMAXPROCS(runtime.NumCPU())
 
+	version.Build = Build
+
 	if p, err := common.HomeDir(); err == nil {
 		config.ConfigFolder = path.Join(p, config.ConfigFolder)
 		config.ConfigFile = path.Join(config.ConfigFolder, config.ConfigFile)
@@ -54,7 +57,7 @@ func main() {
 		Build = fmt.Sprintf(".%s", Build)
 	}
 
-	versionOutput := fmt.Sprintf("%s%s", komanda.Version, Build)
+	versionOutput := fmt.Sprintf("%s%s", version.Version, Build)
 
 	app.Version(versionOutput)
 	args, err := app.Parse(os.Args[1:])

@@ -1,9 +1,13 @@
 package command
 
 import (
+	"fmt"
+
 	"github.com/jroimartin/gocui"
 	"github.com/mephux/komanda-cli/komanda/client"
-	"github.com/mephux/komanda-cli/komanda/ui"
+	"github.com/mephux/komanda-cli/komanda/color"
+	"github.com/mephux/komanda-cli/komanda/config"
+	"github.com/mephux/komanda-cli/komanda/version"
 )
 
 // VersionCmd struct
@@ -19,7 +23,12 @@ func (e *VersionCmd) Metadata() CommandMetadata {
 // Exec version command
 func (e *VersionCmd) Exec(args []string) error {
 	Server.Exec(client.StatusChannel, func(c *client.Channel, g *gocui.Gui, v *gocui.View, s *client.Server) error {
-		client.StatusMessage(v, ui.VersionLine)
+		client.StatusMessage(v,
+			color.String(config.C.Color.Red,
+				fmt.Sprintf("Version: %s%s  Source Code: %s",
+					version.Version, version.Build, version.Website),
+			),
+		)
 		return nil
 	})
 

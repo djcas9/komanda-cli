@@ -1,7 +1,6 @@
 package komanda
 
 import (
-	"fmt"
 	"log"
 	"os"
 
@@ -21,11 +20,11 @@ var Server *client.Server
 func Run(build string, server *client.Server) {
 	var err error
 
-	ui.Name = Name
-	ui.Logo = ColorLogo()
+	// ui.Name = Name
+	// ui.Logo = ColorLogo()
 
-	ui.VersionLine = fmt.Sprintf("  Version: %s%s  Source Code: %s\n",
-		Version, build, Website)
+	// ui.VersionLine = fmt.Sprintf("  Version: %s%s  Source Code: %s\n",
+	// Version, build, Website)
 
 	g, err := gocui.NewGui(gocui.Output256)
 
@@ -79,9 +78,25 @@ func Run(build string, server *client.Server) {
 		log.Panicln(err)
 	}
 
-	if err := g.SetKeybinding(client.StatusChannel,
-		gocui.MouseLeft,
-		gocui.ModNone, FocusAndResetAll); err != nil {
+	// if err := g.SetKeybinding("",
+	// gocui.MouseWheelUp,
+	// gocui.ModNone, ScrollUp); err != nil {
+	// log.Panicln(err)
+	// }
+
+	// if err := g.SetKeybinding("",
+	// gocui.MouseWheelDown,
+	// gocui.ModNone, ScrollDown); err != nil {
+	// log.Panicln(err)
+	// }
+
+	if err := g.SetKeybinding("", gocui.KeyPgdn,
+		gocui.ModNone, ScrollDown); err != nil {
+		log.Panicln(err)
+	}
+
+	if err := g.SetKeybinding("", gocui.KeyPgup,
+		gocui.ModNone, ScrollUp); err != nil {
 		log.Panicln(err)
 	}
 
@@ -89,8 +104,14 @@ func Run(build string, server *client.Server) {
 		gocui.ModAlt, ScrollDown); err != nil {
 		log.Panicln(err)
 	}
+
 	if err := g.SetKeybinding("", gocui.KeyCtrlP,
 		gocui.ModAlt, ScrollUp); err != nil {
+		log.Panicln(err)
+	}
+
+	if err := g.SetKeybinding("", gocui.KeyTab,
+		gocui.ModNone, nextViewActive); err != nil {
 		log.Panicln(err)
 	}
 

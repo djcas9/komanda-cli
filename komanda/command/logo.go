@@ -7,7 +7,7 @@ import (
 	"github.com/mephux/komanda-cli/komanda/client"
 	"github.com/mephux/komanda-cli/komanda/color"
 	"github.com/mephux/komanda-cli/komanda/config"
-	"github.com/mephux/komanda-cli/komanda/ui"
+	"github.com/mephux/komanda-cli/komanda/version"
 )
 
 // LogoCmd struct
@@ -24,8 +24,11 @@ func (e *LogoCmd) Metadata() CommandMetadata {
 func (e *LogoCmd) Exec(args []string) error {
 
 	Server.Exec(Server.CurrentChannel, func(c *client.Channel, g *gocui.Gui, v *gocui.View, s *client.Server) error {
-		fmt.Fprintln(v, ui.Logo)
-		fmt.Fprintln(v, color.String(config.C.Color.Green, ui.VersionLine))
+		fmt.Fprintln(v, version.ColorLogo())
+		fmt.Fprintln(v, color.String(config.C.Color.Red,
+			fmt.Sprintf("  Version: %s%s  Source Code: %s\n",
+				version.Version, version.Build, version.Website),
+		))
 		return nil
 	})
 

@@ -1,4 +1,4 @@
-package komanda
+package version
 
 import "github.com/mephux/komanda-cli/komanda/color"
 
@@ -19,10 +19,15 @@ const Name = "komanda"
 const Description = "The Komanda Command-line IRC Client"
 
 // Version number
-const Version = "0.7.0"
+const Version = "0.8.0"
 
 // Website number
 const Website = "github.com/mephux/komanda"
+
+var (
+	// Build number
+	Build string
+)
 
 //ColorLogo with color
 func ColorLogo() string {
