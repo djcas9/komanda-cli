@@ -6,16 +6,19 @@ import (
 	"github.com/mephux/komanda-cli/komanda/logger"
 )
 
+// NickCmd struct
 type NickCmd struct {
 	*MetadataTmpl
 }
 
+// Metadata for nick command
 func (e *NickCmd) Metadata() CommandMetadata {
 	return e
 }
 
+// Exec for nick command
 func (e *NickCmd) Exec(args []string) error {
-	Server.Exec(client.StatusChannel, func(g *gocui.Gui, v *gocui.View, s *client.Server) error {
+	Server.Exec(client.StatusChannel, func(c *client.Channel, g *gocui.Gui, v *gocui.View, s *client.Server) error {
 
 		if !s.Client.Connected() {
 			client.StatusMessage(v, "Not connected")

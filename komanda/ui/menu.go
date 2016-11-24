@@ -10,6 +10,7 @@ import (
 	"github.com/mephux/komanda-cli/komanda/config"
 )
 
+// MenuView creates a new view for the menu
 func MenuView(g *gocui.Gui, maxX, maxY int) error {
 
 	if v, err := g.SetView("menu", -1, maxY-4, maxX, maxY+3); err != nil {
@@ -32,7 +33,7 @@ func MenuView(g *gocui.Gui, maxX, maxY int) error {
 		v.Frame = false
 
 		go func() {
-			for range time.Tick(time.Millisecond * 200) {
+			for range time.Tick(time.Millisecond * 100) {
 				UpdateMenuView(g)
 			}
 		}()
@@ -43,8 +44,9 @@ func MenuView(g *gocui.Gui, maxX, maxY int) error {
 	return nil
 }
 
+// UpdateMenuView loop to keep the information updated
 func UpdateMenuView(gui *gocui.Gui) {
-	Server.Exec("menu", func(g *gocui.Gui, v *gocui.View, s *client.Server) error {
+	Server.Exec("menu", func(c *client.Channel, g *gocui.Gui, v *gocui.View, s *client.Server) error {
 		v.Clear()
 		v.SetCursor(0, 0)
 		v.SetOrigin(0, 0)
@@ -60,10 +62,34 @@ func UpdateMenuView(gui *gocui.Gui) {
 			}
 
 			if Server.CurrentChannel == channel.Name {
-				name = color.String(config.C.Color.Green, fmt.Sprintf("*%d:%s", i, channel.Name))
+				if channel.Private {
+					name = color.String(config.C.Color.Green, fmt.Sprintf("*%d:(PM)%s", i, channel.Name))
+				} else {
+					name = color.String(config.C.Color.Green, fmt.Sprintf("*%d:%s", i, channel.Name))
+				}
 			} else {
-				if channel.Unread {
-					name = color.String(config.C.Color.Red, name+"+")
+				if channel.Private {
+					if channel.Unread {
+						name = fmt.Sprintf(
+							"%s%s",
+							color.String(config.C.Color.Purple, "(PM)"),
+							color.String(config.C.Color.Yellow, fmt.Sprintf("[%s]+", name)),
+						)
+					} else {
+						name = fmt.Sprintf(
+							"%s%s",
+							color.String(config.C.Color.Purple, "(PM)"),
+							fmt.Sprintf("%s", name),
+						)
+					}
+				} else {
+					if channel.Unread {
+						if channel.Highlight {
+							name = color.String(config.C.Color.Yellow, fmt.Sprintf("[%s]+", name))
+						} else {
+							name = color.String(config.C.Color.Red, name+"+")
+						}
+					}
 				}
 			}
 
@@ -71,6 +97,7 @@ func UpdateMenuView(gui *gocui.Gui) {
 		}
 
 		var connected = color.String(config.C.Color.Red, "OFF")
+
 		if Server.Client.Connected() {
 			connected = color.String(config.C.Color.Green, "ON")
 		}

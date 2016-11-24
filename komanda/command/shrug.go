@@ -5,18 +5,18 @@ import (
 	"github.com/mephux/komanda-cli/komanda/client"
 )
 
-// NamesCmd struct
-type NamesCmd struct {
+// ShrugCmd struct
+type ShrugCmd struct {
 	*MetadataTmpl
 }
 
-// Metadata for names command
-func (e *NamesCmd) Metadata() CommandMetadata {
+// Metadata for shrug command
+func (e *ShrugCmd) Metadata() CommandMetadata {
 	return e
 }
 
-// Exec for names command
-func (e *NamesCmd) Exec(args []string) error {
+// Exec for shrug command
+func (e *ShrugCmd) Exec(args []string) error {
 	Server.Exec(Server.CurrentChannel, func(c *client.Channel, g *gocui.Gui, v *gocui.View, s *client.Server) error {
 
 		if !s.Client.Connected() {
@@ -24,8 +24,10 @@ func (e *NamesCmd) Exec(args []string) error {
 			return nil
 		}
 
-		if c != nil {
-			c.NickListString(v, true)
+		if len(args) >= 1 {
+			emoji(v, "¯\\_(ツ)_/¯")
+		} else {
+			// error
 		}
 
 		return nil
@@ -34,13 +36,13 @@ func (e *NamesCmd) Exec(args []string) error {
 	return nil
 }
 
-func namesCmd() Command {
-	return &NamesCmd{
+func shrugCmd() Command {
+	return &ShrugCmd{
 		MetadataTmpl: &MetadataTmpl{
-			name:        "names",
+			name:        "shrug",
 			args:        "",
 			aliases:     []string{},
-			description: "list channel names",
+			description: "Shrugging Emoji",
 		},
 	}
 }

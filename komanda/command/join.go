@@ -5,16 +5,19 @@ import (
 	"github.com/mephux/komanda-cli/komanda/client"
 )
 
+// JoinCmd strcut
 type JoinCmd struct {
 	*MetadataTmpl
 }
 
+// Metadata for join command
 func (e *JoinCmd) Metadata() CommandMetadata {
 	return e
 }
 
+// Exec join command
 func (e *JoinCmd) Exec(args []string) error {
-	Server.Exec(client.StatusChannel, func(g *gocui.Gui, v *gocui.View, s *client.Server) error {
+	Server.Exec(client.StatusChannel, func(c *client.Channel, g *gocui.Gui, v *gocui.View, s *client.Server) error {
 
 		if !s.Client.Connected() {
 			client.StatusMessage(v, "Not connected")

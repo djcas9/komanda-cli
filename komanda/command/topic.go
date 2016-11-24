@@ -7,16 +7,19 @@ import (
 	"github.com/mephux/komanda-cli/komanda/client"
 )
 
+// TopicCmd struct
 type TopicCmd struct {
 	*MetadataTmpl
 }
 
+// Metadata for TopicCmd command
 func (e *TopicCmd) Metadata() CommandMetadata {
 	return e
 }
 
+// Exec for TopicCmd command
 func (e *TopicCmd) Exec(args []string) error {
-	Server.Exec(client.StatusChannel, func(g *gocui.Gui, v *gocui.View, s *client.Server) error {
+	Server.Exec(client.StatusChannel, func(c *client.Channel, g *gocui.Gui, v *gocui.View, s *client.Server) error {
 
 		if !s.Client.Connected() {
 			client.StatusMessage(v, "Not connected")

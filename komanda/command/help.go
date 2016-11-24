@@ -7,17 +7,20 @@ import (
 	"github.com/mephux/komanda-cli/komanda/client"
 )
 
+// HelpCmd struct
 type HelpCmd struct {
 	*MetadataTmpl
 }
 
+// Metadata for help command
 func (e *HelpCmd) Metadata() CommandMetadata {
 	return e
 }
 
+// Exec help command
 func (e *HelpCmd) Exec(args []string) error {
 
-	Server.Exec(Server.CurrentChannel, func(g *gocui.Gui, v *gocui.View, s *client.Server) error {
+	Server.Exec(Server.CurrentChannel, func(c *client.Channel, g *gocui.Gui, v *gocui.View, s *client.Server) error {
 
 		client.StatusMessage(v, "==================== HELP COMMANDS ====================")
 

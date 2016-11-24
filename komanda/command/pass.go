@@ -6,16 +6,19 @@ import (
 	"github.com/mephux/komanda-cli/komanda/logger"
 )
 
+// PassCmd struct
 type PassCmd struct {
 	*MetadataTmpl
 }
 
+// Metadata for pass command
 func (e *PassCmd) Metadata() CommandMetadata {
 	return e
 }
 
+// Exec pass command
 func (e *PassCmd) Exec(args []string) error {
-	Server.Exec(client.StatusChannel, func(g *gocui.Gui, v *gocui.View, s *client.Server) error {
+	Server.Exec(client.StatusChannel, func(c *client.Channel, g *gocui.Gui, v *gocui.View, s *client.Server) error {
 
 		if !s.Client.Connected() {
 			client.StatusMessage(v, "Not connected")

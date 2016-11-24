@@ -2,14 +2,17 @@ package command
 
 import "os"
 
+// ExitCmd struct
 type ExitCmd struct {
 	*MetadataTmpl
 }
 
+// Metadata for ext command
 func (e *ExitCmd) Metadata() CommandMetadata {
 	return e
 }
 
+// Exec exit command
 func (e *ExitCmd) Exec(args []string) error {
 
 	if Server.Client.Connected() {

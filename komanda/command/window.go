@@ -7,17 +7,19 @@ import (
 	"github.com/mephux/komanda-cli/komanda/ui"
 )
 
+// WindowCmd struct
 type WindowCmd struct {
 	*MetadataTmpl
 }
 
+// Metadata for WindowCmd
 func (e *WindowCmd) Metadata() CommandMetadata {
 	return e
 }
 
+// Exec WindowCmd
 func (e *WindowCmd) Exec(args []string) error {
-
-	Server.Exec(client.StatusChannel, func(g *gocui.Gui, v *gocui.View, s *client.Server) error {
+	Server.Exec(client.StatusChannel, func(c *client.Channel, g *gocui.Gui, v *gocui.View, s *client.Server) error {
 
 		if !s.Client.Connected() {
 			client.StatusMessage(v, "Not connected")
@@ -30,13 +32,14 @@ func (e *WindowCmd) Exec(args []string) error {
 			Server.CurrentChannel = Server.Channels[i].Name
 			Server.Gui.SetViewOnTop(Server.CurrentChannel)
 
-			c := Server.GetCurrentChannel()
+			channel := Server.GetCurrentChannel()
 
-			if _, err := g.SetCurrentView(c.Name); err != nil {
+			if _, err := g.SetCurrentView(channel.Name); err != nil {
 				return err
 			}
 
-			c.Unread = false
+			channel.Unread = false
+			channel.Highlight = false
 
 			if _, err := g.SetCurrentView("input"); err != nil {
 				return err

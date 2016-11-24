@@ -10,29 +10,30 @@ import (
 	"github.com/mephux/komanda-cli/komanda/ui"
 )
 
-type ClearCmd struct {
+type cmd struct {
 	*MetadataTmpl
 }
 
-func (e *ClearCmd) Metadata() CommandMetadata {
+// Metadata for the clear command
+func (e *cmd) Metadata() CommandMetadata {
 	return e
 }
 
-func (e *ClearCmd) Exec(args []string) error {
+// Exec the clear comment
+func (e *cmd) Exec(args []string) error {
 
-	Server.Exec(Server.CurrentChannel, func(g *gocui.Gui, v *gocui.View, s *client.Server) error {
+	Server.Exec(Server.CurrentChannel, func(c *client.Channel, g *gocui.Gui, v *gocui.View, s *client.Server) error {
 		v.Autoscroll = false
 		v.Clear()
 		v.SetCursor(0, 0)
 		v.SetOrigin(0, 0)
 
 		if Server.CurrentChannel == client.StatusChannel {
-			fmt.Fprintln(v, "\n")
+			fmt.Fprint(v, "\n\n")
 			fmt.Fprintln(v, color.String(config.C.Color.Logo, ui.Logo))
 			fmt.Fprintln(v, color.String(config.C.Color.Red, ui.VersionLine))
 		} else {
-			fmt.Fprintln(v, "\n")
-			c := Server.FindChannel(Server.CurrentChannel)
+			fmt.Fprint(v, "\n\n")
 			c.NickListString(v, false)
 			c.NickMetricsString(v)
 		}
@@ -46,7 +47,7 @@ func (e *ClearCmd) Exec(args []string) error {
 }
 
 func clearCmd() Command {
-	return &ClearCmd{
+	return &cmd{
 		MetadataTmpl: &MetadataTmpl{
 			name: "clear",
 			args: "",

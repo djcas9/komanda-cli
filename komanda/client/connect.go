@@ -7,8 +7,7 @@ import (
 	ircClient "github.com/fluffle/goirc/client"
 )
 
-// "github.com/thoj/go-ircevent"
-
+// New irc connection
 func New(server *Server) *ircClient.Conn {
 	// irccon := irc.IRC(server.Nick, server.User)
 	// irccon.VerboseCallbackHandler = false

@@ -5,6 +5,7 @@ import (
 	"github.com/mephux/komanda-cli/komanda/logger"
 )
 
+// InputView creates a new view for input for the cui
 func InputView(g *gocui.Gui, x, y, maxX, maxY int) error {
 
 	if v, err := g.SetView("input", x, y, maxX, maxY); err != nil {

@@ -1,14 +1,10 @@
-// Implementation of an R-Way Trie data structure.
-//
-// A Trie has a root Node which is the base of the tree.
-// Each subsequent Node has a letter and children, which are
-// nodes that have letter values associated with them.
 package trie
 
 import (
 	"sort"
 )
 
+// Node struct
 type Node struct {
 	val      rune
 	term     bool
@@ -19,20 +15,27 @@ type Node struct {
 	children map[rune]*Node
 }
 
+// Trie struct
 type Trie struct {
 	root *Node
 	size int
 }
 
+// ByKeys type cast for string array
 type ByKeys []string
 
-func (a ByKeys) Len() int           { return len(a) }
-func (a ByKeys) Swap(i, j int)      { a[i], a[j] = a[j], a[i] }
+// Len of keys
+func (a ByKeys) Len() int { return len(a) }
+
+// Swap keys to reorder
+func (a ByKeys) Swap(i, j int) { a[i], a[j] = a[j], a[i] }
+
+// Less checks if key i is less than j to determine position
 func (a ByKeys) Less(i, j int) bool { return len(a[i]) < len(a[j]) }
 
 const nul = 0x0
 
-// Creates a new Trie with an initialized root Node.
+// New Trie with an initialized root Node.
 func New() *Trie {
 	return &Trie{
 		root: &Node{children: make(map[rune]*Node), depth: 0},
@@ -40,12 +43,12 @@ func New() *Trie {
 	}
 }
 
-// Returns the root node for the Trie.
+// Root returns the root node for the Trie.
 func (t *Trie) Root() *Node {
 	return t.root
 }
 
-// Adds the key to the Trie, including meta data. Meta data
+// Add the key to the Trie, including meta data. Meta data
 // is stored as `interface{}` and must be type cast by
 // the caller.
 func (t *Trie) Add(key string, meta interface{}) *Node {
@@ -68,7 +71,7 @@ func (t *Trie) Add(key string, meta interface{}) *Node {
 	return node
 }
 
-// Finds and returns meta data associated
+// Find and returns meta data associated
 // with `key`.
 func (t *Trie) Find(key string) (*Node, bool) {
 	node := findNode(t.Root(), []rune(key))
@@ -84,7 +87,7 @@ func (t *Trie) Find(key string) (*Node, bool) {
 	return node, true
 }
 
-// Removes a key from the trie, ensuring that
+// Remove a key from the trie, ensuring that
 // all bitmasks up to root are appropriately recalculated.
 func (t *Trie) Remove(key string) {
 	var (
@@ -104,19 +107,19 @@ func (t *Trie) Remove(key string) {
 	}
 }
 
-// Returns all the keys currently stored in the trie.
+// Keys will return all the keys currently stored in the trie.
 func (t *Trie) Keys() []string {
 	return t.PrefixSearch("")
 }
 
-// Performs a fuzzy search against the keys in the trie.
+// FuzzySearch performs a fuzzy search against the keys in the trie.
 func (t Trie) FuzzySearch(pre string) []string {
 	keys := fuzzycollect(t.Root(), []rune(pre))
 	sort.Sort(ByKeys(keys))
 	return keys
 }
 
-// Performs a prefix search against the keys in the trie.
+// PrefixSearch performs a prefix search against the keys in the trie.
 func (t Trie) PrefixSearch(pre string) []string {
 	node := findNode(t.Root(), []rune(pre))
 	if node == nil {
@@ -126,7 +129,7 @@ func (t Trie) PrefixSearch(pre string) []string {
 	return collect(node)
 }
 
-// Creates and returns a pointer to a new child for the node.
+// NewChild creates and returns a pointer to a new child for the node.
 func (n *Node) NewChild(val rune, bitmask uint64, meta interface{}, term bool) *Node {
 	node := &Node{
 		val:      val,
@@ -142,6 +145,7 @@ func (n *Node) NewChild(val rune, bitmask uint64, meta interface{}, term bool) *
 	return node
 }
 
+// RemoveChild from list
 func (n *Node) RemoveChild(r rune) {
 	delete(n.children, r)
 	for nd := n.parent; nd != nil; nd = nd.parent {
@@ -153,26 +157,27 @@ func (n *Node) RemoveChild(r rune) {
 	}
 }
 
-// Returns the parent of this node.
+// Parent returns the parent of this node.
 func (n Node) Parent() *Node {
 	return n.parent
 }
 
-// Returns the meta information of this node.
+// Meta returns the meta information of this node.
 func (n Node) Meta() interface{} {
 	return n.meta
 }
 
-// Returns the children of this node.
+// Children returns the children of this node.
 func (n Node) Children() map[rune]*Node {
 	return n.children
 }
 
+// Val returns the value of the node as a rune
 func (n Node) Val() rune {
 	return n.val
 }
 
-// Returns a uint64 representing the current
+// Mask returns a uint64 representing the current
 // mask of this node.
 func (n Node) Mask() uint64 {
 	return n.mask

@@ -10,17 +10,20 @@ import (
 	"github.com/mephux/komanda-cli/komanda/ui"
 )
 
+// ConnectCmd struct
 type ConnectCmd struct {
 	*MetadataTmpl
 }
 
+// Metadata for conenct command
 func (e *ConnectCmd) Metadata() CommandMetadata {
 	return e
 }
 
+// Exec connect command
 func (e *ConnectCmd) Exec(args []string) error {
 
-	Server.Exec(client.StatusChannel, func(g *gocui.Gui, v *gocui.View, s *client.Server) error {
+	Server.Exec(client.StatusChannel, func(c *client.Channel, g *gocui.Gui, v *gocui.View, s *client.Server) error {
 
 		if s.Client.Connected() {
 			client.StatusMessage(v, "Already Connecting and/or Connected...")

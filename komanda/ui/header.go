@@ -10,6 +10,7 @@ import (
 	"github.com/mephux/komanda-cli/komanda/config"
 )
 
+// HeaderView creates a new view for the header of the ui
 func HeaderView(g *gocui.Gui, x, y, maxX, maxY int) error {
 
 	if v, err := g.SetView("header", x, y, maxX, maxY); err != nil {
@@ -39,8 +40,9 @@ func HeaderView(g *gocui.Gui, x, y, maxX, maxY int) error {
 	return nil
 }
 
+// UpdateHeaderView loop to keep information current
 func UpdateHeaderView(g *gocui.Gui) {
-	Server.Exec("header", func(g *gocui.Gui, v *gocui.View, s *client.Server) error {
+	Server.Exec("header", func(c *client.Channel, g *gocui.Gui, v *gocui.View, s *client.Server) error {
 		v.Clear()
 		v.SetCursor(0, 0)
 		v.SetOrigin(0, 0)

@@ -7,11 +7,15 @@ import (
 )
 
 var (
-	Commands       []Command
-	Server         *client.Server
+	// Commands list
+	Commands []Command
+	// Server global
+	Server *client.Server
+	// CurrentChannel name
 	CurrentChannel = client.StatusChannel
 )
 
+// MetadataTmpl for commands
 type MetadataTmpl struct {
 	name        string
 	args        string
@@ -19,22 +23,27 @@ type MetadataTmpl struct {
 	aliases     []string
 }
 
+// Name of command
 func (c *MetadataTmpl) Name() string {
 	return c.name
 }
 
+// Args for command
 func (c *MetadataTmpl) Args() string {
 	return c.args
 }
 
+// Description of command
 func (c *MetadataTmpl) Description() string {
 	return c.description
 }
 
+// Aliases for command
 func (c *MetadataTmpl) Aliases() []string {
 	return c.aliases
 }
 
+// CommandMetadata functions that a command must offer
 type CommandMetadata interface {
 	Name() string
 	Args() string
@@ -42,11 +51,13 @@ type CommandMetadata interface {
 	Aliases() []string
 }
 
+// Command functions that a command must offer
 type Command interface {
 	Metadata() CommandMetadata
 	Exec(args []string) error
 }
 
+// Register client commands
 func Register(server *client.Server) {
 	Server = server
 
@@ -71,9 +82,12 @@ func Register(server *client.Server) {
 		whoIsCmd(),
 		meCmd(),
 		noticeCmd(),
+		shrugCmd(),
+		tableFlipCmd(),
 	}
 }
 
+// Get command by name parsed from client input
 func Get(cmd string) Command {
 
 	for _, command := range Commands {
@@ -81,11 +95,11 @@ func Get(cmd string) Command {
 
 		if metadata.Name() == cmd {
 			return command
-		} else {
-			for _, c := range metadata.Aliases() {
-				if c == cmd {
-					return command
-				}
+		}
+
+		for _, c := range metadata.Aliases() {
+			if c == cmd {
+				return command
 			}
 		}
 	}
@@ -93,6 +107,7 @@ func Get(cmd string) Command {
 	return emptyCmd()
 }
 
+// Run command by name and arguments
 func Run(command string, args []string) error {
 	p, err := strconv.Atoi(command)
 

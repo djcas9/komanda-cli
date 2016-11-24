@@ -12,16 +12,19 @@ import (
 	"github.com/mephux/komanda-cli/komanda/helpers"
 )
 
+// MeCmd struct
 type MeCmd struct {
 	*MetadataTmpl
 }
 
+// Metadata for me command
 func (e *MeCmd) Metadata() CommandMetadata {
 	return e
 }
 
+// Exec me command
 func (e *MeCmd) Exec(args []string) error {
-	Server.Exec(Server.CurrentChannel, func(g *gocui.Gui, v *gocui.View, s *client.Server) error {
+	Server.Exec(Server.CurrentChannel, func(c *client.Channel, g *gocui.Gui, v *gocui.View, s *client.Server) error {
 
 		if !s.Client.Connected() {
 			client.StatusMessage(v, "Not connected")

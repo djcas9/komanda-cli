@@ -2,12 +2,14 @@ package history
 
 import "github.com/mephux/komanda-cli/komanda/logger"
 
+// History struct
 type History struct {
 	Max   int
 	Data  []string
 	Index int
 }
 
+// New history struct
 func New() *History {
 	return &History{
 		Max:   3000,
@@ -16,6 +18,7 @@ func New() *History {
 	}
 }
 
+// Add line to history
 func (h *History) Add(line string) {
 	logger.Logger.Print("in Add\n")
 
@@ -30,10 +33,12 @@ func (h *History) Add(line string) {
 	logger.Logger.Printf("ADD %s %d\n", h.Data, h.Index)
 }
 
+// Get history at index
 func (h *History) Get(index int) string {
 	return h.Data[index]
 }
 
+// Empty history
 func (h *History) Empty() bool {
 	if len(h.Data) <= 0 {
 		return true
@@ -42,6 +47,7 @@ func (h *History) Empty() bool {
 	return false
 }
 
+// Prev returns the previous history line fvrom the current index
 func (h *History) Prev() string {
 	logger.Logger.Print("Prev\n")
 
@@ -62,6 +68,7 @@ func (h *History) Prev() string {
 	return h.Data[h.Index]
 }
 
+// Next returns the history line after the current index
 func (h *History) Next() string {
 	logger.Logger.Print("Next\n")
 
@@ -82,6 +89,7 @@ func (h *History) Next() string {
 	return h.Data[h.Index]
 }
 
+// Current history line
 func (h *History) Current() string {
 
 	h.Index = len(h.Data) - 1

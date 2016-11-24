@@ -7,17 +7,20 @@ import (
 	"github.com/mephux/komanda-cli/komanda/client"
 )
 
+// EmptyCmd struct
 type EmptyCmd struct {
 	*MetadataTmpl
 }
 
+// Metadata for empty command
 func (e *EmptyCmd) Metadata() CommandMetadata {
 	return e
 }
 
+// Exec empty command
 func (e *EmptyCmd) Exec(args []string) error {
 
-	Server.Exec(client.StatusChannel, func(g *gocui.Gui, v *gocui.View, s *client.Server) error {
+	Server.Exec(client.StatusChannel, func(c *client.Channel, g *gocui.Gui, v *gocui.View, s *client.Server) error {
 		client.StatusMessage(v, fmt.Sprintf("Unknow Command: %s", args[0]))
 		return nil
 	})

@@ -23,7 +23,9 @@ var (
 	cacheTabIndex   = 0
 	cacheTabSearch  = ""
 	cacheTabResults = []string{}
-	InputHistory    = history.New()
+
+	// InputHistory buffer
+	InputHistory = history.New()
 )
 
 // TODO: fix \x00 issues
@@ -65,74 +67,75 @@ func tabUpdateInput(input *gocui.View) (string, bool) {
 
 func tabComplete(g *gocui.Gui, v *gocui.View) error {
 
-	if input, err := g.View("input"); err != nil {
+	input, err := g.View("input")
+
+	if err != nil {
 		return err
-	} else {
-
-		search, cache := tabUpdateInput(input)
-
-		if cache {
-			return nil
-		}
-
-		t := trie.New()
-
-		// Add Commands
-		for i, c := range command.Commands {
-			md := c.Metadata()
-			d := md.Name()
-			// var chars = ""
-
-			t.Add(fmt.Sprintf("/%s", d), i)
-
-			for ai, a := range md.Aliases() {
-				t.Add(fmt.Sprintf("/%s", a), ai+i)
-			}
-		}
-
-		// Add Channels
-		for channelIndex, channelName := range Server.Channels {
-			if channelName.Name != client.StatusChannel {
-				t.Add(channelName.Name, fmt.Sprintf("channel-%d", channelIndex))
-			}
-		}
-
-		// Add Current Chan Users
-		if c, _, hasCurrentChannel :=
-			Server.HasChannel(Server.CurrentChannel); hasCurrentChannel {
-
-			for userIndex, user := range c.Users {
-				if user.Nick != Server.Nick {
-					t.Add(user.Nick, fmt.Sprintf("user-%d", userIndex))
-				}
-			}
-		}
-
-		if len(search) <= 0 {
-			return nil
-		}
-
-		results := t.PrefixSearch(search)
-
-		if len(results) <= 0 {
-			inCacheTab = false
-			cacheTabSearch = ""
-			cacheTabResults = []string{}
-			return nil
-		}
-
-		inCacheTab = true
-		cacheTabSearch = search
-		cacheTabResults = results
-
-		search, cache = tabUpdateInput(input)
-
-		if cache {
-			return nil
-		}
-
-		// logger.Logger.Printf("RESULTS %s -- %s\n", search, results)
 	}
+
+	search, cache := tabUpdateInput(input)
+
+	if cache {
+		return nil
+	}
+
+	t := trie.New()
+
+	// Add Commands
+	for i, c := range command.Commands {
+		md := c.Metadata()
+		d := md.Name()
+		// var chars = ""
+
+		t.Add(fmt.Sprintf("/%s", d), i)
+
+		for ai, a := range md.Aliases() {
+			t.Add(fmt.Sprintf("/%s", a), ai+i)
+		}
+	}
+
+	// Add Channels
+	for channelIndex, channelName := range Server.Channels {
+		if channelName.Name != client.StatusChannel {
+			t.Add(channelName.Name, fmt.Sprintf("channel-%d", channelIndex))
+		}
+	}
+
+	// Add Current Chan Users
+	if c, _, hasCurrentChannel :=
+		Server.HasChannel(Server.CurrentChannel); hasCurrentChannel {
+
+		for userIndex, user := range c.Users {
+			if user.Nick != Server.Nick {
+				t.Add(user.Nick, fmt.Sprintf("user-%d", userIndex))
+			}
+		}
+	}
+
+	if len(search) <= 0 {
+		return nil
+	}
+
+	results := t.PrefixSearch(search)
+
+	if len(results) <= 0 {
+		inCacheTab = false
+		cacheTabSearch = ""
+		cacheTabResults = []string{}
+		return nil
+	}
+
+	inCacheTab = true
+	cacheTabSearch = search
+	cacheTabResults = results
+
+	search, cache = tabUpdateInput(input)
+
+	if cache {
+		return nil
+	}
+
+	// logger.Logger.Printf("RESULTS %s -- %s\n", search, results)
 
 	return nil
 }
@@ -218,6 +221,7 @@ func simpleEditor(v *gocui.View, key gocui.Key, ch rune, mod gocui.Modifier) {
 	}
 }
 
+// GetLine and send the content to the current view
 func GetLine(g *gocui.Gui, v *gocui.View) error {
 	// _, cy := v.Cursor()
 	// if line, err = v.Line(0); err != nil {
@@ -251,7 +255,7 @@ func GetLine(g *gocui.Gui, v *gocui.View) error {
 	if strings.HasPrefix(line, "//") || !strings.HasPrefix(line, "/") {
 		if len(Server.CurrentChannel) > 0 {
 
-			Server.Exec(Server.CurrentChannel, func(g *gocui.Gui, v *gocui.View, s *client.Server) error {
+			Server.Exec(Server.CurrentChannel, func(c *client.Channel, g *gocui.Gui, v *gocui.View, s *client.Server) error {
 				if Server.Client.Connected() {
 					// logger.Logger.Println("SEND:::", spew.Sdump(line))
 
@@ -260,17 +264,20 @@ func GetLine(g *gocui.Gui, v *gocui.View) error {
 				return nil
 			})
 
-			if mainView, err := g.View(Server.CurrentChannel); err != nil {
-				return err
-			} else {
-				if mainView.Name() != client.StatusChannel {
+			mainView, err := g.View(Server.CurrentChannel)
 
-					c := Server.FindChannel(Server.CurrentChannel)
+			if err != nil {
+				return err
+			}
+
+			if mainView.Name() != client.StatusChannel {
+
+				Server.Exec(mainView.Name(), func(c *client.Channel, g *gocui.Gui, v *gocui.View, s *client.Server) error {
 
 					timestamp := time.Now().Format(config.C.Time.MessageFormat)
 
 					// logger.Logger.Println(spew.Sdump(color.String(color.TimestampColor, timestamp)))
-					// logger.Logger.Println(spew.Sdump(color.String(color.Red, "word")))
+					// logger.Logger.Println(c.Name, spew.Sdump(c.Users))
 
 					fmt.Fprintf(mainView, "[%s] -> %s: %s\n",
 						color.String(config.C.Color.Timestamp, timestamp),
@@ -280,7 +287,9 @@ func GetLine(g *gocui.Gui, v *gocui.View) error {
 						// c.FindUser(Server.Client.Me().Nick).String(false),
 						// ),
 						color.String(config.C.Color.MyText, helpers.FormatMessage(line)))
-				}
+
+					return nil
+				})
 			}
 		}
 		// send text
@@ -331,18 +340,21 @@ func GetLine(g *gocui.Gui, v *gocui.View) error {
 	return nil
 }
 
+// ScrollUp view by one
 func ScrollUp(g *gocui.Gui, cv *gocui.View) error {
 	v, _ := g.View(Server.CurrentChannel)
 	ScrollView(v, -1)
 	return nil
 }
 
+// ScrollDown view by one
 func ScrollDown(g *gocui.Gui, cv *gocui.View) error {
 	v, _ := g.View(Server.CurrentChannel)
 	ScrollView(v, 1)
 	return nil
 }
 
+// ScrollView by a given offset
 func ScrollView(v *gocui.View, dy int) error {
 	if v != nil {
 		v.Autoscroll = false
@@ -355,6 +367,7 @@ func ScrollView(v *gocui.View, dy int) error {
 	return nil
 }
 
+// FocusStatusView pus the status window ontop
 func FocusStatusView(g *gocui.Gui, v *gocui.View) error {
 
 	v.Autoscroll = true
@@ -366,6 +379,7 @@ func FocusStatusView(g *gocui.Gui, v *gocui.View) error {
 	return nil
 }
 
+// FocusInputView puts the input view ontop
 func FocusInputView(g *gocui.Gui, v *gocui.View) error {
 
 	v.SetCursor(len(v.Buffer()+"")-1, 0)
@@ -377,6 +391,8 @@ func FocusInputView(g *gocui.Gui, v *gocui.View) error {
 	return nil
 }
 
+// FocusAndResetAll will put the status and input views ontop and
+// reset the input content
 func FocusAndResetAll(g *gocui.Gui, v *gocui.View) error {
 	status, _ := g.View(client.StatusChannel)
 	input, _ := g.View("input")
@@ -397,13 +413,15 @@ func nextView(g *gocui.Gui, v *gocui.View) error {
 
 	logger.Logger.Printf("NEXT INDEX %d\n", next)
 
-	if newView, err := g.View(Server.Channels[next].Name); err != nil {
+	newView, err := g.View(Server.Channels[next].Name)
+
+	if err != nil {
 		return err
-	} else {
-		newView.Autoscroll = true
-		g.SetViewOnTop(newView.Name())
-		g.SetViewOnTop("header")
 	}
+
+	newView.Autoscroll = true
+	g.SetViewOnTop(newView.Name())
+	g.SetViewOnTop("header")
 
 	if _, err := g.SetCurrentView(Server.Channels[next].Name); err != nil {
 		return err
@@ -412,6 +430,7 @@ func nextView(g *gocui.Gui, v *gocui.View) error {
 	// logger.Logger.Printf("Set Current View %d\n", Server.Channels[next].Name)
 	Server.CurrentChannel = Server.Channels[next].Name
 	Server.Channels[next].Unread = false
+	Server.Channels[next].Highlight = false
 
 	ui.UpdateMenuView(g)
 	FocusInputView(g, v)
@@ -431,13 +450,15 @@ func prevView(g *gocui.Gui, v *gocui.View) error {
 
 	logger.Logger.Printf("PREV INDEX %d\n", next)
 
-	if newView, err := g.View(Server.Channels[next].Name); err != nil {
+	newView, err := g.View(Server.Channels[next].Name)
+
+	if err != nil {
 		return err
-	} else {
-		newView.Autoscroll = true
-		g.SetViewOnTop(newView.Name())
-		g.SetViewOnTop("header")
 	}
+
+	newView.Autoscroll = true
+	g.SetViewOnTop(newView.Name())
+	g.SetViewOnTop("header")
 
 	if _, err := g.SetCurrentView(Server.Channels[next].Name); err != nil {
 		return err
@@ -446,6 +467,7 @@ func prevView(g *gocui.Gui, v *gocui.View) error {
 	// logger.Logger.Printf("Set Current View %d\n", Server.Channels[next].Name)
 	Server.CurrentChannel = Server.Channels[next].Name
 	Server.Channels[next].Unread = false
+	Server.Channels[next].Highlight = false
 
 	ui.UpdateMenuView(g)
 	FocusInputView(g, v)
@@ -460,13 +482,15 @@ func setView(g *gocui.Gui, v *gocui.View, index int) error {
 
 	if c != nil {
 
-		if newView, err := g.View(c.Name); err != nil {
+		newView, err := g.View(c.Name)
+
+		if err != nil {
 			return err
-		} else {
-			newView.Autoscroll = true
-			g.SetViewOnTop(newView.Name())
-			g.SetViewOnTop("header")
 		}
+
+		newView.Autoscroll = true
+		g.SetViewOnTop(newView.Name())
+		g.SetViewOnTop("header")
 
 		if _, err := g.SetCurrentView(c.Name); err != nil {
 			return err
@@ -474,6 +498,7 @@ func setView(g *gocui.Gui, v *gocui.View, index int) error {
 
 		Server.CurrentChannel = c.Name
 		c.Unread = false
+		c.Highlight = false
 
 		ui.UpdateMenuView(g)
 		FocusInputView(g, v)

@@ -11,18 +11,17 @@ import (
 	"github.com/mephux/komanda-cli/komanda/config"
 )
 
+// RenderHandlerFunc type for Exec callbacks
 type RenderHandlerFunc func(*Channel, *gocui.View) error
 
-var (
-	ANSIColors = []int{34, 36, 31, 35, 33, 37, 34, 32, 36, 31, 35, 33}
-)
-
+// User struct
 type User struct {
 	Nick  string
 	Mode  string
 	Color int
 }
 
+// String converts the user struct to a string
 func (u *User) String(c bool) string {
 	if u == nil {
 		return ""
@@ -30,21 +29,29 @@ func (u *User) String(c bool) string {
 
 	if c {
 		return color.Stringf(u.Color, "%s%s", u.Mode, u.Nick)
-	} else {
-		return fmt.Sprintf("%s%s", u.Mode, u.Nick)
 	}
+
+	return fmt.Sprintf("%s%s", u.Mode, u.Nick)
 }
 
+// NickSorter cast to an array of user pointers
 type NickSorter []*User
 
-func (a NickSorter) Len() int           { return len(a) }
-func (a NickSorter) Swap(i, j int)      { a[i], a[j] = a[j], a[i] }
+// Len returns the list length
+func (a NickSorter) Len() int { return len(a) }
+
+// Swap moves the position of two items in the list
+func (a NickSorter) Swap(i, j int) { a[i], a[j] = a[j], a[i] }
+
+// Less checks if i is less than j to change position
 func (a NickSorter) Less(i, j int) bool { return a[i].Nick < a[j].Nick }
 
+// Channel struct
 type Channel struct {
 	Status        bool
 	Ready         bool
 	Unread        bool
+	Highlight     bool
 	Name          string
 	Server        *Server
 	MaxX          int
@@ -60,6 +67,7 @@ type Channel struct {
 	mu sync.Mutex
 }
 
+// FindUser returns a pointer for a given user or nil
 func (channel *Channel) FindUser(nick string) *User {
 	for _, u := range channel.Users {
 		if u.Nick == nick {
@@ -70,10 +78,12 @@ func (channel *Channel) FindUser(nick string) *User {
 	return nil
 }
 
+// View returns the channel view
 func (channel *Channel) View() (*gocui.View, error) {
 	return channel.Server.Gui.View(channel.Name)
 }
 
+// Update will render the current channel again
 func (channel *Channel) Update() (*gocui.View, error) {
 	channel.MaxX, channel.MaxY = channel.Server.Gui.Size()
 
@@ -82,6 +92,7 @@ func (channel *Channel) Update() (*gocui.View, error) {
 
 }
 
+// NickListString will ouput the channel users in a pretty format
 func (channel *Channel) NickListString(v *gocui.View, c bool) {
 	sort.Sort(NickSorter(channel.Users))
 
@@ -98,6 +109,7 @@ func (channel *Channel) NickListString(v *gocui.View, c bool) {
 	fmt.Fprintf(v, "\n%s", color.String(config.C.Color.Green, "== NICK LIST END\n\n"))
 }
 
+// NickMetricsString will output channel metrics in a pretty format
 // 09:41 * Irssi: #google-containers: Total of 213 nicks [0 ops, 0 halfops, 0 voices, 213 normal]
 func (channel *Channel) NickMetricsString(view *gocui.View) {
 	var op, hop, v, n int
@@ -119,6 +131,7 @@ func (channel *Channel) NickMetricsString(view *gocui.View) {
 		color.String(config.C.Color.Green, "**"), channel.Name, len(channel.Users), op, hop, v, n)
 }
 
+// RemoveNick from channel list
 func (channel *Channel) RemoveNick(nick string) {
 	for i, user := range channel.Users {
 		if user.Nick == nick {
@@ -130,6 +143,7 @@ func (channel *Channel) RemoveNick(nick string) {
 	}
 }
 
+// AddNick to channel list
 func (channel *Channel) AddNick(nick string) {
 
 	if u := channel.FindUser(nick); u == nil {
@@ -145,6 +159,7 @@ func (channel *Channel) AddNick(nick string) {
 	}
 }
 
+// Render the current channel
 func (channel *Channel) Render(update bool) error {
 
 	view, err := channel.Server.Gui.SetView(channel.Name,
@@ -164,7 +179,7 @@ func (channel *Channel) Render(update bool) error {
 		view.BgColor = gocui.ColorBlack
 
 		if !channel.Private {
-			fmt.Fprintln(view, "\n\n")
+			fmt.Fprint(view, "\n\n\n")
 		} else {
 			channel.Topic = fmt.Sprintf("Private Chat: %s", channel.Name)
 			fmt.Fprint(view, "\n\n")

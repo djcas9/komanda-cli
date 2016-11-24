@@ -15,13 +15,14 @@ import (
 	"gopkg.in/alecthomas/kingpin.v2"
 )
 
+// Build value
 var Build = ""
 
 var (
 	app = kingpin.New(komanda.Name, komanda.Description)
 	ssl = app.Flag("ssl", "enable ssl").Short('s').Bool()
 
-	InsecureSkipVerify = app.
+	insecureSkipVerify = app.
 				Flag("insecure", "insecure ssl - skip verify. (self-signed certs)").
 				Short('i').Bool()
 
@@ -85,8 +86,8 @@ func main() {
 			config.C.Server.SSL = *ssl
 		}
 
-		if *InsecureSkipVerify {
-			config.C.Server.Insecure = *InsecureSkipVerify
+		if *insecureSkipVerify {
+			config.C.Server.Insecure = *insecureSkipVerify
 		}
 
 		if len(*host) > 0 {

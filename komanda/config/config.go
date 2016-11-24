@@ -9,10 +9,17 @@ import (
 )
 
 var (
-	ConfigFolder  = ".komanda"
-	ConfigFile    = "config.toml"
+	// ConfigFolder default name
+	ConfigFolder = ".komanda"
+
+	// ConfigFile default name
+	ConfigFile = "config.toml"
+
+	// ConfigLogFile default name
 	ConfigLogFile = "komanda.log"
 
+	// C global config
+	// TODO: fix this later - bad
 	C *Config
 )
 
@@ -25,39 +32,39 @@ type Config struct {
 }
 
 type komanda struct {
-	Debug   bool
-	LogFile string
+	Debug   bool   `toml:"debug"`
+	LogFile string `toml:"log_file"`
 }
 
 type server struct {
-	Host        string
-	Port        string
-	SSL         bool
-	Insecure    bool
-	Nick        string
-	User        string
-	Password    string
-	AutoConnect bool `toml:"auto_connect"`
+	Host        string `toml:"host"`
+	Port        string `toml:"port"`
+	SSL         bool   `toml:"ssl"`
+	Insecure    bool   `toml:"insecure"`
+	Nick        string `toml:"nick"`
+	User        string `toml:"user"`
+	Password    string `toml:"password"`
+	AutoConnect bool   `toml:"auto_connect"`
 }
 
 type color struct {
-	Notice           int
-	Action           int
-	Black            int
-	White            int
-	Red              int
-	Purple           int
-	Logo             int
-	Yellow           int
-	Green            int
-	Menu             int
+	Black            int `toml:"black"`
+	White            int `toml:"white"`
+	Red              int `toml:"red"`
+	Purple           int `toml:"purple"`
+	Logo             int `toml:"logo"`
+	Yellow           int `toml:"yellow"`
+	Green            int `toml:"green"`
+	Menu             int `toml:"menu"`
 	MyNick           int `toml:"my_nick"`
 	OtherNickDefault int `toml:"other_nick_default"`
-	Timestamp        int
+	Timestamp        int `toml:"timestamp"`
 	MyText           int `toml:"my_text"`
-	Header           int
-	QueryHeader      int `toml:query_header`
+	Header           int `toml:"header"`
+	QueryHeader      int `toml:"query_header"`
 	CurrentInputView int `toml:"current_input_view"`
+	Notice           int `toml:"notice"`
+	Action           int `toml:"action"`
 }
 
 type time struct {
@@ -122,6 +129,7 @@ func Load(configPath string) (*Config, error) {
 	return &config, nil
 }
 
+// Save configuration file
 func (c *Config) Save() error {
 	f, err := os.Create(ConfigFile)
 

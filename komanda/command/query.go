@@ -9,16 +9,19 @@ import (
 	"github.com/mephux/komanda-cli/komanda/logger"
 )
 
+// QueryCmd struct
 type QueryCmd struct {
 	*MetadataTmpl
 }
 
+// Metadata for query command
 func (e *QueryCmd) Metadata() CommandMetadata {
 	return e
 }
 
+// Exec for query command
 func (e *QueryCmd) Exec(args []string) error {
-	Server.Exec(client.StatusChannel, func(g *gocui.Gui, v *gocui.View, s *client.Server) error {
+	Server.Exec(client.StatusChannel, func(c *client.Channel, g *gocui.Gui, v *gocui.View, s *client.Server) error {
 
 		if !s.Client.Connected() {
 			client.StatusMessage(v, "Not connected")
@@ -32,9 +35,10 @@ func (e *QueryCmd) Exec(args []string) error {
 			s.CurrentChannel = args[1]
 
 			s.NewChannel(args[1], true)
-			c := s.FindChannel(args[1])
-			c.AddNick(args[1])
-			c.AddNick(s.Client.Me().Nick)
+
+			channel := s.FindChannel(args[1])
+			channel.AddNick(args[1])
+			channel.AddNick(s.Client.Me().Nick)
 
 			if len(args) > 2 && len(args[2]) > 0 {
 				go Server.Client.Privmsg(args[1],

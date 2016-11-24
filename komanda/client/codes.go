@@ -1,5 +1,7 @@
 package client
 
+// IrcCodes for message hanlders
+// https://www.alien.net.au/irc/irc2numerics.html
 var IrcCodes = []string{
 	"0",
 	"001",
@@ -42,7 +44,7 @@ var IrcCodes = []string{
 	"365",
 	"325",
 	// "324",
-	"328",
+	// "328", // RPL_CHANNEL_URL
 	// "329",
 	"331",
 	// "333",
@@ -53,8 +55,8 @@ var IrcCodes = []string{
 	"357",
 	"348",
 	"349",
-	"367",
-	"368",
+	// "367", // TODO: figure out timestamp
+	// "368", // TODO: add banlist
 	"351",
 	"371",
 	"374",

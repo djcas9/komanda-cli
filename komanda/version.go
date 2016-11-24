@@ -2,6 +2,7 @@ package komanda
 
 import "github.com/mephux/komanda-cli/komanda/color"
 
+// Logo for komanda-cli
 const Logo = `
 
   ██╗  ██╗ ██████╗ ███╗   ███╗ █████╗ ███╗   ██╗██████╗  █████╗ 

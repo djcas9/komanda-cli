@@ -13,8 +13,11 @@ import (
 	termbox "github.com/nsf/termbox-go"
 )
 
+// Server global
+// TODO: this is bad fix later
 var Server *client.Server
 
+// Run ui loop
 func Run(build string, server *client.Server) {
 	var err error
 

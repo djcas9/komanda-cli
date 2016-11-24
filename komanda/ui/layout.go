@@ -12,16 +12,25 @@ import (
 )
 
 var (
-	Logo        = ""
+	// Logo global
+	Logo = ""
+
+	// VersionLine global
 	VersionLine = ""
-	Server      *client.Server
-	Name        = ""
-	notify      *notificator.Notificator
+
+	// Server Global
+	Server *client.Server
+
+	// Name for notifications
+	Name = "komanda"
+
+	notify *notificator.Notificator
 
 	// Editor for input
 	Editor gocui.Editor
 )
 
+// Layout builds the default cui layout
 func Layout(g *gocui.Gui) error {
 	maxX, maxY := g.Size()
 
@@ -53,7 +62,7 @@ func Layout(g *gocui.Gui) error {
 				view.FgColor = gocui.ColorWhite
 				view.BgColor = gocui.ColorBlack
 
-				fmt.Fprintln(view, "\n")
+				fmt.Fprint(view, "\n\n")
 				fmt.Fprintln(view, Logo)
 				fmt.Fprintln(view, color.String(config.C.Color.Green, VersionLine))
 

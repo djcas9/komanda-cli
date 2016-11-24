@@ -1,21 +1,26 @@
 package command
 
 import (
+	"strings"
+
 	"github.com/jroimartin/gocui"
 	"github.com/mephux/komanda-cli/komanda/client"
 	"github.com/mephux/komanda-cli/komanda/ui"
 )
 
+// PartCmd struct
 type PartCmd struct {
 	*MetadataTmpl
 }
 
+// Metadata for part command
 func (e *PartCmd) Metadata() CommandMetadata {
 	return e
 }
 
+// Exec for part command
 func (e *PartCmd) Exec(args []string) error {
-	Server.Exec(client.StatusChannel, func(g *gocui.Gui, v *gocui.View, s *client.Server) error {
+	Server.Exec(client.StatusChannel, func(c *client.Channel, g *gocui.Gui, v *gocui.View, s *client.Server) error {
 
 		if !s.Client.Connected() {
 			client.StatusMessage(v, "Not connected")
@@ -28,7 +33,9 @@ func (e *PartCmd) Exec(args []string) error {
 				return nil
 			}
 
-			s.Client.Part(args[1])
+			if strings.HasPrefix(args[1], "#") {
+				s.Client.Part(args[1])
+			}
 
 			index, err := s.RemoveChannel(args[1])
 
@@ -40,13 +47,14 @@ func (e *PartCmd) Exec(args []string) error {
 				Server.CurrentChannel = Server.Channels[index-1].Name
 				Server.Gui.SetViewOnTop(Server.CurrentChannel)
 
-				c := Server.GetCurrentChannel()
+				channel := Server.GetCurrentChannel()
 
-				if _, err := g.SetCurrentView(c.Name); err != nil {
+				if _, err := g.SetCurrentView(channel.Name); err != nil {
 					return err
 				}
 
-				c.Unread = false
+				channel.Unread = false
+				channel.Highlight = false
 			}
 
 			if _, err := g.SetCurrentView("input"); err != nil {

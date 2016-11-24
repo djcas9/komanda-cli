@@ -36,10 +36,10 @@ generate:
 	@go generate ./...
 
 lint:
-	# @go vet  $$(go list ./... | grep -v /vendor/)
-	# @for pkg in $$(go list ./... |grep -v /vendor/ |grep -v /services/) ; do \
-		# golint -min_confidence=1 $$pkg ; \
-		# done
+	@go vet  $$(go list ./... | grep -v /vendor/)
+	@for pkg in $$(go list ./... |grep -v /vendor/ |grep -v /services/) ; do \
+		golint -min_confidence=1 $$pkg ; \
+		done
 
 deps:
 	@go get -u github.com/golang/lint/golint
