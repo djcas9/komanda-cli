@@ -1,13 +1,10 @@
 package command
 
 import (
-	"fmt"
 	"log"
-	"time"
 
 	"github.com/jroimartin/gocui"
 	"github.com/mephux/komanda-cli/komanda/client"
-	"github.com/mephux/komanda-cli/komanda/ui"
 )
 
 // ConnectCmd struct
@@ -36,23 +33,23 @@ func (e *ConnectCmd) Exec(args []string) error {
 			log.Fatal(err)
 		}
 
-		go func() {
-			ticker := time.NewTicker(8000 * time.Microsecond)
+		// go func() {
+		// ticker := time.NewTicker(8000 * time.Microsecond)
 
-			for {
-				select {
-				case <-ticker.C:
-					fmt.Fprint(v, ".")
-				case msg := <-ui.LoadingChannel.Recv:
-					if msg == "done" {
+		// for {
+		// select {
+		// case <-ticker.C:
+		// fmt.Fprint(v, ".")
+		// case msg := <-ui.LoadingChannel.Recv:
+		// if msg == "done" {
 
-						fmt.Fprint(v, "\n")
-						ticker.Stop()
-						break
-					}
-				}
-			}
-		}()
+		// fmt.Fprint(v, "\n")
+		// ticker.Stop()
+		// break
+		// }
+		// }
+		// }
+		// }()
 
 		return nil
 	})

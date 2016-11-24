@@ -32,6 +32,7 @@ func exitCmd() Command {
 			aliases: []string{
 				"e",
 				"exit",
+				"quit",
 			},
 			description: "exit komanda-cli",
 		},

@@ -31,18 +31,28 @@ func (e *QueryCmd) Exec(args []string) error {
 		logger.Logger.Println(spew.Sdump(args))
 
 		if len(args) >= 2 && len(args[1]) > 0 {
-			CurrentChannel = args[1]
-			s.CurrentChannel = args[1]
+			var private = true
+			var cl = strings.ToLower(args[1])
 
-			s.NewChannel(args[1], true)
+			if args[0] == "msg" {
+				private = false
+				CurrentChannel = cl
+				s.CurrentChannel = cl
+			}
 
-			channel := s.FindChannel(args[1])
-			channel.AddNick(args[1])
+			s.NewChannel(cl, private)
+
+			channel := s.FindChannel(cl)
+			channel.AddNick(cl)
 			channel.AddNick(s.Client.Me().Nick)
 
+			if !private {
+				c.Topic = cl
+			}
+
 			if len(args) > 2 && len(args[2]) > 0 {
-				go Server.Client.Privmsg(args[1],
-					strings.Replace(args[2], "\x00", "", -1))
+				Server.Client.Privmsg(cl,
+					strings.Replace(strings.Join(args[2:], " "), "\x00", "", -1))
 			}
 		}
 
@@ -58,6 +68,7 @@ func queryCmd() Command {
 			name: "query",
 			args: "<user> [message]",
 			aliases: []string{
+				"msg",
 				"pm",
 				"query",
 			},

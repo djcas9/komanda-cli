@@ -57,20 +57,34 @@ func BindHandlers() {
 	Server.Client.HandleFunc("NOTICE", func(conn *irc.Conn, line *irc.Line) {
 		logger.Logger.Println("NOTICE -----------------------------", spew.Sdump(line))
 
-		Server.Exec(line.Args[0], func(c *client.Channel, g *gocui.Gui, v *gocui.View, s *client.Server) error {
+		var channel = line.Nick
+		var noticeChannel bool
 
+		if len(line.Nick) <= 0 {
+			channel = client.StatusChannel
+		} else {
+			channel = strings.ToLower(line.Nick)
+			noticeChannel = true
+		}
+
+		Server.Exec(channel, func(c *client.Channel, g *gocui.Gui, v *gocui.View, s *client.Server) error {
 			timestamp := time.Now().Format(config.C.Time.MessageFormat)
 
-			fmt.Fprintf(v, "[%s] [%s:(%s:%s)] %s\n",
+			if noticeChannel {
+				c.Topic = channel
+				c.AddNick(Server.Client.Me().Nick)
+			}
+
+			fmt.Fprintf(v, "-> [%s] * [%s:(%s:%s)] %s\n",
 				color.String(config.C.Color.Timestamp, timestamp),
 				color.StringFormat(config.C.Color.Red, "notice", []string{"1"}),
 				color.StringFormat(config.C.Color.Notice, line.Nick, []string{"1"}),
 				color.StringFormat(config.C.Color.Notice, line.Args[0], []string{"1"}),
 				helpers.FormatMessage(line.Args[1]),
 			)
-
 			return nil
 		})
+
 	})
 
 	Server.Client.HandleFunc("NICK", func(conn *irc.Conn, line *irc.Line) {

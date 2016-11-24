@@ -41,38 +41,44 @@ Flags:
 ## Keyboard
 
   * `esc, right-arrow-key` change to next channel
-  * `esc, left-arrow-key` change to previous channel
-  * `ctrl+n` change to next window
-  * `ctrl+p` change to previous window
-  * `ctrl+alt+p` scroll up
-  * `ctrl+alt+n` scroll down
-  * `/help` for everything else
+  * `esc, left-arrow-key`  change to previous channel
+  * `ctrl+n`               change to next window
+  * `ctrl+p`               change to previous window
+  * `ctrl+alt+p`           scroll up
+  * `ctrl+alt+n`           scroll down
+  * `page-up`              scroll up
+  * `page-down`            scroll down
+  * `tab`                  move to next active window
+  * `enter`                scroll to bottom of window (if input is empty)
+  * `/help`                for everything else
 
 ## /help output
 
 ```bash
--> [16:07] * ==================== HELP COMMANDS ====================
--> [16:07] * /exit  - exit komanda-cli
--> [16:07] * /connect  - connect to irc using passed arguments
--> [16:07] * /status  - status command
--> [16:07] * /help  - help command
--> [16:07] * /join <channel> - join irc channel
--> [16:07] * /part [channel] - part irc channel or current if no channel given
--> [16:07] * /clear  - clear current view
--> [16:07] * /logo  - logo command
--> [16:07] * /version  - version command
--> [16:07] * /nick <nick> - nick irc channel
--> [16:07] * /pass <password> - pass irc channel
--> [16:07] * /raw <command> [data] - raw command
--> [16:07] * /topic [channel] [topic] - set topic for given channel or current channel if empty
--> [16:07] * /window <id> - change window example: /window 3
--> [16:07] * /names  - list channel names
--> [16:07] * /query <user> [message] - send private message to user
--> [16:07] * /who <nick> - send who command to server
--> [16:07] * /whois <nick> - send whois command to server
--> [16:07] * /me [message] - send action message to channel
--> [16:07] * /notice <channel/nick> <message> - send notice message to channel or nick
--> [16:07] * ==================== HELP COMMANDS ====================
+-> [17:59] * ==================== HELP COMMANDS ====================
+-> [17:59] * /exit  - exit komanda-cli
+-> [17:59] * /connect  - connect to irc using passed arguments
+-> [17:59] * /status  - status command
+-> [17:59] * /help  - help command
+-> [17:59] * /join <channel> - join irc channel
+-> [17:59] * /part [channel] - part irc channel or current if no channel given
+-> [17:59] * /clear  - clear current view
+-> [17:59] * /logo  - logo command
+-> [17:59] * /version  - version command
+-> [17:59] * /nick <nick> - nick irc channel
+-> [17:59] * /pass <password> - pass irc channel
+-> [17:59] * /raw <command> [data] - raw command
+-> [17:59] * /topic [channel] [topic] - set topic for given channel or current channel if empty
+-> [17:59] * /window <id> - change window example: /window 3
+-> [17:59] * /names  - list channel names
+-> [17:59] * /query <user> [message] - send private message to user
+-> [17:59] * /who <nick> - send who command to server
+-> [17:59] * /whois <nick> - send whois command to server
+-> [17:59] * /me [message] - send action message to channel
+-> [17:59] * /notice <channel/nick> <message> - send notice message to channel or nick
+-> [17:59] * /shrug  - Shrugging Emoji
+-> [17:59] * /tableflip  - TableFlip Emoji
+-> [17:59] * ==================== HELP COMMANDS ====================
 ```
 
 ## Features
@@ -91,38 +97,38 @@ Flags:
 
 ```toml
 [Komanda]
-  Debug = false
-  LogFile = "/home/dweb/.komanda/komanda.log"
+  debug = false
+  log_file = "/home/dweb/.komanda/komanda.log"
 
 [Server]
-  Host = "irc.freenode.net"
-  Port = "6667"
-  SSL = false
-  Insecure = true
-  Nick = "Komanda"
-  User = "Komanda"
-  Password = ""
+  host = "irc.freenode.net"
+  port = "6667"
+  ssl = false
+  insecure = true
+  nick = "Komanda"
+  user = "Komanda"
+  password = ""
   auto_connect = false
 
 # http://www.calmar.ws/vim/256-xterm-24bit-rgb-color-chart.html
 [Color]
-  Notice = 219
-  Action = 118
-  Black = 0
-  White = 15
-  Red = 160
-  Purple = 92
-  Logo = 75
-  Yellow = 11
-  Green = 119
-  Menu = 209
-  my_nick = 164
+  black = 0
+  white = 15
+  red = 160
+  purple = 92
+  logo = 75
+  yellow = 11
+  green = 119
+  menu = 209
+  my_nick = 119
   other_nick_default = 14
-  Timestamp = 247
+  timestamp = 247
   my_text = 129
-  Header = 57
-  QueryHeader = 11
+  header = 57
+  query_header = 11
   current_input_view = 215
+  notice = 219
+  action = 118
 
 # https://golang.org/pkg/time/#pkg-constants
 [Time]
@@ -133,7 +139,7 @@ Flags:
 
 ## TODO
 
-  * Mad stuff
+  * Support for kick/ban/op releated commands
 
 ## Self-Promotion
 
