@@ -27,11 +27,12 @@ var (
 				Flag("insecure", "insecure ssl - skip verify. (self-signed certs)").
 				Short('i').Bool()
 
-	host = app.Flag("host", "hostname").Short('h').String()
-	port = app.Flag("port", "port").Short('p').String()
-	nick = app.Flag("nick", "nick").Short('n').String()
-	user = app.Flag("user", "server user").Short('u').String()
-	pass = app.Flag("password", "server password").Short('P').String()
+	host           = app.Flag("host", "hostname").Short('h').String()
+	port           = app.Flag("port", "port").Short('p').String()
+	nick           = app.Flag("nick", "nick").Short('n').String()
+	user           = app.Flag("user", "server user").Short('u').String()
+	serverPassword = app.Flag("server-password", "server password").Short('P').String()
+	nickPassword   = app.Flag("nick-password", "nick password").String()
 
 	autoConnect = app.Flag("auto", "auto-connect on startup.").
 			Short('a').Bool()
@@ -105,8 +106,12 @@ func main() {
 			config.C.Server.User = *user
 		}
 
-		if len(*pass) > 0 {
-			config.C.Server.Password = *pass
+		if len(*serverPassword) > 0 {
+			config.C.Server.ServerPassword = *serverPassword
+		}
+
+		if len(*nickPassword) > 0 {
+			config.C.Server.NickPassword = *nickPassword
 		}
 
 		if *autoConnect {
@@ -120,7 +125,8 @@ func main() {
 			Port:               config.C.Server.Port,
 			Nick:               config.C.Server.Nick,
 			User:               config.C.Server.Nick,
-			Password:           config.C.Server.Password,
+			Password:           config.C.Server.ServerPassword,
+			NickPassword:       config.C.Server.NickPassword,
 			SSL:                config.C.Server.SSL,
 			InsecureSkipVerify: config.C.Server.Insecure,
 			AutoConnect:        config.C.Server.AutoConnect,

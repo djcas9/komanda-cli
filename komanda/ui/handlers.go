@@ -46,6 +46,17 @@ func BindHandlers() {
 		logger.Logger.Println("MODE -----------------------------", spew.Sdump(line))
 	})
 
+	Server.Client.HandleFunc("376", func(conn *irc.Conn, line *irc.Line) {
+		logger.Logger.Println("IF NICK PASSWORD -----------------------------", spew.Sdump(line))
+
+		if len(config.C.Server.NickPassword) > 0 {
+			Server.Client.Privmsg(
+				"nickserv",
+				fmt.Sprintf("identify %s", config.C.Server.NickPassword),
+			)
+		}
+	})
+
 	Server.Client.HandleFunc("WHOIS", func(conn *irc.Conn, line *irc.Line) {
 		logger.Logger.Println("WHOIS -----------------------------", spew.Sdump(line))
 	})

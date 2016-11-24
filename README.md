@@ -25,17 +25,20 @@ usage: komanda [<flags>]
 The Komanda Command-line IRC Client
 
 Flags:
-      --help               Show context-sensitive help (also try --help-long and --help-man).
-  -s, --ssl                enable ssl
-  -i, --insecure           insecure ssl - skip verify. (self-signed certs)
-  -h, --host=HOST          hostname
-  -p, --port=PORT          port
-  -n, --nick=NICK          nick
-  -u, --user=USER          server user
-  -P, --password=PASSWORD  server password
-  -a, --auto               auto-connect on startup.
-  -c, --config=CONFIG      configuration file location
-      --version            Show application version.
+      --help           Show context-sensitive help (also try --help-long and --help-man).
+  -s, --ssl            enable ssl
+  -i, --insecure       insecure ssl - skip verify. (self-signed certs)
+  -h, --host=HOST      hostname
+  -p, --port=PORT      port
+  -n, --nick=NICK      nick
+  -u, --user=USER      server user
+  -P, --server-password=SERVER-PASSWORD  
+                       server password
+      --nick-password=NICK-PASSWORD  
+                       nick password
+  -a, --auto           auto-connect on startup.
+  -c, --config=CONFIG  configuration file location
+      --version        Show application version.
   ```
 
 ## Keyboard
@@ -84,6 +87,7 @@ Flags:
 ## Features
 
   * config file support (change colors, time formats etc.)
+  * auto nickserv identify
   * activity monitoring (new messages/highlights)
   * color nick
   * znc support
@@ -106,8 +110,9 @@ Flags:
   ssl = false
   insecure = true
   nick = "Komanda"
+  nick_password = ""
   user = "Komanda"
-  password = ""
+  server_password = ""
   auto_connect = false
 
 # http://www.calmar.ws/vim/256-xterm-24bit-rgb-color-chart.html

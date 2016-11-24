@@ -25,11 +25,12 @@ type Server struct {
 	Client   *ircClient.Conn
 	Channels []*Channel
 
-	Address  string
-	Port     string
-	SSL      bool
-	User     string
-	Password string
+	Address      string
+	Port         string
+	SSL          bool
+	User         string
+	Password     string
+	NickPassword string
 
 	Nick    string
 	AltNick string

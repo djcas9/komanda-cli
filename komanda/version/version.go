@@ -19,7 +19,7 @@ const Name = "komanda"
 const Description = "The Komanda Command-line IRC Client"
 
 // Version number
-const Version = "0.8.1"
+const Version = "0.8.2"
 
 // Website number
 const Website = "github.com/mephux/komanda"
