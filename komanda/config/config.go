@@ -37,15 +37,16 @@ type komanda struct {
 }
 
 type server struct {
-	Host           string `toml:"host"`
-	Port           string `toml:"port"`
-	SSL            bool   `toml:"ssl"`
-	Insecure       bool   `toml:"insecure"`
-	Nick           string `toml:"nick"`
-	User           string `toml:"user"`
-	NickPassword   string `toml:"nick_password"`
-	ServerPassword string `toml:"server_password"`
-	AutoConnect    bool   `toml:"auto_connect"`
+	Host           string   `toml:"host"`
+	Port           string   `toml:"port"`
+	SSL            bool     `toml:"ssl"`
+	Insecure       bool     `toml:"insecure"`
+	Nick           string   `toml:"nick"`
+	User           string   `toml:"user"`
+	NickPassword   string   `toml:"nick_password"`
+	ServerPassword string   `toml:"server_password"`
+	AutoConnect    bool     `toml:"auto_connect"`
+	Channels       []string `toml:"channels"`
 }
 
 type color struct {
@@ -89,6 +90,9 @@ func Default() *Config {
 			Nick:        "Komanda",
 			User:        "Komanda",
 			AutoConnect: false,
+			Channels: []string{
+				"#komanda",
+			},
 		},
 		Color: &color{
 			Notice:           219,

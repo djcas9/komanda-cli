@@ -87,7 +87,9 @@ Flags:
 ## Features
 
   * config file support (change colors, time formats etc.)
+  * irc server auth
   * auto nickserv identify
+  * auto-join channels
   * activity monitoring (new messages/highlights)
   * color nick
   * znc support
@@ -110,10 +112,16 @@ Flags:
   ssl = false
   insecure = true
   nick = "Komanda"
-  nick_password = ""
   user = "Komanda"
+  nick_password = ""
+
+  # if you server password and nick password are the same all you need
+  # to set is this option.
   server_password = ""
   auto_connect = false
+
+  # if you use a IRC bouncer this wont be needed
+  channels = ["#komanda"]
 
 # http://www.calmar.ws/vim/256-xterm-24bit-rgb-color-chart.html
 [Color]
