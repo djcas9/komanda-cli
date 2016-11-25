@@ -92,7 +92,7 @@ func (channel *Channel) Update() (*gocui.View, error) {
 
 }
 
-// NickListString will ouput the channel users in a pretty format
+// NickListString will output the channel users in a pretty format
 func (channel *Channel) NickListString(v *gocui.View, c bool) {
 	sort.Sort(NickSorter(channel.Users))
 

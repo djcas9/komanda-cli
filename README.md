@@ -1,4 +1,6 @@
 [![Build Status](http://komanda.io:8080/api/badges/mephux/komanda-cli/status.svg)](http://komanda.io:8080/mephux/komanda-cli)
+[![GoDoc](https://godoc.org/github.com/mephux/komanda-cli?status.svg)](https://godoc.org/github.com/mephux/komanda-cli)
+[![Go Report Card](https://goreportcard.com/badge/github.com/mephux/komanda-cli)](https://goreportcard.com/report/github.com/mephux/komanda-cli)
 
 # Komanda CLI
 

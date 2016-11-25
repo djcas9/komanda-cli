@@ -129,7 +129,7 @@ func tabComplete(g *gocui.Gui, v *gocui.View) error {
 	cacheTabSearch = search
 	cacheTabResults = results
 
-	search, cache = tabUpdateInput(input)
+	_, cache = tabUpdateInput(input)
 
 	if cache {
 		return nil
