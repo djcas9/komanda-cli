@@ -2,6 +2,8 @@ package main
 
 import (
 	"fmt"
+	"io/ioutil"
+	"log"
 	"os"
 	"path"
 	"runtime"
@@ -13,6 +15,7 @@ import (
 	"github.com/mephux/komanda-cli/komanda/config"
 	"github.com/mephux/komanda-cli/komanda/logger"
 	"github.com/mephux/komanda-cli/komanda/version"
+	"github.com/worg/merger"
 	"gopkg.in/alecthomas/kingpin.v2"
 )
 
@@ -78,6 +81,15 @@ func main() {
 				logrus.Fatal(err)
 			}
 
+			d := config.Default()
+
+			if err := merger.Merge(config.C, d); err != nil {
+				logrus.Fatal(err)
+			}
+
+			if err := config.C.Save(); err != nil {
+				logrus.Fatal(err)
+			}
 		} else {
 			config.C = config.Default()
 
@@ -118,7 +130,11 @@ func main() {
 			config.C.Server.AutoConnect = *autoConnect
 		}
 
-		logger.Start(config.C.Komanda.LogFile)
+		if config.C.Komanda.Debug {
+			logger.Start(config.C.Komanda.LogFile)
+		} else {
+			logger.Logger = log.New(ioutil.Discard, "", 0)
+		}
 
 		server := &client.Server{
 			Address:            config.C.Server.Host,

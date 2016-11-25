@@ -50,6 +50,7 @@ func BindHandlers() {
 		logger.Logger.Println("IF NICK PASSWORD -----------------------------", spew.Sdump(line))
 
 		if len(config.C.Server.NickPassword) > 0 {
+			logger.Logger.Println("GOT PASSWORD TO SEND -----------------------------", spew.Sdump(config.C.Server.NickPassword))
 			Server.Client.Privmsg(
 				"nickserv",
 				fmt.Sprintf("identify %s", config.C.Server.NickPassword),
