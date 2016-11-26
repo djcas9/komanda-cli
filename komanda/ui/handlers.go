@@ -78,7 +78,7 @@ func BindHandlers() {
 	})
 
 	Server.Client.HandleFunc("NOTICE", func(conn *irc.Conn, line *irc.Line) {
-		logger.Logger.Println("NOTICE -----------------------------", spew.Sdump(line))
+		// logger.Logger.Println("NOTICE -----------------------------", spew.Sdump(line))
 
 		var channel = line.Nick
 		var noticeChannel bool

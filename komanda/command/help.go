@@ -28,6 +28,14 @@ func (e *HelpCmd) Exec(args []string) error {
 			metadata := command.Metadata()
 			client.StatusMessage(v, fmt.Sprintf("/%s %s - %s",
 				metadata.Name(), metadata.Args(), metadata.Description()))
+
+			// client.StatusMessage(v,
+			// fmt.Sprintf("\t Aliases: %s", strings.Join(metadata.Aliases(), ", ")),
+			// )
+
+			// for _, a := range metadata.Aliases() {
+			// client.StatusMessage(v, fmt.Sprintf("\t - /%s", a))
+			// }
 		}
 
 		client.StatusMessage(v, "==================== HELP COMMANDS ====================\n")

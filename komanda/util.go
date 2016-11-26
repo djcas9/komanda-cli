@@ -166,6 +166,9 @@ func simpleEditor(v *gocui.View, key gocui.Key, ch rune, mod gocui.Modifier) {
 				c.Autoscroll = true
 			}
 		}
+
+		InputHistory.Current()
+
 		// v.EditNewLine()
 		// v.Rewind()
 
@@ -178,16 +181,22 @@ func simpleEditor(v *gocui.View, key gocui.Key, ch rune, mod gocui.Modifier) {
 
 		if line := InputHistory.Next(); len(line) > 0 {
 			v.Clear()
+			v.SetCursor(0, 0)
+			v.SetOrigin(0, 0)
+
 			fmt.Fprint(v, line)
-			v.SetCursor(len(v.Buffer()), 0)
+			v.SetCursor(len(v.Buffer())-1, 0)
 		}
 	case key == gocui.KeyArrowUp:
 		inHistroy = true
 
 		if line := InputHistory.Prev(); len(line) > 0 {
 			v.Clear()
+			v.SetCursor(0, 0)
+			v.SetOrigin(0, 0)
+
 			fmt.Fprint(v, line)
-			v.SetCursor(len(v.Buffer()), 0)
+			v.SetCursor(len(v.Buffer())-1, 0)
 		}
 	case key == gocui.KeyArrowLeft:
 		v.MoveCursor(-1, 0, false)
