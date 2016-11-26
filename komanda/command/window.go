@@ -1,6 +1,9 @@
 package command
 
 import (
+	"fmt"
+	"strings"
+
 	"github.com/jroimartin/gocui"
 	"github.com/mephux/common"
 	"github.com/mephux/komanda-cli/komanda/client"
@@ -27,25 +30,36 @@ func (e *WindowCmd) Exec(args []string) error {
 		}
 
 		if len(args) == 2 {
-			i := common.StringTo(args[1]).MustInt()
 
-			Server.CurrentChannel = Server.Channels[i].Name
-			Server.Gui.SetViewOnTop(Server.CurrentChannel)
-
-			channel := Server.GetCurrentChannel()
-
-			if _, err := g.SetCurrentView(channel.Name); err != nil {
-				return err
+			if strings.HasPrefix(args[1], "#") {
+				Server.CurrentChannel = args[1]
+			} else {
+				i := common.StringTo(args[1]).MustInt()
+				Server.CurrentChannel = Server.Channels[i].Name
 			}
 
-			channel.Unread = false
-			channel.Highlight = false
+			channel, _, has := Server.HasChannel(Server.CurrentChannel)
 
-			if _, err := g.SetCurrentView("input"); err != nil {
-				return err
+			if has {
+				Server.Gui.SetViewOnTop(Server.CurrentChannel)
+
+				if _, err := g.SetCurrentView(channel.Name); err != nil {
+					return err
+				}
+
+				channel.Unread = false
+				channel.Highlight = false
+
+				if _, err := g.SetCurrentView("input"); err != nil {
+					return err
+				}
+
+				ui.UpdateMenuView(g)
+
+				return nil
 			}
 
-			ui.UpdateMenuView(g)
+			return fmt.Errorf("unknown channel: %s", Server.CurrentChannel)
 		}
 
 		return nil
