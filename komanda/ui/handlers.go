@@ -82,12 +82,23 @@ func BindHandlers() {
 
 		var channel = line.Nick
 		var noticeChannel bool
+		var prefix string = "-> "
+		var channelHasUnread bool
 
 		if len(line.Nick) <= 0 {
 			channel = client.StatusChannel
 		} else {
 			channel = strings.ToLower(line.Nick)
 			noticeChannel = true
+		}
+
+		if strings.HasPrefix(line.Args[0], "#") {
+			prefix = ""
+			channel = line.Args[0]
+
+			if channel != Server.CurrentChannel {
+				channelHasUnread = true
+			}
 		}
 
 		Server.Exec(channel, func(c *client.Channel, g *gocui.Gui, v *gocui.View, s *client.Server) error {
@@ -98,12 +109,19 @@ func BindHandlers() {
 				c.AddNick(Server.Client.Me().Nick)
 			}
 
-			fmt.Fprintf(v, "-> [%s] * [%s:(%s:%s)] %s\n",
+			if channelHasUnread {
+				c.Unread = true
+			}
+
+			fmt.Fprintf(v, "%s[%s] * [%s:(%s:%s)] %s\n",
+				prefix,
 				color.String(config.C.Color.Timestamp, timestamp),
 				color.StringFormat(config.C.Color.Red, "notice", []string{"1"}),
 				color.StringFormat(config.C.Color.Notice, line.Nick, []string{"1"}),
 				color.StringFormat(config.C.Color.Notice, line.Args[0], []string{"1"}),
-				helpers.FormatMessage(line.Args[1]),
+				helpers.FormatMessage(
+					strings.Replace(strings.Replace(line.Args[1], "\x0f", "", -1), "\x02", "", -1),
+				),
 			)
 			return nil
 		})
