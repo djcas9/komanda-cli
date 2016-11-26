@@ -101,6 +101,8 @@ func BindHandlers() {
 		}
 
 		if strings.HasPrefix(line.Args[0], "#") {
+			noticeChannel = false
+
 			prefix = ""
 			channel = line.Args[0]
 
