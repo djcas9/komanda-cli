@@ -34,9 +34,9 @@ Flags:
   -p, --port=PORT      port
   -n, --nick=NICK      nick
   -u, --user=USER      server user
-  -P, --server-password=SERVER-PASSWORD  
+  -P, --server-password=SERVER-PASSWORD
                        server password
-      --nick-password=NICK-PASSWORD  
+      --nick-password=NICK-PASSWORD
                        nick password
   -a, --auto           auto-connect on startup.
   -c, --config=CONFIG  configuration file location
@@ -60,30 +60,32 @@ Flags:
 ## /help output
 
 ```bash
--> [17:59] * ==================== HELP COMMANDS ====================
--> [17:59] * /exit  - exit komanda-cli
--> [17:59] * /connect  - connect to irc using passed arguments
--> [17:59] * /status  - status command
--> [17:59] * /help  - help command
--> [17:59] * /join <channel> - join irc channel
--> [17:59] * /part [channel] - part irc channel or current if no channel given
--> [17:59] * /clear  - clear current view
--> [17:59] * /logo  - logo command
--> [17:59] * /version  - version command
--> [17:59] * /nick <nick> - nick irc channel
--> [17:59] * /pass <password> - pass irc channel
--> [17:59] * /raw <command> [data] - raw command
--> [17:59] * /topic [channel] [topic] - set topic for given channel or current channel if empty
--> [17:59] * /window <id,#channel> - change window example: /window #komanda
--> [17:59] * /names  - list channel names
--> [17:59] * /query <user> [message] - send private message to user
--> [17:59] * /who <nick> - send who command to server
--> [17:59] * /whois <nick> - send whois command to server
--> [17:59] * /me [message] - send action message to channel
--> [17:59] * /notice <channel/nick> <message> - send notice message to channel or nick
--> [17:59] * /shrug  - Shrugging Emoji
--> [17:59] * /tableflip  - TableFlip Emoji
--> [17:59] * ==================== HELP COMMANDS ====================
+* ==================== HELP COMMANDS ====================
+* /exit  - exit komanda-cli
+* /connect  - connect to irc using passed arguments
+* /status  - status command
+* /help  - help command
+* /join <channel> - join irc channel
+* /part [channel] - part irc channel or current if no channel given
+* /clear  - clear current view
+* /logo  - logo command
+* /version  - version command
+* /nick <nick> - nick irc channel
+* /pass <password> - pass irc channel
+* /raw <command> [data] - raw command
+* /topic [channel] [topic] - set topic for given channel or current channel if empty
+* /window <id,#channel> - change window example: /window #komanda
+* /names  - list channel names
+* /query <user> [message] - send private message to user
+* /who <nick> - send who command to server
+* /whois <nick> - send whois command to server
+* /me [message] - send action message to channel
+* /notice <channel/nick> <message> - send notice message to channel or nick
+* /shrug  - Shrugging Emoji
+* /tableflip  - TableFlip Emoji
+* /kick <channel> <nick> [message] - kick user from channel. /kick #komanda mephux
+* /away [message] - set status to away with a message or none to toggle away atatus
+* ==================== HELP COMMANDS ====================
 ```
 
 ## Features
@@ -154,8 +156,8 @@ Flags:
 
 ## TODO
 
-  * Support for kick/ban/op releated commands
-  * IRC colors (for notice etc...) 
+  * Support for ban/op releated commands
+  * IRC colors (for notice etc...)
     - https://en.wikipedia.org/wiki/Caret_notation
     - https://github.com/myano/jenni/wiki/IRC-String-Formatting
 
