@@ -74,7 +74,7 @@ Flags:
 -> [17:59] * /pass <password> - pass irc channel
 -> [17:59] * /raw <command> [data] - raw command
 -> [17:59] * /topic [channel] [topic] - set topic for given channel or current channel if empty
--> [17:59] * /window <id> - change window example: /window 3
+-> [17:59] * /window <id,#channel> - change window example: /window #komanda
 -> [17:59] * /names  - list channel names
 -> [17:59] * /query <user> [message] - send private message to user
 -> [17:59] * /who <nick> - send who command to server
