@@ -456,8 +456,7 @@ func nextViewActive(g *gocui.Gui, v *gocui.View) error {
 		curView = 0
 	}
 
-	for index, channel := range Server.Channels {
-
+	change := func(index int, channel *client.Channel) error {
 		if index >= curView {
 			if channel.Unread || channel.Highlight {
 
@@ -486,6 +485,24 @@ func nextViewActive(g *gocui.Gui, v *gocui.View) error {
 			}
 		}
 
+		return nil
+	}
+
+	for index, channel := range Server.Channels {
+		if err := change(index, channel); err != nil {
+			return err
+		}
+		curView = index
+	}
+
+	if curView == len(Server.Channels) {
+		curView = 0
+
+		for index, channel := range Server.Channels {
+			if err := change(index, channel); err != nil {
+				return err
+			}
+		}
 	}
 
 	return nil

@@ -72,11 +72,11 @@ func windowCmd() Command {
 	return &WindowCmd{
 		MetadataTmpl: &MetadataTmpl{
 			name: "window",
-			args: "<id>",
+			args: "<id,#channel>",
 			aliases: []string{
 				"w",
 			},
-			description: "change window example: /window 3",
+			description: "change window example: /window #komanda",
 		},
 	}
 }
