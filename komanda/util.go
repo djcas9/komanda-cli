@@ -449,21 +449,34 @@ func nextView(g *gocui.Gui, v *gocui.View) error {
 	return nil
 }
 
+// TODO: find a better way to do this.
 func nextViewActive(g *gocui.Gui, v *gocui.View) error {
+
+	inputView, err := g.View("input")
+
+	if err != nil {
+		return err
+	}
+
+	// return because the input view has data
+	if len(inputView.Buffer()) > 0 {
+		return nil
+	}
+
 	curView = getCurrentChannelIndex()
 
 	if curView >= len(Server.Channels)-1 {
 		curView = 0
 	}
 
-	change := func(index int, channel *client.Channel) error {
+	change := func(index int, channel *client.Channel) (bool, error) {
 		if index >= curView {
 			if channel.Unread || channel.Highlight {
 
 				view, err := channel.View()
 
 				if err != nil {
-					return err
+					return false, err
 				}
 
 				view.Autoscroll = true
@@ -471,7 +484,7 @@ func nextViewActive(g *gocui.Gui, v *gocui.View) error {
 				g.SetViewOnTop("header")
 
 				if _, err := g.SetCurrentView(channel.Name); err != nil {
-					return err
+					return false, err
 				}
 
 				// logger.Logger.Printf("Set Current View %d\n", Server.Channels[next].Name)
@@ -481,17 +494,25 @@ func nextViewActive(g *gocui.Gui, v *gocui.View) error {
 
 				ui.UpdateMenuView(g)
 				FocusInputView(g, v)
-				return nil
+
+				return true, nil
 			}
 		}
 
-		return nil
+		return false, nil
 	}
 
 	for index, channel := range Server.Channels {
-		if err := change(index, channel); err != nil {
+		has, err := change(index, channel)
+
+		if err != nil {
 			return err
 		}
+
+		if has {
+			return nil
+		}
+
 		curView = index
 	}
 
@@ -499,8 +520,14 @@ func nextViewActive(g *gocui.Gui, v *gocui.View) error {
 		curView = 0
 
 		for index, channel := range Server.Channels {
-			if err := change(index, channel); err != nil {
+			has, err := change(index, channel)
+
+			if err != nil {
 				return err
+			}
+
+			if has {
+				return nil
 			}
 		}
 	}

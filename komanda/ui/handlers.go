@@ -90,6 +90,14 @@ func BindHandlers() {
 		} else {
 			channel = strings.ToLower(line.Nick)
 			noticeChannel = true
+
+			// TODO: if current channel is not notice channel write to
+			// status channel
+			// if line.Args[0] == strings.ToLower(Server.Client.Me().Nick) {
+			// noticeChannel = false
+			// prefix = "-> "
+			// channel = client.StatusChannel
+			// }
 		}
 
 		if strings.HasPrefix(line.Args[0], "#") {
@@ -177,9 +185,48 @@ func BindHandlers() {
 
 	})
 
+	// logs :: handlers.go:189: KICK ----------------------------- (*client.Line)(0xc4206f2f00)({
+	// Tags: (map[string]string) <nil>,
+	// Nick: (string) (len=11) "evilgrawity",
+	// Ident: (string) (len=7) "grawity",
+	// Host: (string) (len=22) "wolke.nullroute.eu.org",
+	// Src: (string) (len=42) "evilgrawity!grawity@wolke.nullroute.eu.org",
+	// Cmd: (string) (len=4) "KICK",
+	// Raw: (string) (len=81) ":evilgrawity!grawity@wolke.nullroute.eu.org KICK #archlinux nearffxx :flood limit",
+	// Args: ([]string) (len=3 cap=3) {
+	// (string) (len=10) "#archlinux",
+	// (string) (len=8) "nearffxx",
+	// (string) (len=11) "flood limit"
+	// },
+	// Time: (time.Time) 2016-11-26 10:18:12.294398952 -0500 EST
+	// })
+	// 10:18 * nearffxx was kicked from #archlinux by evilgrawity [flood limit]
 	Server.Client.HandleFunc("KICK", func(conn *irc.Conn, line *irc.Line) {
 		logger.Logger.Println("KICK -----------------------------", spew.Sdump(line))
+
+		Server.Exec(line.Args[0], func(c *client.Channel, g *gocui.Gui, v *gocui.View, s *client.Server) error {
+
+			if !c.Current() {
+				c.Unread = true
+			}
+
+			c.RemoveNick(line.Args[1])
+
+			fmt.Fprintf(v, "[%s] -- %s was kicked from %s by %s [%s]\n",
+				color.String(config.C.Color.Red, "-KICK"),
+				line.Args[1],
+				line.Args[0],
+				color.StringFormat(config.C.Color.OtherNickDefault, line.Nick, []string{"1", "4"}),
+				helpers.FormatMessage(line.Args[2]),
+			)
+
+			return nil
+		})
 	})
+
+	// Server.Client.HandleFunc("BAN", func(conn *irc.Conn, line *irc.Line) {
+	// logger.Logger.Println("BAN -----------------------------", spew.Sdump(line))
+	// })
 
 	Server.Client.HandleFunc("AWAY", func(conn *irc.Conn, line *irc.Line) {
 		logger.Logger.Println("AWAY -----------------------------", spew.Sdump(line))

@@ -84,6 +84,7 @@ func Register(server *client.Server) {
 		noticeCmd(),
 		shrugCmd(),
 		tableFlipCmd(),
+		kickCmd(),
 	}
 }
 

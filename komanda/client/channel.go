@@ -83,6 +83,15 @@ func (channel *Channel) View() (*gocui.View, error) {
 	return channel.Server.Gui.View(channel.Name)
 }
 
+// Current returns true or false if the current channel is this channel
+func (channel *Channel) Current() bool {
+	if channel.Server.CurrentChannel == channel.Name {
+		return true
+	}
+
+	return false
+}
+
 // Update will render the current channel again
 func (channel *Channel) Update() (*gocui.View, error) {
 	channel.MaxX, channel.MaxY = channel.Server.Gui.Size()

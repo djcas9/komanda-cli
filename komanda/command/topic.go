@@ -26,11 +26,25 @@ func (e *TopicCmd) Exec(args []string) error {
 			return nil
 		}
 
-		if len(args) == 3 && strings.HasPrefix(args[1], "#") {
-			s.Client.Topic(args[1], args[2])
-		} else if len(args) == 2 {
-			s.Client.Topic(Server.CurrentChannel, args[1])
+		topic := ""
+		channel := Server.CurrentChannel
+
+		if strings.HasPrefix(args[1], "#") {
+			channel = args[1]
+
+			if len(args) >= 3 {
+				topic = strings.Join(args[2:], " ")
+			}
+
+			s.Client.Topic(channel, topic)
+			return nil
 		}
+
+		if len(args) >= 2 {
+			topic = strings.Join(args[1:], " ")
+		}
+
+		s.Client.Topic(channel, topic)
 
 		return nil
 	})
