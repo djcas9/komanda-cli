@@ -43,9 +43,9 @@ func awayCmd() Command {
 	return &AwayCmd{
 		MetadataTmpl: &MetadataTmpl{
 			name:        "away",
-			args:        "<message>",
+			args:        "[message]",
 			aliases:     []string{},
-			description: "set status to away with a message",
+			description: "set status to away with a message or none to toggle away atatus",
 		},
 	}
 }
