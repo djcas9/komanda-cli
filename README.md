@@ -110,9 +110,9 @@ Flags:
 
 [Server]
   host = "irc.freenode.net"
-  port = "6667"
-  ssl = false
-  insecure = true
+  port = "6697" // Common NON-SSL Port 6667
+  ssl = true
+  insecure = false
   nick = "Komanda"
   user = "Komanda"
   nick_password = ""
@@ -155,6 +155,9 @@ Flags:
 ## TODO
 
   * Support for kick/ban/op releated commands
+  * IRC colors (for notice etc...) 
+    - https://en.wikipedia.org/wiki/Caret_notation
+    - https://github.com/myano/jenni/wiki/IRC-String-Formatting
 
 ## Self-Promotion
 

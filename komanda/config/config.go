@@ -84,9 +84,9 @@ func Default() *Config {
 		},
 		Server: &server{
 			Host:        "irc.freenode.net",
-			Port:        "6667",
-			SSL:         false,
-			Insecure:    true,
+			Port:        "6697",
+			SSL:         true,
+			Insecure:    false,
 			Nick:        "Komanda",
 			User:        "Komanda",
 			AutoConnect: false,
