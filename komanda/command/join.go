@@ -47,13 +47,13 @@ func (e *JoinCmd) Exec(args []string) error {
 				ui.UpdateMenuView(g)
 
 				return nil
-			} else {
-				s.Client.Join(args[1])
-				CurrentChannel = args[1]
-				s.CurrentChannel = args[1]
-
-				return s.NewChannel(args[1], false)
 			}
+
+			s.Client.Join(args[1])
+			CurrentChannel = args[1]
+			s.CurrentChannel = args[1]
+
+			return s.NewChannel(args[1], false)
 		}
 
 		return nil
