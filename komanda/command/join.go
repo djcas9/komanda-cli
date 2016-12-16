@@ -3,6 +3,7 @@ package command
 import (
 	"github.com/jroimartin/gocui"
 	"github.com/mephux/komanda-cli/komanda/client"
+	"github.com/mephux/komanda-cli/komanda/ui"
 )
 
 // JoinCmd strcut
@@ -25,11 +26,34 @@ func (e *JoinCmd) Exec(args []string) error {
 		}
 
 		if len(args) >= 2 && len(args[1]) > 0 {
-			s.Client.Join(args[1])
-			CurrentChannel = args[1]
-			s.CurrentChannel = args[1]
 
-			return s.NewChannel(args[1], false)
+			if channel, _, has := Server.HasChannel(args[1]); has {
+				CurrentChannel = args[1]
+				s.CurrentChannel = args[1]
+
+				Server.Gui.SetViewOnTop(Server.CurrentChannel)
+
+				if _, err := g.SetCurrentView(channel.Name); err != nil {
+					return err
+				}
+
+				channel.Unread = false
+				channel.Highlight = false
+
+				if _, err := g.SetCurrentView("input"); err != nil {
+					return err
+				}
+
+				ui.UpdateMenuView(g)
+
+				return nil
+			} else {
+				s.Client.Join(args[1])
+				CurrentChannel = args[1]
+				s.CurrentChannel = args[1]
+
+				return s.NewChannel(args[1], false)
+			}
 		}
 
 		return nil
