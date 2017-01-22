@@ -265,7 +265,9 @@ func BindHandlers() {
 				c.RemoveNick(line.Nick)
 
 				Server.Exec(c.Name, func(c *client.Channel, g *gocui.Gui, v *gocui.View, s *client.Server) error {
-					fmt.Fprintf(v, "[%s] -- %s [%s@%s] has quit [%s]\n", color.String(config.C.Color.Red, "-EXIT"), line.Nick, line.Ident, line.Host, line.Text())
+					if !config.C.Server.FilterJoinQuit {
+						fmt.Fprintf(v, "[%s] -- %s [%s@%s] has quit [%s]\n", color.String(config.C.Color.Red, "-EXIT"), line.Nick, line.Ident, line.Host, line.Text())
+					}
 					return nil
 				})
 			}
@@ -296,8 +298,9 @@ func BindHandlers() {
 				c.AddNick(line.Nick)
 			}
 
-			fmt.Fprintf(v, "[%s] -- %s [%s@%s] has joined %s\n", color.String(config.C.Color.Green, "+JOIN"), line.Nick, line.Ident, line.Host, c.Name)
-
+			if !config.C.Server.FilterJoinQuit {
+				fmt.Fprintf(v, "[%s] -- %s [%s@%s] has joined %s\n", color.String(config.C.Color.Green, "+JOIN"), line.Nick, line.Ident, line.Host, c.Name)
+			}
 			return nil
 		})
 	})
@@ -308,7 +311,9 @@ func BindHandlers() {
 		if line.Nick != Server.Client.Me().Nick {
 			Server.Exec(line.Args[0], func(c *client.Channel, g *gocui.Gui, v *gocui.View, s *client.Server) error {
 				c.RemoveNick(line.Nick)
-				fmt.Fprintf(v, "[%s] -- %s [%s@%s] has quit [%s]\n", color.String(config.C.Color.Red, "-PART"), line.Nick, line.Ident, line.Host, line.Text())
+				if !config.C.Server.FilterJoinQuit {
+					fmt.Fprintf(v, "[%s] -- %s [%s@%s] has quit [%s]\n", color.String(config.C.Color.Red, "-PART"), line.Nick, line.Ident, line.Host, line.Text())
+				}
 				return nil
 			})
 		}
