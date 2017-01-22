@@ -126,6 +126,9 @@ Flags:
 
   # if you use a IRC bouncer this wont be needed
   channels = ["#komanda"]
+  
+  # filter all IRC join/part/quit messages
+  filter_joinquit = false
 
 # http://www.calmar.ws/vim/256-xterm-24bit-rgb-color-chart.html
 [Color]
