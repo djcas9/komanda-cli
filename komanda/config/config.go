@@ -47,6 +47,7 @@ type server struct {
 	ServerPassword string   `toml:"server_password"`
 	AutoConnect    bool     `toml:"auto_connect"`
 	Channels       []string `toml:"channels"`
+	FilterJoinQuit bool	`toml:"filter_joinquit"`
 }
 
 type color struct {
@@ -93,6 +94,7 @@ func Default() *Config {
 			Channels: []string{
 				"#komanda",
 			},
+			FilterJoinQuit: false,
 		},
 		Color: &color{
 			Notice:           219,
