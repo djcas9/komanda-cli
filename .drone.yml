@@ -1,13 +1,12 @@
 clone:
   git:
     image: plugins/git
-    # path: github.com/mephux/uchit
     branch: master
     depth: 32767
 
 workspace:
   base: /go
-  path: src/github.com/mephux/uchit
+  path: src/github.com/mephux/komanda-cli
 
 pipeline:
   normal:
