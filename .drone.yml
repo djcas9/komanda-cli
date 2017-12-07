@@ -1,13 +1,17 @@
-git:
-  path: github.com/mephux/uchit
-  branch: master
-
 clone:
-  depth: 32767
+  git:
+    image: plugins/git
+    # path: github.com/mephux/uchit
+    branch: master
+    depth: 32767
 
-build:
+workspace:
+  base: /go
+  path: src/github.com/mephux/uchit
+
+pipeline:
   normal:
-    image: golang:1.7.1-wheezy
+    image: mephux/docker-golang
     environment:
       - GO15VENDOREXPERIMENT=1
     commands:
@@ -15,12 +19,11 @@ build:
     when:
       event: [push]
   dist:
-    image: golang:1.7.1-wheezy
+    image: mephux/docker-golang
     environment:
       - GO15VENDOREXPERIMENT=1
     commands:
-      - apt-get update > /dev/null 2>&1
-      - apt-get --yes --force-yes install rpm ruby-dev gcc make > /dev/null 2>&1
+      - apk add --update rpm ruby-dev gcc make > /dev/null 2>&1
       - gem install fpm --no-rdoc --no-ri
       - make dist
     when:
@@ -28,7 +31,7 @@ build:
 publish:
   github_release:
     api_key: $$GITHUB
-    files: dist/*
+    files: dist/*xz
     file_exists: fail
     # draft: true
     when:
