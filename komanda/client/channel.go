@@ -185,7 +185,8 @@ func (channel *Channel) Render(update bool) error {
 		view.Frame = false
 
 		view.FgColor = gocui.ColorWhite
-		view.BgColor = gocui.ColorBlack
+		// view.BgColor = gocui.ColorBlack
+		view.BgColor = gocui.Attribute(0)
 
 		if !channel.Private {
 			fmt.Fprint(view, "\n\n\n")
