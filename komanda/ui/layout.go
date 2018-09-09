@@ -53,7 +53,11 @@ func Layout(g *gocui.Gui) error {
 
 				view.FgColor = gocui.ColorWhite
 				// view.BgColor = gocui.ColorBlack
-				view.BgColor = gocui.Attribute(0)
+				// view.BgColor = gocui.ColorWhite
+				view.BgColor = gocui.ColorDefault
+				// gocui.Attribute(0)
+
+				Server.Gui.SetViewOnTop(channel.Name)
 
 				fmt.Fprint(view, "\n\n")
 				fmt.Fprintln(view, version.ColorLogo())

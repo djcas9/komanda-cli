@@ -180,6 +180,7 @@ func (server *Server) NewChannel(name string, private bool) error {
 		Private:       private,
 		NickListReady: false,
 		RenderHandler: func(channel *Channel, view *gocui.View) error {
+			view.BgColor = gocui.ColorDefault
 			return nil
 		},
 	}
