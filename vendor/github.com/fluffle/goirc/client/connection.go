@@ -82,6 +82,11 @@ type Config struct {
 	// Local address to bind to when connecting to the server.
 	LocalAddr string
 
+	// To attempt RFC6555 parallel IPv4 and IPv6 connections if both
+	// address families are returned for a hostname, set this to true.
+	// Passed through to https://golang.org/pkg/net/#Dialer
+	DualStack bool
+
 	// Replaceable function to customise the 433 handler's new nick.
 	// By default an underscore "_" is appended to the current nick.
 	NewNick func(string) string
@@ -160,6 +165,7 @@ func Client(cfg *Config) *Conn {
 
 	dialer := new(net.Dialer)
 	dialer.Timeout = cfg.Timeout
+	dialer.DualStack = cfg.DualStack
 	if cfg.LocalAddr != "" {
 		if !hasPort(cfg.LocalAddr) {
 			cfg.LocalAddr += ":0"
@@ -295,6 +301,18 @@ func (conn *Conn) ConnectTo(host string, pass ...string) error {
 // handler for the CONNECTED event is used to perform any initial client work
 // like joining channels and sending messages.
 func (conn *Conn) Connect() error {
+	// We don't want to hold conn.mu while firing the REGISTER event,
+	// and it's much easier and less error prone to defer the unlock,
+	// so the connect mechanics have been delegated to internalConnect.
+	err := conn.internalConnect()
+	if err == nil {
+		conn.dispatch(&Line{Cmd: REGISTER, Time: time.Now()})
+	}
+	return err
+}
+
+// internalConnect handles the work of actually connecting to the server.
+func (conn *Conn) internalConnect() error {
 	conn.mu.Lock()
 	defer conn.mu.Unlock()
 	conn.initialise()
@@ -350,7 +368,6 @@ func (conn *Conn) Connect() error {
 
 	conn.postConnect(true)
 	conn.connected = true
-	conn.dispatch(&Line{Cmd: REGISTER, Time: time.Now()})
 	return nil
 }
 

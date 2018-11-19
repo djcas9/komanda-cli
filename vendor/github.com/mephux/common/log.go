@@ -60,6 +60,10 @@ type Logger struct {
 	TimeFormat string
 }
 
+var Levels = [...]string{
+	"panic", "fatal", "error", "warn", "info", "debug",
+}
+
 // New will initialize a new Logger struct
 func NewLogger() *Logger {
 	return &Logger{
@@ -74,6 +78,11 @@ func NewLogger() *Logger {
 // SetLevel allows you to have the current log level
 func (log *Logger) SetLevel(l Level) {
 	log.Level = l
+}
+
+// GetLevel returns the current log level as a string
+func (log *Logger) GetLevel() string {
+	return Levels[log.Level]
 }
 
 func (log *Logger) write(format string) {

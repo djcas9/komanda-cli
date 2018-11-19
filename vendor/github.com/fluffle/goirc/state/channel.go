@@ -248,7 +248,9 @@ func (ch *Channel) Equals(other *Channel) bool {
 
 // Duplicates a ChanMode struct.
 func (cm *ChanMode) Copy() *ChanMode {
-	if cm == nil { return nil }
+	if cm == nil {
+		return nil
+	}
 	c := *cm
 	return &c
 }
@@ -260,7 +262,9 @@ func (cm *ChanMode) Equals(other *ChanMode) bool {
 
 // Duplicates a ChanPrivs struct.
 func (cp *ChanPrivs) Copy() *ChanPrivs {
-	if cp == nil { return nil }
+	if cp == nil {
+		return nil
+	}
 	c := *cp
 	return &c
 }
@@ -295,6 +299,9 @@ func (ch *channel) String() string {
 // Returns a string representing the channel modes. Looks like:
 //	+npk key
 func (cm *ChanMode) String() string {
+	if cm == nil {
+		return "No modes set"
+	}
 	str := "+"
 	a := make([]string, 0)
 	v := reflect.Indirect(reflect.ValueOf(cm))
@@ -331,6 +338,9 @@ func (cm *ChanMode) String() string {
 // Returns a string representing the channel privileges. Looks like:
 //	+o
 func (cp *ChanPrivs) String() string {
+	if cp == nil {
+		return "No modes set"
+	}
 	str := "+"
 	v := reflect.Indirect(reflect.ValueOf(cp))
 	t := v.Type()
