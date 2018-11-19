@@ -28,7 +28,6 @@ const (
 
 var (
 	errNotCSI        = errors.New("Not a CSI escape sequence")
-	errCSINotANumber = errors.New("CSI escape sequence was expecting a number or a ;")
 	errCSIParseError = errors.New("CSI escape sequence parsing error")
 	errCSITooLong    = errors.New("CSI escape sequence is too long")
 )
@@ -77,14 +76,16 @@ func (ei *escapeInterpreter) reset() {
 // of an escape sequence, and as such should not be printed verbatim. Otherwise,
 // it's not an escape sequence.
 func (ei *escapeInterpreter) parseOne(ch rune) (isEscape bool, err error) {
-	// Sanity checks to make sure we're not parsing something totally bogus.
+	// Sanity checks
 	if len(ei.csiParam) > 20 {
 		return false, errCSITooLong
 	}
 	if len(ei.csiParam) > 0 && len(ei.csiParam[len(ei.csiParam)-1]) > 255 {
 		return false, errCSITooLong
 	}
+
 	ei.curch = ch
+
 	switch ei.state {
 	case stateNone:
 		if ch == 0x1b {
@@ -99,12 +100,16 @@ func (ei *escapeInterpreter) parseOne(ch rune) (isEscape bool, err error) {
 		}
 		return false, errNotCSI
 	case stateCSI:
-		if ch >= '0' && ch <= '9' {
-			ei.state = stateParams
-			ei.csiParam = append(ei.csiParam, string(ch))
-			return true, nil
+		switch {
+		case ch >= '0' && ch <= '9':
+			ei.csiParam = append(ei.csiParam, "")
+		case ch == 'm':
+			ei.csiParam = append(ei.csiParam, "0")
+		default:
+			return false, errCSIParseError
 		}
-		return false, errCSINotANumber
+		ei.state = stateParams
+		fallthrough
 	case stateParams:
 		switch {
 		case ch >= '0' && ch <= '9':
@@ -114,16 +119,11 @@ func (ei *escapeInterpreter) parseOne(ch rune) (isEscape bool, err error) {
 			ei.csiParam = append(ei.csiParam, "")
 			return true, nil
 		case ch == 'm':
-			if len(ei.csiParam) < 1 {
-				return false, errCSIParseError
-			}
-
 			var err error
-
 			switch ei.mode {
-			case OutputMode(OutputNormal):
+			case OutputNormal:
 				err = ei.outputNormal()
-			case OutputMode(Output256):
+			case Output256:
 				err = ei.output256()
 			}
 			if err != nil {
@@ -133,6 +133,8 @@ func (ei *escapeInterpreter) parseOne(ch rune) (isEscape bool, err error) {
 			ei.state = stateNone
 			ei.csiParam = nil
 			return true, nil
+		default:
+			return false, errCSIParseError
 		}
 	}
 	return false, nil
