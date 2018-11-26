@@ -8,13 +8,13 @@ import (
 	"path"
 	"runtime"
 
-	"github.com/Sirupsen/logrus"
 	"github.com/mephux/common"
 	"github.com/mephux/komanda-cli/komanda"
 	"github.com/mephux/komanda-cli/komanda/client"
 	"github.com/mephux/komanda-cli/komanda/config"
 	"github.com/mephux/komanda-cli/komanda/logger"
 	"github.com/mephux/komanda-cli/komanda/version"
+	"github.com/sirupsen/logrus"
 	"github.com/worg/merger"
 	"gopkg.in/alecthomas/kingpin.v2"
 )

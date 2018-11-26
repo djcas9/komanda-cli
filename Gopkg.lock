@@ -18,14 +18,6 @@
   version = "v0.3.1"
 
 [[projects]]
-  digest = "1:d848e2bdc690ea54c4b49894b67a05db318a97ee6561879b814c2c1f82f61406"
-  name = "github.com/Sirupsen/logrus"
-  packages = ["."]
-  pruneopts = "NUT"
-  revision = "bcd833dfe83d3cebad139e4a29ed79cb2318bf95"
-  version = "v1.2.0"
-
-[[projects]]
   branch = "master"
   digest = "1:f3793f8a708522400cef1dba23385e901aede5519f68971fd69938ef330b07a1"
   name = "github.com/alecthomas/template"
@@ -141,6 +133,14 @@
   revision = "60ab7e3d12ed91bc1b2486559c4b3a6b62297577"
 
 [[projects]]
+  digest = "1:d848e2bdc690ea54c4b49894b67a05db318a97ee6561879b814c2c1f82f61406"
+  name = "github.com/sirupsen/logrus"
+  packages = ["."]
+  pruneopts = "NUT"
+  revision = "bcd833dfe83d3cebad139e4a29ed79cb2318bf95"
+  version = "v1.2.0"
+
+[[projects]]
   digest = "1:2b590492c22e23fe523086f9e3676d2bdb40fd838336736799b51170147639db"
   name = "github.com/worg/merger"
   packages = ["."]
@@ -193,7 +193,6 @@
   input-imports = [
     "github.com/0xAX/notificator",
     "github.com/BurntSushi/toml",
-    "github.com/Sirupsen/logrus",
     "github.com/davecgh/go-spew/spew",
     "github.com/fluffle/goirc/client",
     "github.com/hectane/go-nonblockingchan",
@@ -211,6 +210,7 @@
     "github.com/mephux/komanda-cli/komanda/ui",
     "github.com/mephux/komanda-cli/komanda/version",
     "github.com/nsf/termbox-go",
+    "github.com/sirupsen/logrus",
     "github.com/worg/merger",
     "gopkg.in/alecthomas/kingpin.v2",
   ]
