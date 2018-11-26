@@ -59,7 +59,7 @@
 
 [[constraint]]
   name = "github.com/mephux/komanda-cli"
-  version = "0.9.4"
+  branch = "master"
 
 [[constraint]]
   branch = "master"
@@ -75,4 +75,5 @@
 
 [prune]
   go-tests = true
+  non-go = true
   unused-packages = true

@@ -13,7 +13,7 @@ import (
 // MenuView creates a new view for the menu
 func MenuView(g *gocui.Gui, maxX, maxY int) error {
 
-	if v, err := g.SetView("menu", -1, maxY-4, maxX, maxY+3); err != nil {
+	if v, err := g.SetView("menu", -1, maxY-5, maxX, maxY+3); err != nil {
 		if err != gocui.ErrUnknownView {
 			return err
 		}
@@ -24,13 +24,13 @@ func MenuView(g *gocui.Gui, maxX, maxY int) error {
 			return err
 		}
 
-		v.FgColor = gocui.Attribute(15 + 1)
-		v.BgColor = gocui.Attribute(0)
-
 		v.Autoscroll = false
 		v.Editable = false
 		v.Wrap = false
 		v.Frame = false
+
+		v.FgColor = gocui.Attribute(15 + 1)
+		v.BgColor = gocui.ColorDefault
 
 		go func() {
 			for range time.Tick(time.Millisecond * 100) {
@@ -106,8 +106,9 @@ func UpdateMenuView(gui *gocui.Gui) {
 
 		currentChannel := fmt.Sprintf("[%s]", Server.GetCurrentChannel().Name)
 
-		fmt.Fprintf(v, "⣿ %s [%s] ⡇ %s ⡇ %s@%s ⡇ %s\n\n%s",
-			color.String(config.C.Color.Menu, "MENU"),
+		fmt.Fprintf(v, "%s⣿ %s [%s] ⡇ %s ⡇ %s@%s ⡇ %s\n\n%s",
+			"\n\n",
+			color.String(config.C.Color.Menu, "Connection"),
 			connected,
 			color.String(config.C.Color.Yellow, timestamp),
 			color.String(config.C.Color.Green, Server.Client.Me().Nick),

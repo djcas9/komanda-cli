@@ -24,7 +24,8 @@ func InputView(g *gocui.Gui, x, y, maxX, maxY int) error {
 		v.Editor = Editor
 
 		v.FgColor = gocui.Attribute(15 + 1)
-		v.BgColor = gocui.Attribute(0)
+		// v.BgColor = gocui.Attribute(0)
+		v.BgColor = gocui.ColorDefault
 
 		v.Autoscroll = false
 		v.Editable = true

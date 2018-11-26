@@ -3,52 +3,44 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:360cf34b7dfd56c46e5ffa6b2f57d30a8a074b396fee99e3281880ef2c6df0f9"
+  digest = "1:892045f488f9a9cb77e02ad6a1b4dd8ae6c1e8715274944e583f3b7d8a50e653"
   name = "github.com/0xAX/notificator"
   packages = ["."]
-  pruneopts = "UT"
+  pruneopts = "NUT"
   revision = "d81462e38c2145023f9ecf5414fc84d45d5bfe82"
 
 [[projects]]
-  digest = "1:9f3b30d9f8e0d7040f729b82dcbc8f0dead820a133b3147ce355fc451f32d761"
+  digest = "1:5d72bbcc9c8667b11c3dc3cbe681c5a6f71e5096744c0bf7726ab5c6425d5dc4"
   name = "github.com/BurntSushi/toml"
   packages = ["."]
-  pruneopts = "UT"
+  pruneopts = "NUT"
   revision = "3012a1dbe2e4bd1391d42b32f0577cb7bbc7f005"
   version = "v0.3.1"
 
 [[projects]]
-  digest = "1:69b1cc331fca23d702bd72f860c6a647afd0aa9fcbc1d0659b1365e26546dd70"
-  name = "github.com/Sirupsen/logrus"
-  packages = ["."]
-  pruneopts = "UT"
-  revision = "bcd833dfe83d3cebad139e4a29ed79cb2318bf95"
-  version = "v1.2.0"
-
-[[projects]]
   branch = "master"
-  digest = "1:315c5f2f60c76d89b871c73f9bd5fe689cad96597afd50fb9992228ef80bdd34"
+  digest = "1:f3793f8a708522400cef1dba23385e901aede5519f68971fd69938ef330b07a1"
   name = "github.com/alecthomas/template"
   packages = [
     ".",
     "parse",
   ]
-  pruneopts = "UT"
+  pruneopts = "NUT"
   revision = "a0175ee3bccc567396460bf5acd36800cb10c49c"
 
 [[projects]]
   branch = "master"
-  digest = "1:c198fdc381e898e8fb62b8eb62758195091c313ad18e52a3067366e1dda2fb3c"
+  digest = "1:fdd419e104ec26bb5bd63cc62637c640453ed2929a7453f3afadbd9a0223da66"
   name = "github.com/alecthomas/units"
   packages = ["."]
-  pruneopts = "UT"
+  pruneopts = "NUT"
   revision = "2efee857e7cfd4f3d0138cc3cbb1b4966962b93a"
 
 [[projects]]
   digest = "1:ffe9824d294da03b391f44e1ae8281281b4afc1bdaa9588c9097785e3af10cec"
   name = "github.com/davecgh/go-spew"
   packages = ["spew"]
-  pruneopts = "UT"
+  pruneopts = "NUT"
   revision = "8991bc29aa16c548c550c7ff78260e27b9ab7c73"
   version = "v1.1.1"
 
@@ -60,7 +52,7 @@
     "logging",
     "state",
   ]
-  pruneopts = "UT"
+  pruneopts = "NUT"
   revision = "0dc1109b0d8c416a8f3d82783316a5359fc00d60"
   version = "v1.0.1"
 
@@ -68,52 +60,53 @@
   digest = "1:bc38c7c481812e178d85160472e231c5e1c9a7f5845d67e23ee4e706933c10d8"
   name = "github.com/golang/mock"
   packages = ["gomock"]
-  pruneopts = "UT"
+  pruneopts = "NUT"
   revision = "c34cdb4725f4c3844d095133c6e40e448b86589b"
   version = "v1.1.1"
 
 [[projects]]
-  digest = "1:1742d4f0e8866ee72d16cc9208f1c9c463a2f340df5025ab7ff4826bb90a255c"
+  digest = "1:abf3b8b1430a6f421c08e0b482054c3529f7240d14edf3db48004c72747617ae"
   name = "github.com/hectane/go-nonblockingchan"
   packages = ["."]
-  pruneopts = "UT"
+  pruneopts = "NUT"
   revision = "a5c3fb0f46b221ee575b2b7892a3ccf0557bcb5e"
   version = "v0.1.0"
 
 [[projects]]
-  digest = "1:114ecad51af93a73ae6781fd0d0bc28e52b433c852b84ab4b4c109c15e6c6b6d"
+  digest = "1:b0e2239298e43ccf8502bddfb5e5aa45dda450553d054955b58b0a79f7899d88"
   name = "github.com/jroimartin/gocui"
   packages = ["."]
-  pruneopts = "UT"
+  pruneopts = "NUT"
   revision = "c055c87ae801372cd74a0839b972db4f7697ae5f"
   version = "v0.4.0"
 
 [[projects]]
-  digest = "1:0a69a1c0db3591fcefb47f115b224592c8dfa4368b7ba9fae509d5e16cdc95c8"
+  digest = "1:4059c14e87a2de3a434430340521b5feece186c1469eff0834c29a63870de3ed"
   name = "github.com/konsorten/go-windows-terminal-sequences"
   packages = ["."]
-  pruneopts = "UT"
+  pruneopts = "NUT"
   revision = "5c8c8bd35d3832f5d134ae1e1e375b69a4d25242"
   version = "v1.0.1"
 
 [[projects]]
-  digest = "1:cdb899c199f907ac9fb50495ec71212c95cb5b0e0a8ee0800da0238036091033"
+  digest = "1:bff482b22ebed387378546ba6a7850fdef87fd47f8ee58a7c62124a8e889a56b"
   name = "github.com/mattn/go-runewidth"
   packages = ["."]
-  pruneopts = "UT"
+  pruneopts = "NUT"
   revision = "ce7b0b5c7b45a81508558cd1dba6bb1e4ddb51bb"
   version = "v0.0.3"
 
 [[projects]]
   branch = "master"
-  digest = "1:db9faa334308ee6ad34943178d699068d0e84a626c9020f8dd82883e3493e98e"
+  digest = "1:f20621ce7b110cca8b54f8a42d6d6e610e386c8b3b5e2c7b3d7874b1b1280e5a"
   name = "github.com/mephux/common"
   packages = ["."]
-  pruneopts = "UT"
+  pruneopts = "NUT"
   revision = "c3a670c8b76e1e6aedf3227a74e8d99d5978475c"
 
 [[projects]]
-  digest = "1:0677cc2c09526284112cdda996359fb34c8e8dd708947f87b0569d17a9691098"
+  branch = "master"
+  digest = "1:4098de9e9535669fac3d92e0a164ab2b5698fce1c3f74310f61e32cd5300ef32"
   name = "github.com/mephux/komanda-cli"
   packages = [
     "komanda",
@@ -128,23 +121,30 @@
     "komanda/ui",
     "komanda/version",
   ]
-  pruneopts = "UT"
-  revision = "3b99c0efc1d1a10d7928319bcf85f028ac9fc152"
-  version = "v0.9.4"
+  pruneopts = "NUT"
+  revision = "25fee03371096c1d8c407a3cb3dbcb53129466de"
 
 [[projects]]
   branch = "master"
-  digest = "1:01d9e47830ef6077fb6f91033b0e83f324ad5966d11ed3daa4a5822ace876dab"
+  digest = "1:57b12b43d385bb8b585c5cef4a2e7a6d91d78f3a15c1151e6f0ce0122c3997cc"
   name = "github.com/nsf/termbox-go"
   packages = ["."]
-  pruneopts = "UT"
+  pruneopts = "NUT"
   revision = "60ab7e3d12ed91bc1b2486559c4b3a6b62297577"
 
 [[projects]]
-  digest = "1:614600be6f68261b3136e7f6f0b5fbd33d29dddad1b7287b24b2774549420c30"
+  digest = "1:d848e2bdc690ea54c4b49894b67a05db318a97ee6561879b814c2c1f82f61406"
+  name = "github.com/sirupsen/logrus"
+  packages = ["."]
+  pruneopts = "NUT"
+  revision = "bcd833dfe83d3cebad139e4a29ed79cb2318bf95"
+  version = "v1.2.0"
+
+[[projects]]
+  digest = "1:2b590492c22e23fe523086f9e3676d2bdb40fd838336736799b51170147639db"
   name = "github.com/worg/merger"
   packages = ["."]
-  pruneopts = "UT"
+  pruneopts = "NUT"
   revision = "cdc5058178df1200c9d51c914b4498a438e6c8cb"
   version = "v1"
 
@@ -153,7 +153,7 @@
   digest = "1:3f3a05ae0b95893d90b9b3b5afdb79a9b3d96e4e36e099d841ae602e4aca0da8"
   name = "golang.org/x/crypto"
   packages = ["ssh/terminal"]
-  pruneopts = "UT"
+  pruneopts = "NUT"
   revision = "3d3f9f413869b949e48070b5bc593aa22cc2b8f2"
 
 [[projects]]
@@ -165,25 +165,25 @@
     "internal/socks",
     "proxy",
   ]
-  pruneopts = "UT"
+  pruneopts = "NUT"
   revision = "adae6a3d119ae4890b46832a2e88a95adc62b8e7"
 
 [[projects]]
   branch = "master"
-  digest = "1:a089387bbfcfa884e5aafeebb85929993195bb8959766b1d20102841d47e0b0e"
+  digest = "1:15c44ebe33e556cdaf47e52b1e913aa15ce7aab47e565569319e6f89767193ff"
   name = "golang.org/x/sys"
   packages = [
     "unix",
     "windows",
   ]
-  pruneopts = "UT"
+  pruneopts = "NUT"
   revision = "93218def8b18e66adbdab3eca8ec334700329f1f"
 
 [[projects]]
-  digest = "1:c06d9e11d955af78ac3bbb26bd02e01d2f61f689e1a3bce2ef6fb683ef8a7f2d"
+  digest = "1:22b2dee6f30bc8601f087449a2a819df8388e54e9547349c658f14d8f8c590f2"
   name = "gopkg.in/alecthomas/kingpin.v2"
   packages = ["."]
-  pruneopts = "UT"
+  pruneopts = "NUT"
   revision = "947dcec5ba9c011838740e680966fd7087a71d0d"
   version = "v2.2.6"
 
@@ -193,7 +193,6 @@
   input-imports = [
     "github.com/0xAX/notificator",
     "github.com/BurntSushi/toml",
-    "github.com/Sirupsen/logrus",
     "github.com/davecgh/go-spew/spew",
     "github.com/fluffle/goirc/client",
     "github.com/hectane/go-nonblockingchan",
@@ -211,6 +210,7 @@
     "github.com/mephux/komanda-cli/komanda/ui",
     "github.com/mephux/komanda-cli/komanda/version",
     "github.com/nsf/termbox-go",
+    "github.com/sirupsen/logrus",
     "github.com/worg/merger",
     "gopkg.in/alecthomas/kingpin.v2",
   ]

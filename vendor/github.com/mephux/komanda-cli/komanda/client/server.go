@@ -48,7 +48,7 @@ type Handler func(*Channel, *gocui.Gui, *gocui.View, *Server) error
 
 // Exec callback for a given channel
 func (server *Server) Exec(channel string, h Handler) {
-	server.Gui.Execute(func(g *gocui.Gui) error {
+	server.Gui.Update(func(g *gocui.Gui) error {
 
 		if helpers.Contains(layoutViews, channel) {
 			v, err := g.View(channel)
@@ -180,6 +180,7 @@ func (server *Server) NewChannel(name string, private bool) error {
 		Private:       private,
 		NickListReady: false,
 		RenderHandler: func(channel *Channel, view *gocui.View) error {
+			view.BgColor = gocui.ColorDefault
 			return nil
 		},
 	}
