@@ -42,7 +42,7 @@ lint:
 		done
 
 deps:
-	@go get -u github.com/golang/lint/golint
+	@go get -u golang.org/x/lint/golint
 
 setup:
 	@mkdir -p package/root/usr/bin/
