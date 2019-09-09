@@ -1,0 +1,41 @@
+# github.com/0xAX/notificator v0.0.0-20181105090803-d81462e38c21
+github.com/0xAX/notificator
+# github.com/BurntSushi/toml v0.3.1
+github.com/BurntSushi/toml
+# github.com/alecthomas/template v0.0.0-20190718012654-fb15b899a751
+github.com/alecthomas/template
+github.com/alecthomas/template/parse
+# github.com/alecthomas/units v0.0.0-20190717042225-c3de453c63f4
+github.com/alecthomas/units
+# github.com/davecgh/go-spew v1.1.1
+github.com/davecgh/go-spew/spew
+# github.com/fluffle/goirc v1.0.1
+github.com/fluffle/goirc/client
+github.com/fluffle/goirc/logging
+github.com/fluffle/goirc/state
+# github.com/golang/mock v1.1.1
+github.com/golang/mock/gomock
+# github.com/hectane/go-nonblockingchan v0.1.0
+github.com/hectane/go-nonblockingchan
+# github.com/jroimartin/gocui v0.4.0
+github.com/jroimartin/gocui
+# github.com/konsorten/go-windows-terminal-sequences v1.0.1
+github.com/konsorten/go-windows-terminal-sequences
+# github.com/mattn/go-runewidth v0.0.4
+github.com/mattn/go-runewidth
+# github.com/mephux/common v0.0.0-20170531153046-c3a670c8b76e
+github.com/mephux/common
+# github.com/nsf/termbox-go v0.0.0-20190817171036-93860e161317
+github.com/nsf/termbox-go
+# github.com/sirupsen/logrus v1.4.2
+github.com/sirupsen/logrus
+# github.com/worg/merger v0.0.0-20151129084618-94181de72ed1
+github.com/worg/merger
+# golang.org/x/net v0.0.0-20190620200207-3b0461eec859
+golang.org/x/net/context
+golang.org/x/net/internal/socks
+golang.org/x/net/proxy
+# golang.org/x/sys v0.0.0-20190422165155-953cdadca894
+golang.org/x/sys/unix
+# gopkg.in/alecthomas/kingpin.v2 v2.2.6
+gopkg.in/alecthomas/kingpin.v2
