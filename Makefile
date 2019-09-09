@@ -44,6 +44,12 @@ lint:
 deps:
 	@go get -u golang.org/x/lint/golint
 
+tidy-mods:
+	@go mod tidy
+
+vendor-mods:
+	@go mod vendor
+
 setup:
 	@mkdir -p package/root/usr/bin/
 	@mkdir -p dist/
