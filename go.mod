@@ -18,8 +18,7 @@ require (
 	github.com/nsf/termbox-go v0.0.0-20181027232701-60ab7e3d12ed
 	github.com/sirupsen/logrus v1.2.0
 	github.com/worg/merger v0.0.0-20140909081055-cdc5058178df
-	golang.org/x/crypto v0.0.0-20181112202954-3d3f9f413869 // indirect
-	golang.org/x/net v0.0.0-20181114220301-adae6a3d119a // indirect
-	golang.org/x/sys v0.0.0-20181116161606-93218def8b18 // indirect
+	golang.org/x/lint v0.0.0-20190409202823-959b441ac422 // indirect
+	golang.org/x/tools v0.0.0-20190909030654-5b82db07426d // indirect
 	gopkg.in/alecthomas/kingpin.v2 v2.2.6
 )
