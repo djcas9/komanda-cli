@@ -1,3 +1,4 @@
+[![Build Status](https://drone.komanda.io/api/badges/mephux/komanda-cli/status.svg)](https://drone.komanda.io/mephux/komanda-cli)
 [![GoDoc](https://godoc.org/github.com/mephux/komanda-cli?status.svg)](https://godoc.org/github.com/mephux/komanda-cli)
 [![Go Report Card](https://goreportcard.com/badge/github.com/mephux/komanda-cli)](https://goreportcard.com/report/github.com/mephux/komanda-cli)
 
