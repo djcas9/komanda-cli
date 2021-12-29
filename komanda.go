@@ -43,8 +43,6 @@ var (
 )
 
 func main() {
-	runtime.GOMAXPROCS(runtime.NumCPU())
-
 	version.Build = Build
 
 	if p, err := common.HomeDir(); err == nil {
