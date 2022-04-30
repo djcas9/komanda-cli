@@ -9,7 +9,7 @@ import (
 	"github.com/mephux/komanda-cli/komanda/config"
 )
 
-// StatusMessage will formart a string and write to the status
+// StatusMessage will format a string and write to the status
 // channel
 func StatusMessage(view *gocui.View, data string) {
 	timestamp := time.Now().Format(config.C.Time.MessageFormat)
