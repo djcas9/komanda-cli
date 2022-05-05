@@ -21,7 +21,7 @@ func (e *EmptyCmd) Metadata() CommandMetadata {
 func (e *EmptyCmd) Exec(args []string) error {
 
 	Server.Exec(client.StatusChannel, func(c *client.Channel, g *gocui.Gui, v *gocui.View, s *client.Server) error {
-		client.StatusMessage(v, fmt.Sprintf("Unknow Command: %s", args[0]))
+		client.StatusMessage(v, fmt.Sprintf("Unknown command: %s", args[0]))
 		return nil
 	})
 
