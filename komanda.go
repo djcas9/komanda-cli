@@ -6,7 +6,6 @@ import (
 	"log"
 	"os"
 	"path"
-	"runtime"
 
 	"github.com/mephux/common"
 	"github.com/mephux/komanda-cli/komanda"
